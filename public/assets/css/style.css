@@ -1,0 +1,15 @@
+.vardump {
+    position: fixed;
+    height: auto;
+    background-color: #000000;
+    color: #ffffff;
+    font-size: 18px;
+    font-family: monospace;
+    padding: 10px;
+    z-index: 9999;
+    top: 100px;
+    opacity: 85%;
+    border: 1px solid #ffffff;
+    box-shadow: 0 0 10px #ffffff;
+    border-radius: 5px;
+}

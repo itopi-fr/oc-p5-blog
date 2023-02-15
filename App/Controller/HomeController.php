@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Home;
+namespace App\Controller;
 
 class HomeController
 {
@@ -11,13 +11,14 @@ class HomeController
 
     private function dump($var)
     {
-        echo "<pre>";
+        //style='background-color: #000000; color: #0b5ed7'
+        echo "<pre class='vardump'>";
         var_dump($var);
         echo "</pre>";
     }
 
     public function index()
     {
-        $this->dump("App\Home\HomeController::index");
+        $this->dump("App\Controllers\HomeController::index");
     }
 }

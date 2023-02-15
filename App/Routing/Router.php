@@ -1,19 +1,19 @@
 <?php
 
-namespace App;
+namespace App\Routing;
 
-use App\Home\HomeController;
+use App\Controller\HomeController;
 
 class Router
 {
 
     public function __construct()
     {
-        echo "App\Router";
+        // echo "App\Routing\Router";
     }
 
 
-    public function run()
+    public function run() : void
     {
         $url = $_SERVER['REQUEST_URI'];
 
