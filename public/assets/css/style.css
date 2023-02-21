@@ -1,0 +1,44 @@
+
+.vardump {
+    position: absolute;
+    width: 80%;
+    height: auto;
+    background-color: #000000;
+    color: #ffffff;
+    font-size: 18px;
+    font-family: monospace;
+    padding: 10px;
+    z-index: 9999;
+    top: 100px;
+    opacity: 85%;
+    border: 1px solid #ffffff;
+    box-shadow: 0 0 10px #ffffff;
+    border-radius: 5px;
+    z-index: 999;
+
+}
+
+.vardump > pre {
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
+
+.vardump-close {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 20px;
+    cursor: pointer;
+}
+.vardump-close > svg {
+    height: 1.5rem;
+}
+
+
+
+.abs-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
