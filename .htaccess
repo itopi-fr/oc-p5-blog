@@ -1,5 +1,15 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
+    RewriteBase /
+
+    RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_URI} !/public
-    RewriteRule ^(.*)$ public/$1 [L]
+    RewriteRule ^owner\/(.*)$ public/index.php?own=1&p=$1 [L]
+
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_URI} !/public
+    RewriteRule ^(.*)$ public/index.php?p=$1 [L]
+
+
+
 </IfModule>

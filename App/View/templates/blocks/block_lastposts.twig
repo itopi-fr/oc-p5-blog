@@ -1,0 +1,27 @@
+{% block lastposts %}
+    <!-- Last Posts -->
+    <section class="row gx-4 gx-lg-5 justify-content-center last-posts">
+        <h2>Derniers articles</h2>
+        <div class="col-md-10 col-lg-8 col-xl-7">
+
+            {%  for post in posts |slice(0, 3) %}
+                <article class="post-preview">
+                    <a href="/article/{{ post.id }}">
+                        <h2 class="post-title">{{ post.title }}</h2>
+                    </a>
+                    <p class="post-meta">
+                        Le {{ post.date|date('d/m/Y') }}
+                    </p>
+                <div class="post-content">
+                    {{ post.content }}
+                </article>
+
+                {% if not loop.last %}
+                    <hr class="my-4"/>
+                {% endif %}
+
+            {% endfor %}
+
+        </div>
+    </section>
+{% endblock %}

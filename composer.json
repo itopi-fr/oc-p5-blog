@@ -11,5 +11,8 @@
             "name": "itopi-fr",
             "email": "88286107+itopi-fr@users.noreply.github.com"
         }
-    ]
+    ],
+    "require": {
+        "twig/twig": "^3.5"
+    }
 }

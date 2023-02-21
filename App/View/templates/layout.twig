@@ -1,0 +1,22 @@
+{% use "blocks/block_head.twig" %}
+{% use "blocks/block_nav.twig" %}
+{% use "blocks/block_header.twig" %}
+{% use "blocks/block_footer.twig" %}
+
+<!doctype html>
+<html lang="en">
+    {{ block('head') }}
+
+<body>
+    {{ block('nav') }}
+    {{ block('header') }}
+
+    <!-- Main Content-->
+    <div class="container px-4 px-lg-5">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    {{ block('footer') }}
+</body>
+</html>

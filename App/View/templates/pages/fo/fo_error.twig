@@ -1,0 +1,9 @@
+{% extends "layout.twig" %}
+{% block title %}
+    {{ error.title }} - {{ error.code }}
+{% endblock %}
+
+{% block content %}
+    <h1>{{ error.title }} - {{ error.code }}</h1>
+    <p>{{ error.message }}</p>
+{% endblock %}

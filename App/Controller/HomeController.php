@@ -2,23 +2,27 @@
 
 namespace App\Controller;
 
-class HomeController
+use App\Model\UserModel;
+
+class HomeController extends MainController
 {
+
+    private UserModel $dbTest;
+    private array $test;
+
     public function __construct()
     {
-
+        $this->dbTest = new UserModel();
+        $this->test = $this->dbTest->getAllUsers();
+        $this->dump($this->test);
     }
 
-    private function dump($var)
-    {
-        //style='background-color: #000000; color: #0b5ed7'
-        echo "<pre class='vardump'>";
-        var_dump($var);
-        echo "</pre>";
-    }
+    private array $twigData = ['data1' => 'données 1', 'data2' => 'données 2'];
 
     public function index()
     {
-        $this->dump("App\Controllers\HomeController::index");
+        $this->twigData['posts'] = $this->posts;
+        $this->initTwig();
+        echo  $this->twig->render("pages/fo/fo_home.twig", $this->twigData);
     }
 }

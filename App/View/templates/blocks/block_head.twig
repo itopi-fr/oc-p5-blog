@@ -1,0 +1,17 @@
+{% block head %}
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="/public/assets/vendor/fontawesome/fontawesome.min.css" rel="stylesheet">
+        <link href="/public/assets/vendor/fontawesome/brands.min.css" rel="stylesheet">
+        <link href="/public/assets/vendor/fontawesome/solid.min.css" rel="stylesheet">
+        <link href="/public/assets/vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
+        <link href="/public/assets/css/starter-theme.css" rel="stylesheet">
+        <link href="/public/assets/css/style.css" rel="stylesheet">
+        {% block css_specific %}
+        {% endblock %}
+        <title>
+            {% block title %}{% endblock %}
+        </title>
+    </head>
+{% endblock %}
