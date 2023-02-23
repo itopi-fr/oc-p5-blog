@@ -3,12 +3,12 @@
     position: absolute;
     width: 80%;
     height: auto;
+    max-height: 75%;
     background-color: #000000;
     color: #ffffff;
     font-size: 18px;
     font-family: monospace;
     padding: 10px;
-    z-index: 9999;
     top: 100px;
     opacity: 85%;
     border: 1px solid #ffffff;
@@ -21,6 +21,7 @@
 .vardump > pre {
     overflow-wrap: anywhere;
     white-space: pre-wrap;
+    overflow: scroll;
 }
 
 .vardump-close {
@@ -41,4 +42,12 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+
+/* Surcharge Starter Theme */
+@media (min-width: 992px) {
+    header.masthead {
+        padding-top: 4rem;
+        padding-bottom: 4rem;
+    }
 }
