@@ -2,26 +2,21 @@
 
 namespace App\Database;
 
-
-
-use PDO;
+use \PDO;
+use \PDOException;
 
 class Connection
 {
-    public function __construct()
-    {
-
-    }
-
     private string $host = 'localhost';
     private string $dbname = 'p5blog';
     private string $username = 'p5blog';
     private string $password = 'p5blog';
-    private $conn;
+    private ?\PDO $conn;
 
-    public function connect()
+    private function connect() : PDO
     {
         $this->conn = null;
+
         try {
             $this->conn = new PDO(
                 "mysql:host=" . $this->host . ";dbname=" . $this->dbname,
@@ -34,4 +29,16 @@ class Connection
         }
         return $this->conn;
     }
+
+    public function getSingleAsClass($statement, $class_name) {
+        try {
+            $req = $this->connect()->prepare($statement);
+            $req->setFetchMode(PDO::FETCH_CLASS, $class_name);
+            $req->execute();
+            return $req->fetch();
+        } catch (PDOException $e) {
+            echo "getAsClass Error: " . $e->getMessage();
+        }
+    }
+
 }

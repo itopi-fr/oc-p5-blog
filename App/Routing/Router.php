@@ -36,7 +36,11 @@ class Router
             $pageBase = $this->urlParts[0];
 
             if ($this->urlParts[0] == 'user') {
-                $userAction = $this->urlParts[1];
+                if (isset($this->urlParts[1])) {
+                    $userAction = $this->urlParts[1];
+                } else {
+                    $userAction = 'home';
+                }
             } elseif ($this->urlParts[0] == 'article') {
                 $articleId = $this->urlParts[1];
             } elseif ($this->urlParts[0] == 'owner') {
