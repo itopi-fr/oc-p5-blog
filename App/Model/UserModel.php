@@ -2,24 +2,24 @@
 
 namespace App\Model;
 
+
 use App\Database\Connection;
 use App\Entity\User;
 use App\Entity\File;
 
-class UserModel
+class UserModel extends Connection
 {
-    private Connection $db;
     public User $user;
     public function __construct()
     {
-        $this->db = new Connection();
+        parent::__construct();
     }
 
 
     public function getUserById($id)
     {
         $sqlUser = "SELECT * FROM user WHERE id = " . $id;
-        $this->user = $this->db->getSingleAsClass($sqlUser, 'App\Entity\User');
+        $this->user = $this->getSingleAsClass($sqlUser, 'App\Entity\User');
         $fileModel = new FileModel();
 
         if (!is_null($this->user->getAvatarId())) {

@@ -20,6 +20,10 @@ class Post
     private string $status;
 
     /**
+     * ----------------------------------------------------------------------------------------------- Getters & Setters
+     */
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -29,6 +33,7 @@ class Post
 
     /**
      * @param int $id
+     * @return void
      */
     public function setId(int $id): void
     {
@@ -45,6 +50,7 @@ class Post
 
     /**
      * @param int $author_id
+     * @return void
      */
     public function setAuthorId(int $author_id): void
     {
@@ -61,6 +67,7 @@ class Post
 
     /**
      * @param User $author_user
+     * @return void
      */
     public function setAuthorUser(User $author_user): void
     {
@@ -77,6 +84,7 @@ class Post
 
     /**
      * @param int $feat_img_id
+     * @return void
      */
     public function setFeatImgId(int $feat_img_id): void
     {
@@ -93,6 +101,7 @@ class Post
 
     /**
      * @param File $feat_img_file
+     * @return void
      */
     public function setFeatImgFile(File $feat_img_file): void
     {
@@ -109,6 +118,7 @@ class Post
 
     /**
      * @param string $title
+     * @return void
      */
     public function setTitle(string $title): void
     {
@@ -125,6 +135,7 @@ class Post
 
     /**
      * @param string $slug
+     * @return void
      */
     public function setSlug(string $slug): void
     {
@@ -141,6 +152,7 @@ class Post
 
     /**
      * @param string $excerpt
+     * @return void
      */
     public function setExcerpt(string $excerpt): void
     {
@@ -157,6 +169,7 @@ class Post
 
     /**
      * @param string $content
+     * @return void
      */
     public function setContent(string $content): void
     {
@@ -173,6 +186,7 @@ class Post
 
     /**
      * @param DateTime $creation_date
+     * @return void
      */
     public function setCreationDate(DateTime $creation_date): void
     {
@@ -189,6 +203,7 @@ class Post
 
     /**
      * @param DateTime $last_update
+     * @return void
      */
     public function setLastUpdate(DateTime $last_update): void
     {
@@ -205,14 +220,10 @@ class Post
 
     /**
      * @param string $status
+     * @return void
      */
     public function setStatus(string $status): void
     {
         $this->status = $status;
     }
-
-    /**
-     * ----------------------------------------------------------------------------------------------- Getters & Setters
-     */
-
 }

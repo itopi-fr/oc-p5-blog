@@ -27,6 +27,7 @@ class Token
 
     /**
      * @param int $id
+     * @return void
      */
     public function setId(int $id): void
     {
@@ -43,6 +44,7 @@ class Token
 
     /**
      * @param int $user_id
+     * @return void
      */
     public function setUserId(int $user_id): void
     {
@@ -59,6 +61,7 @@ class Token
 
     /**
      * @param string $content
+     * @return void
      */
     public function setContent(string $content): void
     {
@@ -75,6 +78,7 @@ class Token
 
     /**
      * @param DateTime $expiration_date
+     * @return void
      */
     public function setExpirationDate(DateTime $expiration_date): void
     {
@@ -91,11 +95,36 @@ class Token
 
     /**
      * @param string $type
+     * @return void
      */
     public function setType(string $type): void
     {
         $this->type = $type;
     }
 
+    /**
+     * --------------------------------------------------------------------------------------------------------- Methods
+     */
 
+    /**
+     * Creates a token for password change. This token is valid for 15 minutes.
+     * @param int $userId
+     * @return Token
+     */
+    public function createPassChangeToken(int $userId) {
+        $this->setUserId($userId);
+        $this->setContent($this->generateKey());
+        $this->setExpirationDate(new DateTime('now + 15 minutes'));
+        $this->setType('password_change');
+        return $this;
+    }
+
+    /**
+     * Generates a random key
+     * @return string
+     */
+    public function generateKey() : string
+    {
+        return ( bin2hex( random_bytes(32) ) );
+    }
 }

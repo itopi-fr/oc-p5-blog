@@ -2,23 +2,28 @@
 
 namespace App\Controller;
 
+use App\Entity\Token;
+use App\Model\TokenModel;
 use App\Entity\UserOwner;
 use App\Model\UserOwnerModel;
 use App\Entity\User;
 use App\Model\UserModel;
+use stdClass;
 
 
 class UserController extends MainController
 {
     public User $user;
     public UserOwner $userOwner;
-    private array $twigData = ['data1' => 'données 1', 'data2' => 'données 2'];
+    public Token $token;
 
+    public function __construct()
+    {
+        parent::__construct();
+    }
 
     public function index($userAction)
     {
-        $this->initTwig();
-
         // Test User
 //        $userModel = new UserModel();
 //        $this->user = $userModel->getUserById(1);
@@ -26,10 +31,21 @@ class UserController extends MainController
 //        $this->dump($this->user);
 
         // Test UserOwner
-        $userOwnerModel = new UserOwnerModel();
-        $this->userOwner = $userOwnerModel->getUserOwnerById(1);
-        $this->twigData['user'] = $this->userOwner;
-        $this->dump($this->userOwner);
+//        $userOwnerModel = new UserOwnerModel();
+//        $this->userOwner = $userOwnerModel->getUserOwnerById(1);
+//        $this->twigData['user'] = $this->userOwner;
+//        $this->dump($this->userOwner);
+
+        // Test GetToken
+//        $tokenModel = new TokenModel();
+//        $this->token = $tokenModel->getTokenById(1);
+//        $this->dump($this->token);
+
+        // Test CreateToken
+        $token = new Token();
+        $token->createPassChangeToken(1);
+        $tokenModel = new TokenModel();
+        $this->dump($tokenModel->insertPassChangeToken($token));
 
         // Routing
         echo match ($userAction) {
@@ -41,6 +57,30 @@ class UserController extends MainController
             default         => $this->twig->render("pages/fo/fo_error.twig", $this->twigData),
         };
     }
+
+    public function login()
+    {
+        // Vérifier tokens et supprimer les anciens
+    }
+
+    public function logout()
+    {
+        // Vérifier tokens et supprimer les anciens
+    }
+
+    public function register()
+    {
+
+    }
+
+    public function resetPassword()
+    {
+        // Vérifier tokens, s'il y en a un de valide, le renvoyer
+    }
+
+
+
+
 
 
 }
