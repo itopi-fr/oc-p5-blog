@@ -26,6 +26,7 @@ class User
 
     /**
      * @param int $id
+     * @return void
      */
     public function setId(int $id): void
     {
@@ -42,6 +43,7 @@ class User
 
     /**
      * @param int|null $avatar_id
+     * @return void
      */
     public function setAvatarId(?int $avatar_id): void
     {
@@ -58,6 +60,7 @@ class User
 
     /**
      * @param File $avatar_file
+     * @return void
      */
     public function setAvatarFile(File $avatar_file): void
     {
@@ -74,6 +77,7 @@ class User
 
     /**
      * @param string $pseudo
+     * @return void
      */
     public function setPseudo(string $pseudo): void
     {
@@ -90,6 +94,7 @@ class User
 
     /**
      * @param string $email
+     * @return void
      */
     public function setEmail(string $email): void
     {
@@ -106,6 +111,7 @@ class User
 
     /**
      * @param string $pass
+     * @return void
      */
     public function setPass(string $pass): void
     {
@@ -122,6 +128,7 @@ class User
 
     /**
      * @param string $role
+     * @return void
      */
     public function setRole(string $role): void
     {

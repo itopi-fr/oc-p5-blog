@@ -13,6 +13,11 @@ class Comment
     private DateTime $created_date;
     private DateTime $last_update;
 
+
+    /**
+     * ----------------------------------------------------------------------------------------------- Getters & Setters
+     */
+
     /**
      * @return int
      */
@@ -23,6 +28,7 @@ class Comment
 
     /**
      * @param int $id
+     * @return void
      */
     public function setId(int $id): void
     {
@@ -39,6 +45,7 @@ class Comment
 
     /**
      * @param int $post_id
+     * @return void
      */
     public function setPostId(int $post_id): void
     {
@@ -55,6 +62,7 @@ class Comment
 
     /**
      * @param int $author_id
+     * @return void
      */
     public function setAuthorId(int $author_id): void
     {
@@ -71,6 +79,7 @@ class Comment
 
     /**
      * @param string $content
+     * @return void
      */
     public function setContent(string $content): void
     {
@@ -87,6 +96,7 @@ class Comment
 
     /**
      * @param DateTime $created_date
+     * @return void
      */
     public function setCreatedDate(DateTime $created_date): void
     {
@@ -103,14 +113,10 @@ class Comment
 
     /**
      * @param DateTime $last_update
+     * @return void
      */
     public function setLastUpdate(DateTime $last_update): void
     {
         $this->last_update = $last_update;
     }
-
-    /**
-     * ----------------------------------------------------------------------------------------------- Getters & Setters
-     */
-
 }

@@ -28,6 +28,7 @@ class UserOwner extends User
 
     /**
      * @param int $owner_id
+     * @return void
      */
     public function setOwnerId(int $owner_id): void
     {
@@ -44,6 +45,7 @@ class UserOwner extends User
 
     /**
      * @param int $photo_file_id
+     * @return void
      */
     public function setPhotoFileId(int $photo_file_id): void
     {
@@ -60,6 +62,7 @@ class UserOwner extends User
 
     /**
      * @param File $photo_file
+     * @return void
      */
     public function setPhotoFile(File $photo_file): void
     {
@@ -76,6 +79,7 @@ class UserOwner extends User
 
     /**
      * @param int $cv_file_id
+     * @return void
      */
     public function setCvFileId(int $cv_file_id): void
     {
@@ -92,6 +96,7 @@ class UserOwner extends User
 
     /**
      * @param File $cv_file
+     * @return void
      */
     public function setCvFile(File $cv_file): void
     {
@@ -108,6 +113,7 @@ class UserOwner extends User
 
     /**
      * @param string $first_name
+     * @return void
      */
     public function setFirstName(string $first_name): void
     {
@@ -124,6 +130,7 @@ class UserOwner extends User
 
     /**
      * @param string $last_name
+     * @return void
      */
     public function setLastName(string $last_name): void
     {
@@ -140,6 +147,7 @@ class UserOwner extends User
 
     /**
      * @param string $catch_phrase
+     * @return void
      */
     public function setCatchPhrase(string $catch_phrase): void
     {

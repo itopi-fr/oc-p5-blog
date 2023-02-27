@@ -21,6 +21,7 @@ class File
 
     /**
      * @param int $id
+     * @return void
      */
     public function setId(int $id): void
     {
@@ -37,6 +38,7 @@ class File
 
     /**
      * @param string $title
+     * @return void
      */
     public function setTitle(string $title): void
     {
@@ -53,6 +55,7 @@ class File
 
     /**
      * @param string $url
+     * @return void
      */
     public function setUrl(string $url): void
     {
@@ -69,6 +72,7 @@ class File
 
     /**
      * @param string $ext
+     * @return void
      */
     public function setExt(string $ext): void
     {
@@ -85,6 +89,7 @@ class File
 
     /**
      * @param string $mime
+     * @return void
      */
     public function setMime(string $mime): void
     {
@@ -101,6 +106,7 @@ class File
 
     /**
      * @param float $weight_kb
+     * @return void
      */
     public function setWeightKb(float $weight_kb): void
     {

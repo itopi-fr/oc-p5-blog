@@ -31,8 +31,10 @@ class MainController
         $this->showDump();
     }
 
-    protected array $posts = [
-        1 => ['id' => 1, 'title' => 'Article 1', 'content' => 'Content 1', 'date' => '2023-01-01'],
+    protected array $twigData = [
+        'data1' => 'données 1',
+        'data2' => 'données 2',
+        'posts' => [1 => ['id' => 1, 'title' => 'Article 1', 'content' => 'Content 1', 'date' => '2023-01-01'],
         2 => ['id' => 2, 'title' => 'Article 2', 'content' => 'Content 2', 'date' => '2022-12-15'],
         3 => ['id' => 3, 'title' => 'Article 3', 'content' => 'Content 3', 'date' => '2023-02-01'],
         4 => ['id' => 4, 'title' => 'Article 4', 'content' => 'Content 4', 'date' => '2023-01-01'],
@@ -41,8 +43,9 @@ class MainController
         7 => ['id' => 7, 'title' => 'Article 7', 'content' => 'Content 7', 'date' => '2023-01-01'],
         8 => ['id' => 8, 'title' => 'Article 8', 'content' => 'Content 8', 'date' => '2023-01-01'],
         9 => ['id' => 9, 'title' => 'Article 9', 'content' => 'Content 9', 'date' => '2023-01-01'],
-        10 => ['id' => 10, 'title' => 'Article 10', 'content' => 'Content 10', 'date' => '2023-01-01'],
+        10 => ['id' => 10, 'title' => 'Article 10', 'content' => 'Content 10', 'date' => '2023-01-01']]
     ];
+
 
     /**
      * @var array
@@ -56,7 +59,16 @@ class MainController
      */
     public function dump($dumpThis)
     {
-        $this->toDump[] = $dumpThis;
+        $caller = debug_backtrace()[0];
+        $relativePath = str_replace($_ENV['ABS_ROOT_DIR'], '', $caller['file']);
+        $this->toDump[] = [
+            'data' => $dumpThis,
+            'caller_file' => $relativePath . ':' . $caller['line'],
+            'caller_line' => $caller['line'],
+            'caller_function' => $caller['function'],
+            'caller_class' => $caller['class'],
+            'caller_object' => $caller['object'],
+        ];
     }
 
     /**
@@ -74,7 +86,8 @@ class MainController
             echo "<div class='vardump-close' onclick='this.parentElement.remove()'><i class='fa fa-window-close' aria-hidden='true'></i></div>";
 
             foreach ($this->toDump as $dumpLine) {
-                var_dump($dumpLine);
+                echo "<p<strong>{$dumpLine['caller_file']}</strong></p>";
+                var_dump($dumpLine['data']);
             }
 
             echo "</pre>";
@@ -89,5 +102,14 @@ class MainController
             'cache' => false,
             'debug' => true,
         ]);
+    }
+
+    /**
+     * Generates a random key
+     * @return string
+     */
+    public function generateKey() : string
+    {
+        return ( bin2hex( random_bytes(32) ) );
     }
 }

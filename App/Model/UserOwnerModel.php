@@ -10,20 +10,19 @@ use App\Model\UserModel;
 
 class UserOwnerModel extends UserModel
 {
-    private Connection $db;
     private UserOwner $owner;
 
 
 
     public function __construct()
     {
-        $this->db = new Connection();
+        parent::__construct();
     }
 
     public function getUserOwnerById($id)
     {
         $sqlOwner = "SELECT * FROM user_owner_infos o INNER JOIN user u ON o.user_id = u.id WHERE u.id = " . $id;
-        $this->owner = $this->db->getSingleAsClass($sqlOwner, 'App\Entity\UserOwner');
+        $this->owner = $this->getSingleAsClass($sqlOwner, 'App\Entity\UserOwner');
 
         $AvatarModel = new FileModel();
         if (!is_null($this->owner->getAvatarId())) {
