@@ -4,6 +4,7 @@ namespace App\Database;
 
 use \PDO;
 use \PDOException;
+use App\Controller\MainController;
 
 class Connection
 {
@@ -12,6 +13,7 @@ class Connection
     private string $username;
     private string $password;
     private ?\PDO $conn;
+    private MainController $mc;
 
 
 
@@ -21,13 +23,12 @@ class Connection
         $this->dbname = $_ENV['DB_NAME'];
         $this->username = $_ENV['DB_USER'];
         $this->password = $_ENV['DB_PASS'];
+        $this->mc = new MainController();
     }
 
     private function connect() : PDO
     {
         $this->conn = null;
-
-
 
         try {
             $this->conn = new PDO(
@@ -47,20 +48,35 @@ class Connection
             $req = $this->connect()->prepare($statement);
             $req->setFetchMode(PDO::FETCH_CLASS, $class_name);
             $req->execute();
-            return $req->fetch();
+            $result = $req->fetch();
+            if (is_bool($result)) {
+                return null;     // Return null when no result is found
+            }
+            return $result;
         } catch (PDOException $e) {
             echo "getSingleAsClass Error: " . $e->getMessage();
         }
     }
 
-    public function getSingleAsObject($statement) {
+    public function getSingleAsObject($statement, $data) {
         try {
             $req = $this->connect()->prepare($statement);
             $req->setFetchMode(PDO::FETCH_OBJ);
-            $req->execute();
+            $req->execute($data);
             return $req->fetch();
         } catch (PDOException $e) {
             echo "getSingleAsObject Error: " . $e->getMessage();
+        }
+    }
+
+    public function getMultipleAsObjectsArray($statement, $data) {
+        try {
+            $req = $this->connect()->prepare($statement);
+            $req->setFetchMode(PDO::FETCH_OBJ);
+            $req->execute($data);
+            return $req->fetchAll();
+        } catch (PDOException $e) {
+            echo "getMultipleAsObjectsArray Error: " . $e->getMessage();
         }
     }
 
@@ -71,6 +87,15 @@ class Connection
             return $this->connect()->lastInsertId();
         } catch (PDOException $e) {
             echo "insert Error: " . $e->getMessage();
+        }
+    }
+
+    protected function delete($statement, $data) {
+        try {
+            $req = $this->connect()->prepare($statement);
+            $req->execute($data);
+        } catch (PDOException $e) {
+            echo "delete Error: " . $e->getMessage();
         }
     }
 

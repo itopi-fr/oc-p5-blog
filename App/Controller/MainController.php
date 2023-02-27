@@ -59,7 +59,16 @@ class MainController
      */
     public function dump($dumpThis)
     {
-        $this->toDump[] = $dumpThis;
+        $caller = debug_backtrace()[0];
+        $relativePath = str_replace($_ENV['ABS_ROOT_DIR'], '', $caller['file']);
+        $this->toDump[] = [
+            'data' => $dumpThis,
+            'caller_file' => $relativePath . ':' . $caller['line'],
+            'caller_line' => $caller['line'],
+            'caller_function' => $caller['function'],
+            'caller_class' => $caller['class'],
+            'caller_object' => $caller['object'],
+        ];
     }
 
     /**
@@ -77,7 +86,8 @@ class MainController
             echo "<div class='vardump-close' onclick='this.parentElement.remove()'><i class='fa fa-window-close' aria-hidden='true'></i></div>";
 
             foreach ($this->toDump as $dumpLine) {
-                var_dump($dumpLine);
+                echo "<p<strong>{$dumpLine['caller_file']}</strong></p>";
+                var_dump($dumpLine['data']);
             }
 
             echo "</pre>";
@@ -92,5 +102,14 @@ class MainController
             'cache' => false,
             'debug' => true,
         ]);
+    }
+
+    /**
+     * Generates a random key
+     * @return string
+     */
+    public function generateKey() : string
+    {
+        return ( bin2hex( random_bytes(32) ) );
     }
 }

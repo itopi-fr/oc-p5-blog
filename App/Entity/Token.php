@@ -102,29 +102,4 @@ class Token
         $this->type = $type;
     }
 
-    /**
-     * --------------------------------------------------------------------------------------------------------- Methods
-     */
-
-    /**
-     * Creates a token for password change. This token is valid for 15 minutes.
-     * @param int $userId
-     * @return Token
-     */
-    public function createPassChangeToken(int $userId) {
-        $this->setUserId($userId);
-        $this->setContent($this->generateKey());
-        $this->setExpirationDate(new DateTime('now + 15 minutes'));
-        $this->setType('password_change');
-        return $this;
-    }
-
-    /**
-     * Generates a random key
-     * @return string
-     */
-    public function generateKey() : string
-    {
-        return ( bin2hex( random_bytes(32) ) );
-    }
 }

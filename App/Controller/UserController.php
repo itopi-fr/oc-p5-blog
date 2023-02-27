@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Token;
+use App\controller\TokenController;
 use App\Model\TokenModel;
 use App\Entity\UserOwner;
 use App\Model\UserOwnerModel;
@@ -16,36 +17,46 @@ class UserController extends MainController
     public User $user;
     public UserOwner $userOwner;
     public Token $token;
+    public TokenController $tokenController;
 
     public function __construct()
     {
         parent::__construct();
+        $this->tokenController = new TokenController();
     }
 
     public function index($userAction)
     {
         // Test User
 //        $userModel = new UserModel();
-//        $this->user = $userModel->getUserById(1);
-//        $this->twigData['user'] = $this->user;
-//        $this->dump($this->user);
+//        $this->dump($userModel->getUserById(1));
 
         // Test UserOwner
 //        $userOwnerModel = new UserOwnerModel();
-//        $this->userOwner = $userOwnerModel->getUserOwnerById(1);
-//        $this->twigData['user'] = $this->userOwner;
-//        $this->dump($this->userOwner);
+//        $this->dump($userOwnerModel->getUserOwnerById(1));
+
+        // Test createPassChangeToken
+//        $this->dump($this->tokenController->createPassChangeToken(1));
 
         // Test GetToken
-//        $tokenModel = new TokenModel();
-//        $this->token = $tokenModel->getTokenById(1);
-//        $this->dump($this->token);
+//        $this->tokenController = new TokenController();
+        $this->dump($this->tokenController->getToken(22));
 
-        // Test CreateToken
-        $token = new Token();
-        $token->createPassChangeToken(1);
-        $tokenModel = new TokenModel();
-        $this->dump($tokenModel->insertPassChangeToken($token));
+        // Test getUserTokens
+//        $this->dump($this->tokenController->getUserTokens(1));
+
+        // Test DeleteTokenById
+//        $this->dump($this->tokenController->deleteTokenById(21));
+
+        // Test DeleteExpiredToken
+//        $this->dump($this->tokenController->deleteExpiredToken(1));
+
+        // Test VerifyToken
+//        $this->dump($this->tokenController->verifyPassChangeToken('0de18ad264324a8358db3aa69932410eea7877ddfc06cd934ad3cf6405c9480e', 'owner@test.fr'));
+
+        // Test getLastValidTokenByUserId
+//        $this->dump($this->tokenController->getLastValidTokenByUserId(1));
+
 
         // Routing
         echo match ($userAction) {

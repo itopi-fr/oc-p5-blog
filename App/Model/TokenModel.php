@@ -14,17 +14,43 @@ class TokenModel extends Connection
         parent::__construct();
     }
 
-    public function getTokenById(int $id) {
-        $req = "SELECT * FROM token WHERE id = " . $id;
-        $tokenObj = $this->getSingleAsObject($req);
-        $this->token = new Token();
-        $this->token->setId($tokenObj->id);
-        $this->token->setUserId($tokenObj->user_id);
-        $this->token->setContent($tokenObj->content);
-        $this->token->setExpirationDate(new DateTime($tokenObj->expiration_date));
-        return $this->token;
+
+    /**
+     * Returns all tokens for a given user.
+     * @param int $userId
+     * @return array
+     */
+    public function getUserTokens(int $userId)
+    {
+        $req = "SELECT * FROM token WHERE user_id =?";
+        return $this->getMultipleAsObjectsArray($req, [$userId]);
     }
 
+    /**
+     * Returns a token object based on its id.
+     * @param int $id
+     * @return object
+     */
+    public function getTokenById(int $tokenId) {
+        $req = 'SELECT * FROM token WHERE id = ?';
+        return $this->getSingleAsObject($req, [$tokenId]);
+    }
+
+    /**
+     * Returns a token object based on its content.
+     * @param string $content
+     * @return Token
+     */
+    public function getTokenByContent(string $content) {
+        $req = 'SELECT * FROM token WHERE content =?';
+        return $this->getSingleAsObject($req, [$content]);
+    }
+
+    /**
+     * Inserts a token in the database.
+     * @param Token $token
+     * @return void
+     */
     public function insertPassChangeToken(Token $token) {
         $req = "INSERT INTO token (user_id, content, expiration_date, type)
                 VALUES (:user_id, :content, :expiration_date, :type)";
@@ -38,4 +64,17 @@ class TokenModel extends Connection
 
         $this->insert($req, $params);
     }
+
+    /**
+     * Deletes a token from the database based on its id.
+     * @param int $tokenId
+     * @return void
+     */
+    public function deleteTokenById(int $tokenId)
+    {
+        $req = "DELETE FROM token WHERE id =?";
+        $this->delete($req, [$tokenId]);
+    }
+
+
 }
