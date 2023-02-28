@@ -6,8 +6,9 @@ use App\Controller\HomeController;
 use App\Controller\ErrorPageController;
 use App\Controller\MainController;
 use App\Controller\PostController;
-use App\Controller\ProfileController;
+//use App\Controller\ProfileController;
 use App\Controller\UserController;
+use Exception;
 
 
 class Router
@@ -68,17 +69,20 @@ class Router
                     $controller->index($userAction);        // /!\ Ajouter un check
                     break;
 
-                case ('own_articles'):
-                    $controller = new OwnerPostController();
-                    $controller->index();
-                    break;
+//                case ('own_articles'):
+//                    $controller = new OwnerPostController();
+//                    $controller->index();
+//                    break;
 
                 default:
                     $controller = new ErrorPageController();
                     break;
             }
-        } catch (\Throwable $th) {
-            $this->mc->dump($th);
+        } catch (Exception $e) {
+            if($_ENV['MODE_DEV'] == 'true') {
+                $this->mc->dump($e);
+            }
+
         }
 
 

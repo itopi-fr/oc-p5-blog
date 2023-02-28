@@ -6,6 +6,8 @@ use App\Entity\Token;
 use App\Model\TokenModel;
 use App\Model\UserModel;
 use DateTime;
+use Exception;
+use PDOException;
 
 class TokenController extends MainController
 {
@@ -27,13 +29,14 @@ class TokenController extends MainController
      * @param object $tokenObj
      * @return Token
      */
-    private function buildToken(object $tokenObj) {
+    private function buildToken(object $tokenObj): Token
+    {
         $this->token = new Token();
-        $this->token->setId($tokenObj->id);
-        $this->token->setUserId($tokenObj->user_id);
-        $this->token->setContent($tokenObj->content);
-        $this->token->setExpirationDate(new DateTime($tokenObj->expiration_date));
-        $this->token->setType($tokenObj->type);
+        $this->token->setId(            $tokenObj->id);
+        $this->token->setUserId(        $tokenObj->user_id);
+        $this->token->setContent(       $tokenObj->content);
+        $this->token->setExpirationDate( new DateTime($tokenObj->expiration_date));
+        $this->token->setType(          $tokenObj->type);
         return $this->token;
     }
 
@@ -41,12 +44,26 @@ class TokenController extends MainController
      * Returns a token object based on its id or its content.
      * @param int|string $data
      * @return Token
+     * @throws Exception
      */
-    public function getToken(int | string $data) {
+    public function getToken(int | string $data): Token
+    {
         if (is_int($data)) {
-            return $this->buildToken($this->tokenModel->getTokenById($data));
-        } else if (is_string($data)) {
-            return $this->buildToken($this->tokenModel->getTokenByContent($data));
+            $tokenObj = $this->tokenModel->getTokenById($data);
+            if (is_null($tokenObj)) {
+                throw new Exception('Token id not found');
+            }
+            return $this->buildToken($tokenObj);
+        }
+        else if (is_string($data)) {
+            $tokenObj = $this->tokenModel->getTokenByContent($data);
+            if (is_null($tokenObj)) {
+                throw new Exception('Token content not found');
+            }
+            return $this->buildToken($tokenObj);
+        }
+        else {
+            throw new Exception('Invalid data type');
         }
     }
 
@@ -145,7 +162,11 @@ class TokenController extends MainController
      */
     public function verifyPassChangeToken(string $token, string $email)
     {
-        $this->token = $this->buildToken($this->tokenModel->getTokenByContent($token));
+        $getToken = $this->tokenModel->getTokenByContent($token);
+        if (is_null($getToken)) {
+            return "token-content-not-found";
+        }
+        $this->token = $this->buildToken($getToken);
 
         $user = $this->userModel->getUserByEmail($email);
         if ($user === null) {

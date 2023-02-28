@@ -21,10 +21,10 @@ class UserModel extends Connection
      * @param int $id
      * @return User
      */
-    public function getUserById($id)
+    public function getUserById($userId)
     {
-        $sqlUser = "SELECT * FROM user WHERE id = " . $id;
-        $this->user = $this->getSingleAsClass($sqlUser, 'App\Entity\User');
+        $sqlUser = "SELECT * FROM user WHERE id =?";
+        $this->user = $this->getSingleAsClass($sqlUser, [$userId], 'App\Entity\User');
         $fileModel = new FileModel();
 
         if (!is_null($this->user->getAvatarId())) {
@@ -41,10 +41,10 @@ class UserModel extends Connection
      * @param string $email
      * @return User
      */
-    public function getUserByEmail(string $email) {
+    public function getUserByEmail(string $userEmail) : null | User {
         try {
-            $sql = 'SELECT * FROM user WHERE email = "' . $email . '"';
-            $result = $this->getSingleAsClass($sql, 'App\Entity\User');
+            $sql = 'SELECT * FROM user WHERE email =?';
+            $result = $this->getSingleAsClass($sql, [$userEmail], 'App\Entity\User');
             if ($result === null) {
                 return null; // Return null when no result is found
             }
@@ -65,10 +65,5 @@ class UserModel extends Connection
         }
 
     }
-
-
-
-
-
 
 }

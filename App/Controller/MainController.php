@@ -86,7 +86,7 @@ class MainController
             echo "<div class='vardump-close' onclick='this.parentElement.remove()'><i class='fa fa-window-close' aria-hidden='true'></i></div>";
 
             foreach ($this->toDump as $dumpLine) {
-                echo "<p<strong>{$dumpLine['caller_file']}</strong></p>";
+                echo "<p<strong>Dumped from : {$dumpLine['caller_file']}</strong></p>";
                 var_dump($dumpLine['data']);
             }
 

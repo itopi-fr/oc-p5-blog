@@ -12,9 +12,9 @@ class FileModel extends \App\Database\Connection
         parent::__construct();
     }
 
-    public function getFileById($id)
+    public function getFileById($fileId)
     {
-        $sql = "SELECT * FROM file WHERE id = " . $id;
-        return $this->getSingleAsClass($sql, 'App\Entity\File');
+        $sql = "SELECT * FROM file WHERE id =?";
+        return $this->getSingleAsClass($sql, [$fileId], 'App\Entity\File');
     }
 }
