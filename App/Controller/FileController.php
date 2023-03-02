@@ -87,6 +87,8 @@ class FileController extends MainController
     public function uploadFile(array $user_file, string $file_type)
     {
         /* -------------------------------------------------------
+        * /!\
+        * Mettre un meilleur nom, genre uploadAndSaveFile
         * Beaucoup de trucs à bouger dans FormUserProfile
         * uploadFile doit juste uploader un objet File
         * Checks à faire dans FormUserProfile
