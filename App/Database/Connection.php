@@ -19,7 +19,7 @@ class Connection
     private string $username;
     private string $password;
     private ?\PDO $conn;
-    private MainController $mc;
+    protected MainController $mc;
 
 
 

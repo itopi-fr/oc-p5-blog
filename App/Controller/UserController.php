@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Controller\Form\FormController;
 use App\Entity\Token;
 use App\controller\TokenController;
 use App\Model\TokenModel;
@@ -39,11 +40,14 @@ class UserController extends MainController
 //        $this->dump($this->tokenController->createPassChangeToken(1));
 
         // Test GetToken
-        $this->tokenController = new TokenController();
-        $this->dump($this->tokenController->getToken(50));
+//        $this->tokenController = new TokenController();
+//        $this->dump($this->tokenController->getToken("681f8e0fd567bdf78f1f281ccbd6ed98bf69313c4da87c34a55a6026bc1db8c1"));
 
         // Test getUserTokens
 //        $this->dump($this->tokenController->getUserTokens(1));
+
+        // Test getLastValidTokenByUserId
+//        $this->dump($this->tokenController->getLastValidTokenByUserId(1));
 
         // Test DeleteTokenById
 //        $this->dump($this->tokenController->deleteTokenById(23));
@@ -54,11 +58,15 @@ class UserController extends MainController
         // Test VerifyToken
 //        $this->dump($this->tokenController->verifyPassChangeToken('1a5f2fd46b14708ab16eee6b29cc49fd205428da93313804168b791644fc06b3', 'owner@test.fr'));
 
-        // Test getLastValidTokenByUserId
-//        $this->dump($this->tokenController->getLastValidTokenByUserId(1));
+
+        if ($userAction == 'form-user-profile') {
+            $controller = new FormController();
+            $controller->formIndex('form-user-profile');
+        }
 
 
-        // Routing
+
+        // Twig
         echo match ($userAction) {
             'home'          => $this->twig->render("pages/bo/bo_user_home.twig", $this->twigData),
             'connexion'     => $this->twig->render("pages/bo/bo_user_login.twig", $this->twigData),

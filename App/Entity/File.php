@@ -9,7 +9,11 @@ class File
     private string $url;
     private string $ext;
     private string $mime;
-    private float $weight_kb;
+    private float $size_bytes;
+
+    /**
+     * ----------------------------------------------------------------------------------------------- Getters & Setters
+     */
 
     /**
      * @return int
@@ -99,23 +103,18 @@ class File
     /**
      * @return float
      */
-    public function getWeightKb(): float
+    public function getSizeBytes(): float
     {
-        return $this->weight_kb;
+        return $this->size_bytes;
     }
 
     /**
-     * @param float $weight_kb
+     * @param float $size_bytes
      * @return void
      */
-    public function setWeightKb(float $weight_kb): void
+    public function setSizeBytes(float $size_bytes): void
     {
-        $this->weight_kb = $weight_kb;
+        $this->size_bytes = $size_bytes;
     }
-
-    /**
-     * ----------------------------------------------------------------------------------------------- Getters & Setters
-     */
-
 
 }

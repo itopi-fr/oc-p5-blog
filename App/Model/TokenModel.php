@@ -43,9 +43,9 @@ class TokenModel extends Connection
     /**
      * Returns a token object based on its content.
      * @param string $tokenContent
-     * @return Token|null
+     * @return object|null
      */
-    public function getTokenByContent(string $tokenContent): Token | null
+    public function getTokenByContent(string $tokenContent): object | null
     {
         $req = 'SELECT * FROM token WHERE content =?';
         $result = $this->getSingleAsObject($req, [$tokenContent]);

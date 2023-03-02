@@ -108,8 +108,8 @@ class MainController
      * Generates a random key
      * @return string
      */
-    public function generateKey() : string
+    public function generateKey(int $length) : string
     {
-        return ( bin2hex( random_bytes(32) ) );
+        return ( bin2hex( random_bytes($length) ) );
     }
 }

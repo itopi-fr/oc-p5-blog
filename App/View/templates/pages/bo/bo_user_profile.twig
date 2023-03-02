@@ -5,4 +5,20 @@
 
 {% block content %}
     <h1>BO - User Profile</h1>
+    <form action="form-user-profile" method="POST" enctype="multipart/form-data">
+{#        <div class="form-group">#}
+{#            <label for="pseudo">Pseudo</label>#}
+{#            <input type="text" name="pseudo" class="form-control" id="pseudo" placeholder="Pseudo" value="mon pseudo">#}
+{#        </div>#}
+{#        <div class="form-group">#}
+{#            <label for="email">Email</label>#}
+{#            <input type="email" name="email" class="form-control" id="email" placeholder="Email" value="mail@test.fr">#}
+{#        </div>#}
+        <div class="form-group">
+            <label for="file-avatar">Avatar</label>
+            <input type="file" name="file-avatar" class="form-control" id="file-avatar" placeholder="Avatar">
+        </div>
+
+        <input type="submit"/>
+    </form>
 {% endblock %}
