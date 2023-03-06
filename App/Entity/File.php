@@ -9,7 +9,7 @@ class File
     private string $url;
     private string $ext;
     private string $mime;
-    private float $size_bytes;
+    private float $size;
 
     /**
      * ----------------------------------------------------------------------------------------------- Getters & Setters
@@ -103,18 +103,18 @@ class File
     /**
      * @return float
      */
-    public function getSizeBytes(): float
+    public function getSize(): float
     {
-        return $this->size_bytes;
+        return $this->size;
     }
 
     /**
-     * @param float $size_bytes
+     * @param float $size
      * @return void
      */
-    public function setSizeBytes(float $size_bytes): void
+    public function setSize(float $size): void
     {
-        $this->size_bytes = $size_bytes;
+        $this->size = $size;
     }
 
 }

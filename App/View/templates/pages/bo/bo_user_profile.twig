@@ -5,7 +5,7 @@
 
 {% block content %}
     <h1>BO - User Profile</h1>
-    <form action="form-user-profile" method="POST" enctype="multipart/form-data">
+    <form action="profil" method="POST" enctype="multipart/form-data">
 {#        <div class="form-group">#}
 {#            <label for="pseudo">Pseudo</label>#}
 {#            <input type="text" name="pseudo" class="form-control" id="pseudo" placeholder="Pseudo" value="mon pseudo">#}
@@ -20,5 +20,11 @@
         </div>
 
         <input type="submit"/>
+        {% if result %}
+            <div class="alert alert-{{ (result.err) ? 'warning' : 'success' }}" role="alert">
+                {{ result.msg }}
+                {{ result.avatar.url }}
+            </div>
+        {% endif %}
     </form>
 {% endblock %}

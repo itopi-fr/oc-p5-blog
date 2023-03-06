@@ -18,7 +18,7 @@ class Connection
     private string $dbname;
     private string $username;
     private string $password;
-    private ?\PDO $conn;
+    private ?PDO $conn;
     protected MainController $mc;
 
 
@@ -38,17 +38,17 @@ class Connection
      */
     private function connect() : PDO
     {
-        $this->conn = null;
-
         try {
-            $this->conn = new PDO(
-                "mysql:host=" . $this->host . ";dbname=" . $this->dbname,
-                $this->username,
-                $this->password
-            );
-            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            if (!isset($this->conn)) {
+                $this->conn = new PDO(
+                    "mysql:host=" . $this->host . ";dbname=" . $this->dbname,
+                    $this->username,
+                    $this->password
+                );
+                $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            }
         } catch (PDOException $e) {
-            echo "Connection Error: " . $e->getMessage();
+            throw new PDOException($e->getMessage());
         }
         return $this->conn;
     }
@@ -145,7 +145,22 @@ class Connection
     {
         try {
             $req = $this->connect()->prepare($statement);
-            return $req->execute($data);
+            $result = $req->execute($data);
+            return $result ? $result : null;
+        } catch (PDOException $e) {
+            throw new PDOException($e->getMessage());
+        }
+    }
+
+    protected function exists($statement, $data)
+    {
+        try {
+
+            $req = $this->connect()->prepare($statement);
+
+            $req->execute($data);
+            $res = $req->fetch();
+            return $res[0] === '1';
         } catch (PDOException $e) {
             throw new PDOException($e->getMessage());
         }

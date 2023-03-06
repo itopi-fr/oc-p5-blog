@@ -60,10 +60,10 @@ class MainController
     public function dump($dumpThis)
     {
         $caller = debug_backtrace()[0];
-        $relativePath = str_replace($_ENV['ABS_ROOT_DIR'], '', $caller['file']);
+        preg_match('/.*(root.*)/', $caller['file'], $match);
         $this->toDump[] = [
             'data' => $dumpThis,
-            'caller_file' => $relativePath . ':' . $caller['line'],
+            'caller_file' => $match[1] . ':' . $caller['line'],
             'caller_line' => $caller['line'],
             'caller_function' => $caller['function'],
             'caller_class' => $caller['class'],
