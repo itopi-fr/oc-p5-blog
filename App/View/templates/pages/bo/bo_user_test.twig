@@ -1,0 +1,83 @@
+{% extends "layout.twig" %}
+{% block title %}
+    BO - User TEST
+{% endblock %}
+
+{% block content %}
+
+    <h1>BO - User TEST</h1>
+
+    <button class="btn btn-primary btn-lg btn-block" type="button">
+        <a href="test-get-user-1">Get User 1</a>
+    </button>
+
+    <button class="btn btn-primary btn-lg btn-block" type="button">
+        <a href="test-get-user-owner-1">Get User Owner 1</a>
+    </button>
+
+    <button class="btn btn-primary btn-lg btn-block" type="button">
+        <a href="test-create-pass-change-token">Create Token</a>
+    </button>
+
+    <button class="btn btn-primary btn-lg btn-block" type="button">
+        <a href="test-get-token-by-content">Create Token</a>
+    </button>
+
+    <h2>File</h2>
+
+    <hr>
+
+    <h4>Get file by Id</h4>
+    <div class="row">
+        <div class="col-md-6">
+            <form action="test#test-get-file-by-id" method="POST">
+                <div class="form-group">
+                    <label for="test-get-file-by-id">Get file id :</label>
+                    <input type="number" name="test-get-file-by-id" class="form-control" id="test-get-file-by-id" placeholder="Id">
+                </div>
+                <input type="submit"/>
+            </form>
+        </div>
+        <div class="col-md-6">
+            {% if test_get_file_by_id %}
+                <div class="alert alert-{{ (test_get_file_by_id.err) ? 'warning' : 'success' }}" role="alert">
+
+                    {% if test_get_file_by_id.err %}
+                        {{ test_get_file_by_id.msg | raw }}
+                    {% else %}
+                        {{ test_get_file_by_id.url }}
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <hr>
+
+    <h4>Delete file by Id</h4>
+    <div class="row">
+        <div class="col-md-6">
+            <form action="test#test-delete-file-id" method="POST">
+                <div class="form-group">
+                    <label for="test-delete-file-id">Delete file id :</label>
+                    <input type="number" name="test-delete-file-id" class="form-control" id="test-delete-file-id" placeholder="Id">
+                </div>
+                <input type="submit"/>
+            </form>
+        </div>
+        <div class="col-md-6">
+            {% if test_delete_file_by_id %}
+                <div class="alert alert-{{ (test_delete_file_by_id.err) ? 'warning' : 'success' }}" role="alert">
+                    {{ test_delete_file_by_id.msg | raw }}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <hr>
+
+
+
+
+
+{% endblock %}

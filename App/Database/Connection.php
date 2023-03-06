@@ -2,6 +2,12 @@
 
 namespace App\Database;
 
+use App\Entity\Comment;
+use App\Entity\File;
+use App\Entity\Post;
+use App\Entity\Token;
+use App\Entity\User;
+use App\Entity\UserOwner;
 use \PDO;
 use \PDOException;
 use App\Controller\MainController;
@@ -12,8 +18,8 @@ class Connection
     private string $dbname;
     private string $username;
     private string $password;
-    private ?\PDO $conn;
-    private MainController $mc;
+    private ?PDO $conn;
+    protected MainController $mc;
 
 
 
@@ -26,76 +32,137 @@ class Connection
         $this->mc = new MainController();
     }
 
+    /**
+     * Creates a PDO connection to the database.
+     * @return PDO
+     */
     private function connect() : PDO
     {
-        $this->conn = null;
-
         try {
-            $this->conn = new PDO(
-                "mysql:host=" . $this->host . ";dbname=" . $this->dbname,
-                $this->username,
-                $this->password
-            );
-            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            if (!isset($this->conn)) {
+                $this->conn = new PDO(
+                    "mysql:host=" . $this->host . ";dbname=" . $this->dbname,
+                    $this->username,
+                    $this->password
+                );
+                $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            }
         } catch (PDOException $e) {
-            echo "Connection Error: " . $e->getMessage();
+            throw new PDOException($e->getMessage());
         }
         return $this->conn;
     }
 
-    public function getSingleAsClass($statement, $class_name) {
+    /**
+     * Returns a single result as specific class object.
+     * @param string $statement
+     * @param array $data
+     * @param string $class_name
+     * @return null|Comment|File|Post|Token|User|UserOwner
+     * @throws PDOException
+     */
+    public function getSingleAsClass(
+        string $statement,
+        array $data,
+        string $class_name
+    ) : null | Comment | File | Post | Token | User | UserOwner {
         try {
             $req = $this->connect()->prepare($statement);
             $req->setFetchMode(PDO::FETCH_CLASS, $class_name);
-            $req->execute();
+            $req->execute($data);
             $result = $req->fetch();
-            if (is_bool($result)) {
-                return null;     // Return null when no result is found
-            }
-            return $result;
+            return $result ? $result : null;
         } catch (PDOException $e) {
-            echo "getSingleAsClass Error: " . $e->getMessage();
+            throw new PDOException($e->getMessage());
         }
     }
 
+    /**
+     * Returns a single element as an object.
+     * @param string $statement
+     * @param array $data
+     * @return mixed|false
+     * @throws PDOException
+     */
     public function getSingleAsObject($statement, $data) {
         try {
             $req = $this->connect()->prepare($statement);
             $req->setFetchMode(PDO::FETCH_OBJ);
             $req->execute($data);
-            return $req->fetch();
+            $result = $req->fetch();
+            return $result ? $result : null;
         } catch (PDOException $e) {
-            echo "getSingleAsObject Error: " . $e->getMessage();
+            throw new PDOException($e->getMessage());
         }
     }
 
+    /**
+     * Returns a multiple element as an array of objects.
+     * @param string $statement
+     * @param array $data
+     * @return array|null
+     * @throws PDOException
+     */
     public function getMultipleAsObjectsArray($statement, $data) {
         try {
             $req = $this->connect()->prepare($statement);
             $req->setFetchMode(PDO::FETCH_OBJ);
             $req->execute($data);
-            return $req->fetchAll();
+            $result = $req->fetchAll();
+            return $result ? $result : null;
         } catch (PDOException $e) {
-            echo "getMultipleAsObjectsArray Error: " . $e->getMessage();
+            throw new PDOException($e->getMessage());
         }
     }
 
-    protected function insert($statement, $data) {
+    /**
+     * Inserts a single element into the database. Returns the last inserted id.
+     * @param string $statement
+     * @param array $data
+     * @return string|null
+     * @throws PDOException
+     */
+    protected function insert($statement, $data): string | null
+    {
         try {
             $req = $this->connect()->prepare($statement);
             $req->execute($data);
-            return $this->connect()->lastInsertId();
+            $result = $this->connect()->lastInsertId();
+            return $result ? $result : null;
         } catch (PDOException $e) {
-            echo "insert Error: " . $e->getMessage();
+            throw new PDOException($e->getMessage());
         }
     }
 
-    protected function delete($statement, $data) {
+    /**
+     * Deletes a single element in the database.
+     * @param string $statement
+     * @param array $data
+     * @return bool
+     * @throws PDOException
+     */
+    protected function delete($statement, $data)
+    {
         try {
             $req = $this->connect()->prepare($statement);
-            $req->execute($data);
+            $result = $req->execute($data);
+            return $result ? $result : null;
         } catch (PDOException $e) {
-            echo "delete Error: " . $e->getMessage();
+            throw new PDOException($e->getMessage());
+        }
+    }
+
+    protected function exists($statement, $data)
+    {
+        try {
+
+            $req = $this->connect()->prepare($statement);
+
+            $req->execute($data);
+            $res = $req->fetch();
+            return $res[0] === '1';
+        } catch (PDOException $e) {
+            throw new PDOException($e->getMessage());
         }
     }
 

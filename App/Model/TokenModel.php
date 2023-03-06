@@ -5,6 +5,7 @@ namespace App\Model;
 use App\Database\Connection;
 use App\Entity\Token;
 use DateTime;
+use PDOException;
 
 class TokenModel extends Connection
 {
@@ -16,42 +17,48 @@ class TokenModel extends Connection
 
 
     /**
-     * Returns all tokens for a given user.
+     * Returns all tokens for a given user as an array of objects.
      * @param int $userId
-     * @return array
+     * @return array|null
      */
-    public function getUserTokens(int $userId)
+    public function getUserTokens(int $userId): array|null
     {
         $req = "SELECT * FROM token WHERE user_id =?";
-        return $this->getMultipleAsObjectsArray($req, [$userId]);
+        $result = $this->getMultipleAsObjectsArray($req, [$userId]);
+        return $result ? $result : null;
     }
 
     /**
      * Returns a token object based on its id.
      * @param int $id
-     * @return object
+     * @return object|null
      */
-    public function getTokenById(int $tokenId) {
+    public function getTokenById(int $tokenId): object|null
+    {
         $req = 'SELECT * FROM token WHERE id = ?';
-        return $this->getSingleAsObject($req, [$tokenId]);
+        $result = $this->getSingleAsObject($req, [$tokenId]);
+        return $result ? $result : null;
     }
 
     /**
      * Returns a token object based on its content.
-     * @param string $content
-     * @return Token
+     * @param string $tokenContent
+     * @return object|null
      */
-    public function getTokenByContent(string $content) {
+    public function getTokenByContent(string $tokenContent): object | null
+    {
         $req = 'SELECT * FROM token WHERE content =?';
-        return $this->getSingleAsObject($req, [$content]);
+        $result = $this->getSingleAsObject($req, [$tokenContent]);
+        return $result ? $result : null;
     }
 
     /**
      * Inserts a token in the database.
      * @param Token $token
-     * @return void
+     * @return string|null
      */
-    public function insertPassChangeToken(Token $token) {
+    public function insertPassChangeToken(Token $token): string|null
+    {
         $req = "INSERT INTO token (user_id, content, expiration_date, type)
                 VALUES (:user_id, :content, :expiration_date, :type)";
 
@@ -61,19 +68,21 @@ class TokenModel extends Connection
             'expiration_date' => $token->getExpirationDate()->format('Y-m-d H:i:s'),
             'type' => $token->getType()
         );
+        $result = $this->insert($req, $params);
 
-        $this->insert($req, $params);
+        return (!is_null($result)) ? $result : null;
     }
 
     /**
      * Deletes a token from the database based on its id.
      * @param int $tokenId
-     * @return void
+     * @return bool
      */
     public function deleteTokenById(int $tokenId)
     {
         $req = "DELETE FROM token WHERE id =?";
-        $this->delete($req, [$tokenId]);
+        $result = $this->delete($req, [$tokenId]);
+        return $result;
     }
 
 

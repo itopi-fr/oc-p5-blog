@@ -19,10 +19,10 @@ class UserOwnerModel extends UserModel
         parent::__construct();
     }
 
-    public function getUserOwnerById($id)
+    public function getUserOwnerById($userOwnerId)
     {
-        $sqlOwner = "SELECT * FROM user_owner_infos o INNER JOIN user u ON o.user_id = u.id WHERE u.id = " . $id;
-        $this->owner = $this->getSingleAsClass($sqlOwner, 'App\Entity\UserOwner');
+        $sqlOwner = "SELECT * FROM user_owner_infos o INNER JOIN user u ON o.user_id = u.id WHERE u.id =?";
+        $this->owner = $this->getSingleAsClass($sqlOwner, [$userOwnerId], 'App\Entity\UserOwner');
 
         $AvatarModel = new FileModel();
         if (!is_null($this->owner->getAvatarId())) {
