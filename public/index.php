@@ -9,5 +9,11 @@ use Dotenv\Dotenv;
 $dotenv = Dotenv::createImmutable(ROOT_DIR);
 $dotenv->load();
 
+if ($_ENV['MODE_DEV'] === 'true') {
+    ini_set('display_errors', '1');
+    ini_set('display_startup_errors', '1');
+    error_reporting(E_ALL);
+}
+
 $route = new Router();
 $route->run();

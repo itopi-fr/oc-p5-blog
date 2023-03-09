@@ -47,7 +47,11 @@ etc.
 
 git clone
 
+composer install
+
 remontée BDD
+
+.env.sample => .env
 
 pointage vhost
 
