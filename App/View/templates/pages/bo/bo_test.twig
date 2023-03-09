@@ -5,25 +5,34 @@
 
 {% block content %}
 
-    <h1>BO - User TEST</h1>
+    <h1>BO - TEST</h1>
+
+    <h2>User</h2>
 
     <button class="btn btn-primary btn-lg btn-block" type="button">
-        <a href="test-get-user-1">Get User 1</a>
+        <a href="test/test-get-user-1">Get User 1</a>
     </button>
 
     <button class="btn btn-primary btn-lg btn-block" type="button">
-        <a href="test-get-user-owner-1">Get User Owner 1</a>
+        <a href="test/test-get-user-owner-1">Get User Owner 1</a>
     </button>
 
-    <button class="btn btn-primary btn-lg btn-block" type="button">
-        <a href="test-create-pass-change-token">Create Token</a>
-    </button>
+    <h2>Token</h2>
 
     <button class="btn btn-primary btn-lg btn-block" type="button">
-        <a href="test-get-token-by-content">Create Token</a>
+        <a href="test/test-create-pass-change-token">Create Token</a>
     </button>
+
+{#    <button class="btn btn-primary btn-lg btn-block" type="button">#}
+{#        <a href="test/test-get-token-by-content">Get Token by content</a>#}
+{#    </button>#}
 
     <h2>File</h2>
+
+    <hr>
+
+    <h4>Create File</h4>
+    <p>Sur le <a href="/user/profil">profil utilisateur</a></p>
 
     <hr>
 
@@ -45,7 +54,12 @@
                     {% if test_get_file_by_id.err %}
                         {{ test_get_file_by_id.msg | raw }}
                     {% else %}
-                        {{ test_get_file_by_id.url }}
+                        Id :    {{ test_get_file_by_id.id }}<br />
+                        Title : {{ test_get_file_by_id.title }}<br />
+                        URL :   {{ test_get_file_by_id.url }}<br />
+                        Ext :   {{ test_get_file_by_id.ext }}<br />
+                        Mime :  {{ test_get_file_by_id.mime }}<br />
+                        Size :  {{ test_get_file_by_id.size }}
                     {% endif %}
                 </div>
             {% endif %}

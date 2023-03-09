@@ -11,7 +11,6 @@ class HomeController extends MainController
 
     public function index()
     {
-        $this->twigData['posts'] = $this->posts;
         echo  $this->twig->render("pages/fo/fo_home.twig", $this->twigData);
     }
 }

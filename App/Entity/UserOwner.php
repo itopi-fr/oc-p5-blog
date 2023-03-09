@@ -14,6 +14,7 @@ class UserOwner extends User
     private string $catch_phrase;
 
 
+
     /**
      * ----------------------------------------------------------------------------------------------- Getters & Setters
      */

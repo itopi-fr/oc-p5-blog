@@ -21,6 +21,7 @@ class Router
      * @var array
      */
     private array $urlParts;
+    private string $userAction;
 
 
     public function __construct()
@@ -36,17 +37,19 @@ class Router
             $this->urlParts = explode('/', $_GET['p']);
             $pageBase = $this->urlParts[0];
 
-            if ($this->urlParts[0] == 'user') {
-                if (isset($this->urlParts[1])) {
-                    $userAction = $this->urlParts[1];
-                } else {
-                    $userAction = 'home';
-                }
-            } elseif ($this->urlParts[0] == 'article') {
-                $articleId = $this->urlParts[1];
-            } elseif ($this->urlParts[0] == 'owner') {
-                $pageBase = 'own_' . $this->urlParts[1];
+            if (isset($this->urlParts[1]) && !empty($this->urlParts[1])) {
+                $this->userAction = $this->urlParts[1];
             }
+
+            if (($this->urlParts[0] == 'user' || 'test') && (empty($this->urlParts[1]))) {
+                $this->userAction = 'home';
+            }
+
+//          elseif ($this->urlParts[0] == 'owner') {
+//                $pageBase = 'own_' . $this->urlParts[1];
+//            } elseif ($this->urlParts[0] == 'test') {
+//                $pageBase = 'own_' . $this->urlParts[1];
+//            }
 
             switch ($pageBase) {
                 case (''):
@@ -61,12 +64,17 @@ class Router
 
                 case ('article'):
                     $controller = new PostController();
-                    $controller->single($articleId);        // /!\ Ajouter un check
+                    $controller->single($this->userAction);
                     break;
 
                 case ('user'):
                     $controller = new UserController();
-                    $controller->index($userAction);        // /!\ Ajouter un check
+                    $controller->index($this->userAction);        // /!\ Ajouter un check
+                    break;
+
+                case ('test'):
+                    $controller = new UserController();
+                    $controller->test($this->userAction);
                     break;
 
 //                case ('own_articles'):

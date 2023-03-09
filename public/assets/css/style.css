@@ -1,4 +1,19 @@
 
+h2 {
+    margin-top: 25px;
+}
+
+/* Form */
+label {
+    display: inline;
+}
+.form-control {
+    display: inline;
+    width: auto;
+    min-width: 200px;
+}
+
+/* Vardump */
 .vardump {
     position: absolute;
     width: 80%;

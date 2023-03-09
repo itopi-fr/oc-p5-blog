@@ -28,6 +28,15 @@ class FormController extends MainController
         parent::__construct();
     }
 
+    protected function checkFileIsUploaded($posted_file)
+    {
+        return !empty($posted_file)
+            && !empty($posted_file['name'])
+            && !empty($posted_file['type'])
+            && !empty($posted_file['tmp_name'])
+            && !empty($posted_file['size']);
+    }
+
 
     /**
      * Check if file size is ok based on its type

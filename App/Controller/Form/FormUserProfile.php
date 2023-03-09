@@ -4,6 +4,8 @@ namespace App\Controller\Form;
 
 use App\Entity\File;
 use App\Controller\FileController;
+use App\Entity\User;
+use App\Model\UserModel;
 
 class FormUserProfile extends FormController
 {
@@ -19,14 +21,11 @@ class FormUserProfile extends FormController
      * Treats the form
      * @return array
      */
-    public function treatForm()
+    public function treatForm(User $user)
     {
         // file-avatar : checks
-        if (empty($_FILES['file-avatar']) ||
-            empty($_FILES['file-avatar']['name']) ||
-            empty($_FILES['file-avatar']['type']) ||
-            empty($_FILES['file-avatar']['tmp_name']) ||
-            empty($_FILES['file-avatar']['size'])) {
+//        $this->dump(is_a($user->getAvatarFile(), 'App\Entity\File'));
+        if (!$this->checkFileIsUploaded($_FILES['file-avatar']) && !is_a($user->getAvatarFile(), 'App\Entity\File') ) {
             $this->return['err'] = true;
             $this->return['msg'] = 'Avatar : Veuillez renseigner un fichier';
             return $this->return;

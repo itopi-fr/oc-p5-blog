@@ -32,8 +32,6 @@ class MainController
     }
 
     protected array $twigData = [
-        'data1' => 'données 1',
-        'data2' => 'données 2',
         'posts' => [1 => ['id' => 1, 'title' => 'Article 1', 'content' => 'Content 1', 'date' => '2023-01-01'],
         2 => ['id' => 2, 'title' => 'Article 2', 'content' => 'Content 2', 'date' => '2022-12-15'],
         3 => ['id' => 3, 'title' => 'Article 3', 'content' => 'Content 3', 'date' => '2023-02-01'],
