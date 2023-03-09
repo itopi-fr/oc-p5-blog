@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : jeu. 09 mars 2023 à 13:59
+-- Généré le : jeu. 09 mars 2023 à 14:41
 -- Version du serveur : 8.0.31
 -- Version de PHP : 8.0.13
 
@@ -55,35 +55,14 @@ CREATE TABLE IF NOT EXISTS `file` (
   `mime` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
   `size` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `file`
 --
 
 INSERT INTO `file` (`id`, `title`, `url`, `ext`, `mime`, `size`) VALUES
-(1, 'default', '/public/assets/img/default-avatar.jpg', 'jpg', 'image/jpeg', 20),
-(11, 'test.jpg', '/public/upload/user/test_91abf52c0734836c.jpg', 'jpg', 'image/jpeg', 693),
-(12, 'test.jpg', '/public/upload/user/test_e5d302314511681f.jpg', 'jpg', 'image/jpeg', 693),
-(13, 'test.jpg', '/public/upload/user/test_c24a5ca9f81c7d02.jpg', 'jpg', 'image/jpeg', 693),
-(14, 'test.jpg', '/public/upload/user/test_9f549f3d3daf492b.jpg', 'jpg', 'image/jpeg', 693),
-(15, 'test.jpg', '/public/upload/user/test_7d833142690c2e71.jpg', 'jpg', 'image/jpeg', 693),
-(16, 'Specimen.pdf', '/public/upload/user/Specimen_a6393bd4bb836998.pdf', 'pdf', 'application/pdf', 40766),
-(17, 'test.jpg', '/public/upload/user/test_d0ca314a25aa5328.jpg', 'jpg', 'image/jpeg', 693),
-(18, 'Specimen.pdf', '/public/upload/user/Specimen_945fd742fc3c617f.pdf', 'pdf', 'application/pdf', 40766),
-(19, 'test.jpg', '/public/upload/user/test_f454ee5791e81440.jpg', 'jpg', 'image/jpeg', 693),
-(20, 'test.jpg', '/public/upload/user/test_4daeebf4802b4e62.jpg', 'jpg', 'image/jpeg', 693),
-(21, 'test.jpg', '/public/upload/user/test_126205aa.jpg', 'jpg', 'image/jpeg', 693),
-(22, 'test.jpg', '/public/upload/user/test_5417.jpg', 'jpg', 'image/jpeg', 693),
-(23, 'test.jpg', '/public/upload/user/test_bd566e.jpg', 'jpg', 'image/jpeg', 693),
-(24, 'test.jpg', '/public/upload/user/test_2d8469.jpg', 'jpg', 'image/jpeg', 693),
-(25, 'test.jpg', '/public/upload/user/test_b19283.jpg', 'jpg', 'image/jpeg', 693),
-(26, 'test.jpg', '/public/upload/user/test_80e151.jpg', 'jpg', 'image/jpeg', 693),
-(27, 'test.jpg', '/public/upload/user/test_e38d8e.jpg', 'jpg', 'image/jpeg', 693),
-(28, 'test.jpg', '/public/upload/user/test_26f17b.jpg', 'jpg', 'image/jpeg', 693),
-(29, 'test.jpg', '/public/upload/user/test_f50a16.jpg', 'jpg', 'image/jpeg', 693),
-(30, 'test.jpg', '/public/upload/user/test_04975f.jpg', 'jpg', 'image/jpeg', 693),
-(31, 'test.jpg', '/public/upload/user/test_cf310a.jpg', 'jpg', 'image/jpeg', 693);
+(1, 'default', '/public/assets/img/default-avatar.jpg', 'jpg', 'image/jpeg', 20);
 
 -- --------------------------------------------------------
 
