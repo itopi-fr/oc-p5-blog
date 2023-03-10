@@ -175,15 +175,14 @@ class Connection
      * Updates a single element in the database.
      * @param string $statement
      * @param array $data
-     * @return bool
+     * @return int
      * @throws PDOException
      */
     protected function update($statement, $data) {
         try {
             $req = $this->connect()->prepare($statement);
             $req->execute($data);
-            $result = $req->rowCount();
-            return $result ? $result : null;
+            return $req->rowCount();
         } catch (PDOException $e) {
             throw new PDOException($e->getMessage());
         }

@@ -78,18 +78,27 @@ class FormUserProfile extends FormController
         if ($this->res->isErr()) return $this->res;
 
         // -------------------------------------------------------------------------------------------------- Treatment
-        // file-avatar : treatment
+        // User avatar file : treatment
         if ($this->fileIsSent($_FILES['file-avatar'])) {
             $savedFile = $this->treatFile($_FILES['file-avatar'], 'avatar');
             $user->setAvatarFile($savedFile);
             $user->setAvatarId($savedFile->getId());
         }
 
+        // User simple fields : treatment
         $user->setPseudo($_POST['pseudo']);
         $user->setEmail($_POST['email']);
 
-        $this->res->ok('profil', 'Le profil a bien été mis à jour', null);
+        // User update
+        $result = $this->userController->updateUser($user);
 
+        if ($result === 0) {
+            $this->res->ok('profil', 'Aucun changement apporté au profil', null);
+        } else if ($result === 1) {
+            $this->res->ok('profil', 'Le profil a bien été mis à jour', null);
+        } else {
+            $this->res->ko('profil', 'Une erreur est survenue');
+        }
 
         return $this->res;
     }

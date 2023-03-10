@@ -66,7 +66,7 @@ class UserController extends MainController
 
     public function updateUser(User $user)
     {
-        $this->userModel->updateUser($user);
+        return $this->userModel->updateUser($user);
     }
 
     public function login()

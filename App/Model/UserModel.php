@@ -83,15 +83,14 @@ class UserModel extends Connection
     /**
      * Updates an user in database
      * @param User $user
-     * @return bool | Exception
+     * @return int | Exception
      * @throws Exception
      */
     public function updateUser(User $user) {
         if (!$this->userExistsById($user->getId())) throw new Exception('Utilisateur inconnu');
 
         $sql = 'UPDATE user SET avatar_id=?, pseudo=?, pass=?, email=? WHERE id=?';
-        $result = $this->update($sql, [$user->getAvatarId(), $user->getPseudo(), $user->getPass(), $user->getEmail(), $user->getId()]);
-        return $result;
+        return $this->update($sql, [$user->getAvatarId(), $user->getPseudo(), $user->getPass(), $user->getEmail(), $user->getId()]);
     }
 
     /**
