@@ -6,6 +6,7 @@ namespace App\Model;
 use App\Database\Connection;
 use App\Entity\User;
 use App\Entity\File;
+use Exception;
 
 class UserModel extends Connection
 {
@@ -15,6 +16,19 @@ class UserModel extends Connection
         parent::__construct();
     }
 
+    /**
+     * Checks if a value is unique in database
+     * @param string $value
+     * @param string $field
+     * @param int $id
+     * @return bool
+     */
+    public function isUnique(string $value, string $field, int $id = 0)
+    {
+        $sql = "SELECT * FROM user WHERE $field = ? AND id != ?";
+        $result = $this->getSingleAsClass($sql, [$value, $id], 'App\Entity\User');
+        return $result === null;
+    }
 
     /**
      * Returns a user object based on its id.
@@ -60,10 +74,35 @@ class UserModel extends Connection
             }
             return $this->user;
         }
-        catch (\Exception $e) {
+        catch (Exception $e) {
             echo $e->getMessage();
         }
 
+    }
+
+    /**
+     * Updates an user in database
+     * @param User $user
+     * @return bool | Exception
+     * @throws Exception
+     */
+    public function updateUser(User $user) {
+        if (!$this->userExistsById($user->getId())) throw new Exception('Utilisateur inconnu');
+
+        $sql = 'UPDATE user SET avatar_id=?, pseudo=?, pass=?, email=? WHERE id=?';
+        $result = $this->update($sql, [$user->getAvatarId(), $user->getPseudo(), $user->getPass(), $user->getEmail(), $user->getId()]);
+        return $result;
+    }
+
+    /**
+     * Checks if a user exists in database based on its id
+     * @param int $userId
+     * @return null|object
+     */
+    public function userExistsById(int $userId): bool
+    {
+        $sql = "SELECT EXISTS(SELECT * FROM user WHERE id = ?)";
+        return $this->exists($sql, [$userId]);
     }
 
 }

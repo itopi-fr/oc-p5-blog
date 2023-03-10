@@ -35,12 +35,17 @@
         <div class="col-12 text-center">
             <input type="submit" name="submit-user-profile"/>
             {% if result %}
-                {% for res in result %}
-                    <div class="alert alert-{{ (res.err) ? 'warning' : 'success' }}" role="alert">
-                        {{ res.msg }}
-                        {{ res.avatar.url }}
-                    </div>
-                {% endfor %}
+                <div class="alert alert-{{ (result.isErr()) ? 'warning' : 'success' }}" role="alert">
+                    {% for key, m in result.getMsg() %}
+
+                        {% if result.isErr() %}
+                            {{ key }} :
+                        {% endif %}
+
+                        {{ m }}<br />
+
+                    {% endfor %}
+                </div>
             {% endif %}
         </div>
 

@@ -152,15 +152,38 @@ class Connection
         }
     }
 
+    /**
+     * Checks if a single element exists in the database.
+     * @param string $statement
+     * @param array $data
+     * @return bool
+     * @throws PDOException
+     */
     protected function exists($statement, $data)
     {
         try {
-
             $req = $this->connect()->prepare($statement);
-
             $req->execute($data);
             $res = $req->fetch();
             return $res[0] === '1';
+        } catch (PDOException $e) {
+            throw new PDOException($e->getMessage());
+        }
+    }
+
+    /**
+     * Updates a single element in the database.
+     * @param string $statement
+     * @param array $data
+     * @return bool
+     * @throws PDOException
+     */
+    protected function update($statement, $data) {
+        try {
+            $req = $this->connect()->prepare($statement);
+            $req->execute($data);
+            $result = $req->rowCount();
+            return $result ? $result : null;
         } catch (PDOException $e) {
             throw new PDOException($e->getMessage());
         }

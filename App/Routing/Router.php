@@ -72,18 +72,19 @@ class Router
                     $controller->index($this->userAction);        // /!\ Ajouter un check
                     break;
 
+//                case ('err'):
+//                    $controller = new ErrorPageController();
+//                    $controller->index();
+//                    break;
+
                 case ('test'):
                     $controller = new UserController();
                     $controller->test($this->userAction);
                     break;
 
-//                case ('own_articles'):
-//                    $controller = new OwnerPostController();
-//                    $controller->index();
-//                    break;
-
                 default:
                     $controller = new ErrorPageController();
+                    $controller->index();
                     break;
             }
         } catch (Exception $e) {

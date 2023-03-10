@@ -2,51 +2,96 @@
 
 namespace App\Controller\Form;
 
+use App\Controller\UserController;
 use App\Entity\File;
 use App\Controller\FileController;
+use App\Entity\Res;
 use App\Entity\User;
 use App\Model\UserModel;
 
 class FormUserProfile extends FormController
 {
     private array $return = [];
+    private Res $res;
+    private UserController $userController;
 
     public function __construct()
     {
         parent::__construct();
+        $this->userController = new UserController();
     }
 
 
     /**
      * Treats the form
-     * @return array
+     * @param User $user
+     * @return Res
      */
-    public function treatForm(User $user)
+    public function treatForm(User $user): Res
     {
+        $this->res = new Res();
+
+        // ------------------------------------------------------------------------------------------------------ Checks
+        // user-pseudo : checks
+        if (!$this->isSet($_POST['pseudo'])) {
+            $this->res->ko('pseudo', 'Veuillez renseigner un pseudo');
+        }
+        else if (!$this->isUnique($_POST['pseudo'], 'pseudo', $user->getId())) {
+            $this->res->ko('pseudo', 'Ce pseudo est déjà utilisé');
+        }
+        else if (!$this->isAlphaNumPlus($_POST['pseudo'])) {
+            $this->res->ko('pseudo', 'Le pseudo ne doit contenir que des lettres, des chiffres, des tirets ou des underscores');
+        }
+        else if (!$this->isBetween($_POST['pseudo'], 4, 20)) {
+            $this->res->ko('pseudo', 'Le pseudo doit contenir entre 4 et 20 caractères');
+        }
+
+        // user-email : checks
+        if (!$this->isSet($_POST['email'])) {
+            $this->res->ko('email', 'non renseigné');
+        }
+        else if (!$this->isUnique($_POST['email'], 'email', $user->getId())) {
+            $this->res->ko('email', 'déjà utilisé');
+        }
+        else if (!$this->isEmail($_POST['email'])) {
+            $this->res->ko('email', 'format non valide');
+        }
+        else if (!$this->isBetween($_POST['email'], 4, 50)) {
+            $this->res->ko('email', 'doit contenir entre 4 et 50 caractères');
+        }
+
         // file-avatar : checks
-//        $this->dump(is_a($user->getAvatarFile(), 'App\Entity\File'));
-        if (!$this->checkFileIsUploaded($_FILES['file-avatar']) && !is_a($user->getAvatarFile(), 'App\Entity\File') ) {
-            $this->return['err'] = true;
-            $this->return['msg'] = 'Avatar : Veuillez renseigner un fichier';
-            return $this->return;
+        if (!$this->fileIsSent($_FILES['file-avatar']) && !is_a($user->getAvatarFile(), 'App\Entity\File') ) {
+            $this->res->ko('avatar', 'Veuillez renseigner un fichier');
         }
-        if (!$this->checkFileSize($_FILES['file-avatar'], $this->getAvatarMaxSize())) {
-            $this->return['err'] = true;
-            $this->return['msg'] = 'Avatar : le fichier est trop volumineux';
-            return $this->return;
+        else if ($this->fileIsSent($_FILES['file-avatar']) ) {
+            if (!$this->checkFileIsImage($_FILES['file-avatar'])) {
+                $this->res->ko('avatar', 'le fichier n\'est pas une image');
+            }
+            if (!$this->checkFileSize($_FILES['file-avatar'], $this->getAvatarMaxSize())) {
+                $this->res->ko('avatar', 'le fichier est trop volumineux');
+            }
         }
-        if (!$this->checkFileIsImage($_FILES['file-avatar'])) {
-            $this->return['err'] = true;
-            $this->return['msg'] = 'Avatar : le fichier n\'est pas une image';
-            return $this->return;
-        }
+
+
+
+        if ($this->res->isErr()) return $this->res;
+
+        // -------------------------------------------------------------------------------------------------- Treatment
         // file-avatar : treatment
-        $savedFile = $this->treatFile($_FILES['file-avatar'], 'avatar');
-        $this->return['msg'] = 'Votre profil a bien été mis à jour';
-        $this->return['avatar'] = $savedFile;
-        return $this->return;
+        if ($this->fileIsSent($_FILES['file-avatar'])) {
+            $savedFile = $this->treatFile($_FILES['file-avatar'], 'avatar');
+            $user->setAvatarFile($savedFile);
+            $user->setAvatarId($savedFile->getId());
+        }
+
+        $user->setPseudo($_POST['pseudo']);
+        $user->setEmail($_POST['email']);
+
+        $this->res->ok('profil', 'Le profil a bien été mis à jour', null);
 
 
+        return $this->res;
     }
 
 

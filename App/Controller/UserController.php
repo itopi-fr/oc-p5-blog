@@ -37,7 +37,7 @@ class UserController extends MainController
         $this->user = $this->userModel->getUserById($userId);
 
         if ($userAction == 'profil' && isset($_POST["submit-user-profile"])) {
-            $this->twigData['result'][] = (new FormUserProfile())->treatForm($this->user);
+            $this->twigData['result'] = (new FormUserProfile())->treatForm($this->user);
         }
 
         // Affichage
@@ -48,9 +48,6 @@ class UserController extends MainController
             $this->userOwner = (new UserOwnerModel())->getUserOwnerById($this->user->getId());
             $this->twigData['user'] = $this->userOwner;
         }
-
-
-//        $this->dump($this->twigData['user']->getAvatarFile()->getUrl());
 
 
         // Twig
@@ -66,6 +63,11 @@ class UserController extends MainController
 
     }
 
+
+    public function updateUser(User $user)
+    {
+        $this->userModel->updateUser($user);
+    }
 
     public function login()
     {
