@@ -5,10 +5,12 @@ namespace App\Controller\Form;
 use App\Controller\FileController;
 use App\Controller\MainController;
 use App\Entity\File;
+use App\Entity\Res;
 use App\Model\UserModel;
 
 class FormController extends MainController
 {
+    private Res $res;
     private array $imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
     private array $docExtensions = ['pdf', 'doc', 'docx'];
     private array $imageMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
@@ -27,6 +29,7 @@ class FormController extends MainController
     public function __construct()
     {
         parent::__construct();
+        $this->res = new Res();
     }
 
     /**
@@ -40,20 +43,7 @@ class FormController extends MainController
     }
 
     /**
-     * Check if a value is unique in database
-     * @param string $value
-     * @param string $field
-     * @param int $id
-     * @return bool
-     */
-    protected function isUnique(string $value, string $field, int $id = 0)
-    {
-        $userModel = new UserModel();
-        return $userModel->isUnique($value, $field, $id);
-    }
-
-    /**
-     * Check if a string is alphanumeric
+     * Check if a string is alphanumeric, plus - and _
      * @param string $value
      * @return bool
      * @see https://www.php.net/manual/fr/function.ctype-alnum.php
@@ -62,6 +52,19 @@ class FormController extends MainController
     {
         return preg_match("/^[a-zA-Z0-9_\-]+$/", $value);
     }
+
+    /**
+     * Check if a string is alphanumeric, plus -, _ and spaces
+     * @param string $value
+     * @return bool
+     * @see https://www.php.net/manual/fr/function.ctype-alnum.php
+     */
+    protected function isAlphaNumSpacesPonct(string $value)
+    {
+        return preg_match("/^[\w\d,!\(\)\. \-]*$/", $value);
+    }
+
+
 
     /**
      * Check if a string is between 2 lengths
@@ -160,6 +163,94 @@ class FormController extends MainController
         return $posted_file;
     }
 
+    /**
+     * Check if a value is unique in database
+     * @param string $field
+     * @param int $id
+     * @return Res $res
+     */
+    protected function checkIfUnique(string $field, int $id)
+    {
+
+        $userModel = new UserModel();
+        if (!$userModel->isUnique($_POST[$field], $field, $id)) {
+            $this->res->ko($field, 'déjà utilisé par une autre personne');
+        }
+        return $this->res;
+    }
+
+    /**
+     * Check if a POST field is sent, is alphanumeric (allowing _ and -) and is between 2 lengths
+     * @param string $field
+     * @param int $min
+     * @param int $max
+     * @return Res
+     */
+    protected function checkPostFieldText(string $field, int $min, int $max)
+    {
+        if (!$this->isSet($_POST[$field])) {
+            $this->res->ko($field, 'Non renseigné');
+        }
+        else if (!$this->isAlphaNumPlus($_POST[$field])) {
+            $this->res->ko($field, 'ne doit contenir que des lettres, des chiffres, des tirets ou des underscores');
+        }
+        else if (!$this->isBetween($_POST[$field], $min, $max)) {
+            $this->res->ko($field, 'doit contenir entre ' . $min . ' et ' . $max . ' caractères');
+        }
+        return $this->res;
+    }
+
+    /**
+     * Check if a POST field is sent, is alphanumeric (allowing _ and -) and is between 2 lengths
+     * @param string $field
+     * @param int $min
+     * @param int $max
+     * @return Res
+     */
+    protected function checkPostFieldTextarea(string $field, int $min, int $max)
+    {
+        if (!$this->isSet($_POST[$field])) {
+            $this->res->ko($field, 'Non renseigné');
+        }
+        else if (!$this->isAlphaNumSpacesPonct($_POST[$field])) {
+            $this->res->ko($field, 'ne doit contenir que des lettres, des chiffres, des espaces, des tirets ou des underscores');
+        }
+        else if (!$this->isBetween($_POST[$field], $min, $max)) {
+            $this->res->ko($field, 'doit contenir entre ' . $min . ' et ' . $max . ' caractères');
+        }
+        return $this->res;
+    }
+
+    /**
+     * Check if a POST field is sent, is a valid email and is between 2 lengths
+     * @param string $field
+     * @param int $min
+     * @param int $max
+     * @return Res
+     */
+    protected function checkPostFieldTextEmail(string $field, int $min, int $max)
+    {
+        if (!$this->isSet($_POST[$field])) {
+            $this->res->ko($field, 'Non renseigné');
+        }
+        else if (!$this->isEmail($_POST[$field])) {
+            $this->res->ko($field, 'format non valide');
+        }
+        else if (!$this->isBetween($_POST[$field], $min, $max)) {
+            $this->res->ko($field, 'doit contenir entre ' . $min . ' et ' . $max . ' caractères');
+        }
+        return $this->res;
+    }
+
+
+    /**
+     * Treats a file and returns a File object
+     * TODO : A check, le retour array
+     * @param $posted_file
+     * @param $file_type
+     * @return File|array
+     * @throws \Exception
+     */
     protected function treatFile($posted_file, $file_type)
     {
         $posted_file = $this->buildFileDestPath($posted_file, $file_type);
@@ -167,6 +258,11 @@ class FormController extends MainController
         $file = $fileCtrl->uploadFile($posted_file);
         $insert = $fileCtrl->insertFile($file);
         return $fileCtrl->getFileById((int) $insert);
+    }
+
+    protected function hashPassword(string $password): string
+    {
+        return hash('sha256', $password);
     }
 
     /**

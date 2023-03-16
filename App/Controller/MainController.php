@@ -74,7 +74,7 @@ class MainController
      * @return void
      *
      *
-     * /!\ Faire plus propre
+     * TODO : Faire plus propre
      */
     protected function showDump()
     {
@@ -100,6 +100,12 @@ class MainController
             'cache' => false,
             'debug' => true,
         ]);
+
+        if (isset($_SESSION)) {
+            isset($_SESSION['userid']) ? $this->twig->addGlobal('userid', $_SESSION['userid']) : $this->twig->addGlobal('userid', -1);
+        } else {
+            $this->twig->addGlobal('userid', -1);
+        }
     }
 
     /**

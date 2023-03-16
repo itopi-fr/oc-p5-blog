@@ -7,6 +7,7 @@ use App\Entity\File;
 use App\Entity\User;
 use App\Entity\UserOwner;
 use App\Model\UserModel;
+use Exception;
 
 class UserOwnerModel extends UserModel
 {
@@ -47,5 +48,32 @@ class UserOwnerModel extends UserModel
 
 
         return $this->owner;
+    }
+
+    /**
+     * Updates user_owner_infos in database
+     * @param UserOwner $userOwner
+     * @return int | Exception
+     * @throws Exception
+     */
+    public function updateUserOwner(UserOwner $userOwner) {
+        if (!$this->userExistsById($userOwner->getOwnerId())) throw new Exception('Utilisateur inconnu');
+
+        // TODO : Si l'user change de photo ou de CV, supprimer les anciens (fichiers + BDD)
+
+        $sql = 'UPDATE user_owner_infos SET 
+                            photo_file_id=?, 
+                            cv_file_id=?, 
+                            first_name=?, 
+                            last_name=?, 
+                            catch_phrase=? 
+                        WHERE owner_id=?';
+        return $this->update($sql, [
+            $userOwner->getPhotoFileId(),
+            $userOwner->getCvFileId(),
+            $userOwner->getFirstName(),
+            $userOwner->getLastName(),
+            $userOwner->getCatchPhrase(),
+            $userOwner->getId()]);
     }
 }

@@ -23,7 +23,7 @@ class UserModel extends Connection
      * @param int $id
      * @return bool
      */
-    public function isUnique(string $value, string $field, int $id = 0)
+    public function isUnique(string $value, string $field, int $id)
     {
         $sql = "SELECT * FROM user WHERE $field = ? AND id != ?";
         $result = $this->getSingleAsClass($sql, [$value, $id], 'App\Entity\User');
@@ -89,6 +89,8 @@ class UserModel extends Connection
     public function updateUser(User $user) {
         if (!$this->userExistsById($user->getId())) throw new Exception('Utilisateur inconnu');
 
+        // TODO : Si l'user change d'avatar, supprimer l'ancien (fichiers + BDD)
+
         $sql = 'UPDATE user SET avatar_id=?, pseudo=?, pass=?, email=? WHERE id=?';
         return $this->update($sql, [$user->getAvatarId(), $user->getPseudo(), $user->getPass(), $user->getEmail(), $user->getId()]);
     }
@@ -102,6 +104,17 @@ class UserModel extends Connection
     {
         $sql = "SELECT EXISTS(SELECT * FROM user WHERE id = ?)";
         return $this->exists($sql, [$userId]);
+    }
+
+    /**
+     * Checks if a user exists in database based on its email and password
+     * @param string $userEmail
+     * @param string $userPassword
+     * @return bool
+     */
+    public function userExistsByEmailPassword(string $userEmail, string $userPassword) : bool {
+        $sql = 'SELECT EXISTS(SELECT * FROM user WHERE email = ? AND pass = ?)';
+        return $this->exists($sql, [$userEmail, $userPassword]);
     }
 
 }

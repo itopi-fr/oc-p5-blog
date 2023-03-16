@@ -3,62 +3,40 @@
 namespace App\Controller\Form;
 
 use App\Controller\UserController;
-use App\Entity\File;
-use App\Controller\FileController;
 use App\Entity\Res;
 use App\Entity\User;
-use App\Model\UserModel;
+use App\Entity\UserOwner;
 
 class FormUserProfile extends FormController
 {
-    private array $return = [];
     private Res $res;
     private UserController $userController;
 
     public function __construct()
     {
         parent::__construct();
+        $this->res = new Res();
         $this->userController = new UserController();
     }
 
 
     /**
-     * Treats the form
+     * Treats the user part of the form
      * @param User $user
      * @return Res
      */
-    public function treatForm(User $user): Res
+    public function treatFormUser(User $user): Res
     {
-        $this->res = new Res();
+
 
         // ------------------------------------------------------------------------------------------------------ Checks
         // user-pseudo : checks
-        if (!$this->isSet($_POST['pseudo'])) {
-            $this->res->ko('pseudo', 'Veuillez renseigner un pseudo');
-        }
-        else if (!$this->isUnique($_POST['pseudo'], 'pseudo', $user->getId())) {
-            $this->res->ko('pseudo', 'Ce pseudo est déjà utilisé');
-        }
-        else if (!$this->isAlphaNumPlus($_POST['pseudo'])) {
-            $this->res->ko('pseudo', 'Le pseudo ne doit contenir que des lettres, des chiffres, des tirets ou des underscores');
-        }
-        else if (!$this->isBetween($_POST['pseudo'], 4, 20)) {
-            $this->res->ko('pseudo', 'Le pseudo doit contenir entre 4 et 20 caractères');
-        }
+        $this->res = $this->checkPostFieldText('pseudo', 4, 30);
+        $this->res = $this->checkIfUnique('pseudo', $user->getId());
 
         // user-email : checks
-        if (!$this->isSet($_POST['email'])) {
-            $this->res->ko('email', 'non renseigné');
-        }
-        else if (!$this->isUnique($_POST['email'], 'email', $user->getId())) {
-            $this->res->ko('email', 'déjà utilisé');
-        }
-        else if (!$this->isEmail($_POST['email'])) {
-            $this->res->ko('email', 'format non valide');
-        }
-        else if (!$this->isBetween($_POST['email'], 4, 50)) {
-            $this->res->ko('email', 'doit contenir entre 4 et 50 caractères');
-        }
+        $this->res = $this->checkPostFieldTextEmail('email', 6, 254);
+        $this->res = $this->checkIfUnique('email', $user->getId());
 
         // file-avatar : checks
         if (!$this->fileIsSent($_FILES['file-avatar']) && !is_a($user->getAvatarFile(), 'App\Entity\File') ) {
@@ -73,8 +51,7 @@ class FormUserProfile extends FormController
             }
         }
 
-
-
+        $this->res->setType('profil');
         if ($this->res->isErr()) return $this->res;
 
         // -------------------------------------------------------------------------------------------------- Treatment
@@ -103,5 +80,73 @@ class FormUserProfile extends FormController
         return $this->res;
     }
 
+    public function treatFormUserOwner(UserOwner $userOwner): Res
+    {
+        // Checks
+        $this->res = $this->checkPostFieldText('firstname', 4, 30);
+        $this->res = $this->checkPostFieldText('lastname', 4, 30);
+        $this->res = $this->checkPostFieldTextarea('catchphrase', 4, 254);
+        $this->res->setType('auteur');
 
+        // file-cv : checks
+        if (!$this->fileIsSent($_FILES['file-cv']) && !is_a($userOwner->getCvFile(), 'App\Entity\File') ) {
+            $this->res->ko('cv', 'Veuillez renseigner un fichier');
+        }
+        else if ($this->fileIsSent($_FILES['file-cv']) ) {
+            if (!$this->checkFileIsDoc($_FILES['file-cv'])) {
+                $this->res->ko('cv', 'le fichier n\'est pas un pdf');
+            }
+            if (!$this->checkFileSize($_FILES['file-cv'], $this->getCvMaxSize())) {
+                $this->res->ko('cv', 'le fichier est trop volumineux');
+            }
+        }
+
+        // file-photo : checks
+        if (!$this->fileIsSent($_FILES['file-photo']) && !is_a($userOwner->getPhotoFile(), 'App\Entity\File') ) {
+            $this->res->ko('photo', 'Veuillez renseigner un fichier');
+        }
+        else if ($this->fileIsSent($_FILES['file-photo']) ) {
+            if (!$this->checkFileIsImage($_FILES['file-photo'])) {
+                $this->res->ko('photo', 'le fichier n\'est pas une image');
+            }
+            if (!$this->checkFileSize($_FILES['file-photo'], $this->getPhotoMaxSize())) {
+                $this->res->ko('photo', 'le fichier est trop volumineux');
+            }
+        }
+
+
+        if ($this->res->isErr()) return $this->res;
+
+        // Owner simple fields : treatment
+        $userOwner->setFirstName($_POST['firstname']);
+        $userOwner->setLastName($_POST['lastname']);
+        $userOwner->setCatchPhrase($_POST['catchphrase']);
+
+        // Owner CV file : treatment
+        if ($this->fileIsSent($_FILES['file-cv'])) {
+            $savedCvFile = $this->treatFile($_FILES['file-cv'], 'cv');
+            $userOwner->setCvFile($savedCvFile);
+            $userOwner->setCvFileId($savedCvFile->getId());
+        }
+
+        // Owner photo file : treatment
+        if ($this->fileIsSent($_FILES['file-photo'])) {
+            $savedPhotoFile = $this->treatFile($_FILES['file-photo'], 'photo');
+            $userOwner->setPhotoFile($savedPhotoFile);
+            $userOwner->setPhotoFileId($savedPhotoFile->getId());
+        }
+
+
+        // User update
+        $result = $this->userController->updateUserOwner($userOwner);
+
+        if ($result === 0) {
+            $this->res->ok('auteur', 'Aucun changement apporté aux informations de l\'auteur', null);
+        } else if ($result === 1) {
+            $this->res->ok('auteur', 'Les informations de l\'auteur ont bien été mises à jour', null);
+        } else {
+            $this->res->ko('auteur', 'Une erreur est survenue');
+        }
+        return $this->res;
+    }
 }

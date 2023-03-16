@@ -1,0 +1,34 @@
+{% extends "layout.twig" %}
+
+{% use "forms/form_user_login.twig" %}
+{% use "forms/form_user_logout.twig" %}
+{% use "forms/form_user_profile.twig" %}
+{% use "forms/form_user_password.twig" %}
+{% use "forms/form_owner_info.twig" %}
+
+
+{% block title %}
+    Profil
+{% endblock %}
+
+{% block content %}
+
+    {% if userid > -1 %}
+
+        <div class="col-md-6">
+            {{ block('form_user_logout') }}
+            {{ block('form_user_profile') }}
+            {{ block('form_user_password') }}
+        </div>
+
+        <div class="col-md-6">
+            {% if owner %}
+                {{ block('form_owner_info') }}
+            {% endif %}
+        </div>
+
+    {% else %}
+        {{ block('form_user_login') }}
+    {% endif %}
+
+{% endblock %}

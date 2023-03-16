@@ -27,7 +27,7 @@ class PostController extends MainController
     {
         if (!$this->postExists($postId)) {
 
-            // /!\ Créer une classe Error
+            // TODO : Créer une classe Error
             $this->twigData['error'] = ['code' => 404, 'title' => 'erreur article', 'message' => "L'article n'existe pas"];
 
 

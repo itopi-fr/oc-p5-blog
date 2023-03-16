@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Controller\Form\FormController;
+use App\Controller\Form\FormLogInOutReg;
+use App\Controller\Form\FormUserChangePass;
 use App\Controller\Form\FormUserProfile;
 use App\Entity\Token;
 use App\controller\TokenController;
@@ -23,6 +25,7 @@ class UserController extends MainController
     public UserOwner $userOwner;
     public Token $token;
     public TokenController $tokenController;
+    protected UserOwnerModel $userOwnerModel;
 
     public function __construct()
     {
@@ -33,34 +36,49 @@ class UserController extends MainController
 
     public function index($userAction)
     {
-        $userId = 1; // /!\ Temporaire - Récupérer via cookie + vérifications
-        $this->user = $this->userModel->getUserById($userId);
+        isset($_SESSION['userid']) ? $userId = $_SESSION['userid'] : $userId = -1;
 
-        if ($userAction == 'profil' && isset($_POST["submit-user-profile"])) {
-            $this->twigData['result'] = (new FormUserProfile())->treatForm($this->user);
+        // Form Login
+        if ($userAction == 'connexion' && isset($_POST["submit-connect"])) {
+            $this->twigData['result'] = (new FormLogInOutReg())->login($_POST['email'], $_POST['pass']);
         }
 
-        // Affichage
-        $this->twigData['user'] = $this->user;
+        if ($userId > -1) {
+            $this->user = $this->userModel->getUserById($userId);
 
-        // owner
-        if ($this->user->getRole() === 'owner') {
-            $this->userOwner = (new UserOwnerModel())->getUserOwnerById($this->user->getId());
-            $this->twigData['user'] = $this->userOwner;
+            // Owner
+            if($this->user->getRole() == 'owner') {
+                $this->userOwner = (new UserOwnerModel())->getUserOwnerById($this->user->getId());
+
+                // Form Owner
+                if ($userAction == 'profil' && isset($_POST["submit-owner-profile"])) {
+                    $this->twigData['result'] = (new FormUserProfile())->treatFormUserOwner($this->userOwner);
+                }
+                $this->twigData['owner'] = $this->userOwner;
+            }
+
+
+            // Form User Profile
+            if ($userAction == 'profil' && isset($_POST["submit-user-profile"])) {
+                $this->twigData['result'] = (new FormUserProfile())->treatFormUser($this->user);
+            }
+
+            // Form User Change Password
+            if ($userAction == 'profil' && isset($_POST["submit-user-pass"])) {
+                $this->twigData['result'] = (new FormUserChangePass())->treatFormChangePass($this->user, $_POST["pass-old"], $_POST["pass-new-a"], $_POST["pass-new-b"]);
+            }
+
+            // Form Logout
+            if ($userAction == 'deconnexion') {
+                $this->twigData['result'] = (new FormLogInOutReg())->logout();
+            }
+
+            // User
+            $this->twigData['user'] = $this->user;
         }
 
-
-        // Twig
-        echo match ($userAction) {
-            'home'          => $this->twig->render("pages/bo/bo_user_home.twig",        $this->twigData),
-            'connexion'     => $this->twig->render("pages/bo/bo_user_login.twig",       $this->twigData),
-            'deconnexion'   => $this->twig->render("pages/bo/bo_user_logout.twig",      $this->twigData),
-            'inscription'   => $this->twig->render("pages/bo/bo_user_register.twig",    $this->twigData),
-            'profil'        => $this->twig->render("pages/bo/bo_user_profile.twig",     $this->twigData),
-            default         => $this->twig->render("pages/fo/fo_error.twig",            $this->twigData),
-        };
-
-
+        // Affichage page
+        echo $this->twig->render("pages/bo/page_bo_user.twig", $this->twigData);
     }
 
 
@@ -69,10 +87,14 @@ class UserController extends MainController
         return $this->userModel->updateUser($user);
     }
 
-    public function login()
+
+
+    public function updateUserOwner(UserOwner $userOwner)
     {
-        // Vérifier tokens et supprimer les anciens
+        $this->userOwnerModel = new UserOwnerModel();
+        return $this->userOwnerModel->updateUserOwner($userOwner);
     }
+
 
     public function logout()
     {

@@ -1,3 +1,14 @@
+/* General */
+a {
+    color: #0085A1;
+}
+a:hover {
+    color: #48d0ee;
+}
+
+button > a {
+    color: #ffffff;
+}
 
 h2 {
     margin-top: 25px;
@@ -11,6 +22,13 @@ label {
     display: inline;
     width: auto;
     min-width: 200px;
+}
+
+.form-group {
+    padding: 10px;
+}
+.form-group:not(:last-child) {
+    border-bottom: 1px solid #e9ecef;
 }
 
 /* Vardump */
@@ -57,6 +75,13 @@ label {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+
+/* Forms */
+.img-thumbnail {
+    width: 30px;
+    height: auto;
+    padding: 0;
 }
 
 /* Surcharge Starter Theme */

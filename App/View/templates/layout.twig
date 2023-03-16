@@ -13,8 +13,10 @@
 
     <!-- Main Content-->
     <div class="container px-4 px-lg-5">
-        {% block content %}
-        {% endblock %}
+        <div class="row">
+            {% block content %}
+            {% endblock %}
+        </div>
     </div>
 
     {{ block('footer') }}

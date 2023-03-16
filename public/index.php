@@ -15,5 +15,7 @@ if ($_ENV['MODE_DEV'] === 'true') {
     error_reporting(E_ALL);
 }
 
+session_start();
+
 $route = new Router();
 $route->run();

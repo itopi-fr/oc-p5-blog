@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\Controller\MainController;
+
 class User
 {
     protected int $id;
@@ -11,6 +13,13 @@ class User
     protected string $email;
     protected string $pass;
     protected string $role;
+
+    protected MainController $mc;
+
+    public function __construct()
+    {
+        $this->mc = new MainController();
+    }
 
     /**
      * ----------------------------------------------------------------------------------------------- Getters & Setters

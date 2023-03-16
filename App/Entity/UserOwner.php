@@ -14,6 +14,10 @@ class UserOwner extends User
     private string $catch_phrase;
 
 
+    public function __construct()
+    {
+        parent::__construct();
+    }
 
     /**
      * ----------------------------------------------------------------------------------------------- Getters & Setters

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : jeu. 09 mars 2023 à 14:41
+-- Généré le : jeu. 16 mars 2023 à 14:56
 -- Version du serveur : 8.0.31
 -- Version de PHP : 8.0.13
 
@@ -55,14 +55,17 @@ CREATE TABLE IF NOT EXISTS `file` (
   `mime` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
   `size` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `file`
 --
 
 INSERT INTO `file` (`id`, `title`, `url`, `ext`, `mime`, `size`) VALUES
-(1, 'default', '/public/assets/img/default-avatar.jpg', 'jpg', 'image/jpeg', 20);
+(1, 'default', '/public/assets/img/default-avatar.jpg', 'jpg', 'image/jpeg', 20),
+(46, 'test.jpg', '/public/upload/user/test_f9f6bc.jpg', 'jpg', 'image/jpeg', 693),
+(47, 'test.jpg', '/public/upload/owner/test_a5eab1.jpg', 'jpg', 'image/jpeg', 693),
+(49, 'vide.pdf', '/public/upload/owner/vide_83d6b9.pdf', 'pdf', 'application/pdf', 27706);
 
 -- --------------------------------------------------------
 
@@ -102,14 +105,14 @@ CREATE TABLE IF NOT EXISTS `token` (
   `type` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_token_user1_idx` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `token`
 --
 
 INSERT INTO `token` (`id`, `user_id`, `content`, `expiration_date`, `type`) VALUES
-(35, 1, '0129acde8b8d13287190810dc4b3d1de8f2ec7bfea10ab3fb92dc1de06f54628', '2023-03-08 11:36:56', 'password_change');
+(36, 1, '2bfcaa942dfe40a69b4408f000d467448d82e212cc4f1fb4ee350098b4096054', '2023-03-15 12:33:03', 'password_change');
 
 -- --------------------------------------------------------
 
@@ -126,15 +129,16 @@ CREATE TABLE IF NOT EXISTS `user` (
   `email` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
   `role` varchar(15) COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `file_id` (`avatar_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  KEY `file_id` (`avatar_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `user`
 --
 
 INSERT INTO `user` (`id`, `avatar_id`, `pseudo`, `pass`, `email`, `role`) VALUES
-(1, 1, 'pseudowner', 'owner', 'owner@test.fr', 'owner');
+(1, 46, 'owner', 'a8c23cc814179578e3a774418ac5fc4702a66eb3b78c876df81b290465e6e334', 'oo@oo.oo', 'owner'),
+(3, 1, 'test', '5afab9a620f6f11284505be2fb9a975b4dccfdd30970dffc7ed875490160e4d0', 'uu@uu.uu', 'user');
 
 -- --------------------------------------------------------
 
@@ -162,7 +166,7 @@ CREATE TABLE IF NOT EXISTS `user_owner_infos` (
 --
 
 INSERT INTO `user_owner_infos` (`owner_id`, `user_id`, `photo_file_id`, `cv_file_id`, `first_name`, `last_name`, `catch_phrase`) VALUES
-(1, 1, 1, 1, 'Maxime', 'Owner', 'Hello world');
+(1, 1, 47, 49, 'Maxime', 'Owner', 'hello-world, test ! test (test).');
 
 --
 -- Contraintes pour les tables déchargées
