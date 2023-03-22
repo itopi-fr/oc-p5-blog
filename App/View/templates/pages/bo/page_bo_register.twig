@@ -1,0 +1,13 @@
+{% extends "layout.twig" %}
+
+{% use "forms/form_user_register.twig" %}
+
+{% block title %}
+    Inscription
+{% endblock %}
+
+{% block content %}
+
+    {{ block('form_user_register') }}
+
+{% endblock %}

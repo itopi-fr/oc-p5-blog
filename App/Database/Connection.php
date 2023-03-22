@@ -8,8 +8,8 @@ use App\Entity\Post;
 use App\Entity\Token;
 use App\Entity\User;
 use App\Entity\UserOwner;
-use \PDO;
-use \PDOException;
+use PDO;
+use PDOException;
 use App\Controller\MainController;
 
 class Connection
@@ -36,7 +36,7 @@ class Connection
      * Creates a PDO connection to the database.
      * @return PDO
      */
-    private function connect() : PDO
+    private function connect(): PDO
     {
         try {
             if (!isset($this->conn)) {
@@ -65,7 +65,7 @@ class Connection
         string $statement,
         array $data,
         string $class_name
-    ) : null | Comment | File | Post | Token | User | UserOwner {
+    ): null | Comment | File | Post | Token | User | UserOwner {
         try {
             $req = $this->connect()->prepare($statement);
             $req->setFetchMode(PDO::FETCH_CLASS, $class_name);
@@ -81,10 +81,11 @@ class Connection
      * Returns a single element as an object.
      * @param string $statement
      * @param array $data
-     * @return mixed|false
+     * @return mixed
      * @throws PDOException
      */
-    public function getSingleAsObject($statement, $data) {
+    public function getSingleAsObject(string $statement, array $data): mixed
+    {
         try {
             $req = $this->connect()->prepare($statement);
             $req->setFetchMode(PDO::FETCH_OBJ);
@@ -103,7 +104,8 @@ class Connection
      * @return array|null
      * @throws PDOException
      */
-    public function getMultipleAsObjectsArray($statement, $data) {
+    public function getMultipleAsObjectsArray(string $statement, array $data): array|null
+    {
         try {
             $req = $this->connect()->prepare($statement);
             $req->setFetchMode(PDO::FETCH_OBJ);
@@ -119,10 +121,10 @@ class Connection
      * Inserts a single element into the database. Returns the last inserted id.
      * @param string $statement
      * @param array $data
-     * @return string|null
+     * @return bool|null
      * @throws PDOException
      */
-    protected function insert($statement, $data): string | null
+    protected function insert(string $statement, array $data): bool | null
     {
         try {
             $req = $this->connect()->prepare($statement);
@@ -138,10 +140,10 @@ class Connection
      * Deletes a single element in the database.
      * @param string $statement
      * @param array $data
-     * @return bool
+     * @return bool|null
      * @throws PDOException
      */
-    protected function delete($statement, $data)
+    protected function delete(string $statement, array $data): bool | null
     {
         try {
             $req = $this->connect()->prepare($statement);
@@ -159,7 +161,7 @@ class Connection
      * @return bool
      * @throws PDOException
      */
-    protected function exists($statement, $data)
+    protected function exists(string $statement, array $data): bool
     {
         try {
             $req = $this->connect()->prepare($statement);
@@ -178,7 +180,8 @@ class Connection
      * @return int
      * @throws PDOException
      */
-    protected function update($statement, $data) {
+    protected function update(string $statement, array $data): int
+    {
         try {
             $req = $this->connect()->prepare($statement);
             $req->execute($data);
@@ -187,6 +190,4 @@ class Connection
             throw new PDOException($e->getMessage());
         }
     }
-
-
 }

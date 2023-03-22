@@ -55,9 +55,9 @@ class TokenModel extends Connection
     /**
      * Inserts a token in the database.
      * @param Token $token
-     * @return string|null
+     * @return bool|null
      */
-    public function insertPassChangeToken(Token $token): string|null
+    public function insertUserToken(Token $token): bool|null
     {
         $req = "INSERT INTO token (user_id, content, expiration_date, type)
                 VALUES (:user_id, :content, :expiration_date, :type)";

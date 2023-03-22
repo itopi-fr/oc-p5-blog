@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Res;
 use App\Entity\Token;
 use App\Model\TokenModel;
 use App\Model\UserModel;
@@ -10,6 +11,8 @@ use Exception;
 
 class TokenController extends MainController
 {
+    private Res $res;
+
     private Token $token;
     private TokenModel $tokenModel;
     private UserModel $userModel;
@@ -18,6 +21,7 @@ class TokenController extends MainController
     public function __construct()
     {
         parent::__construct();
+        $this->res =        new Res();
         $this->token =      new Token();
         $this->tokenModel = new TokenModel();
         $this->userModel =  new UserModel();
@@ -31,11 +35,11 @@ class TokenController extends MainController
     private function buildToken(object $tokenObj): Token
     {
         $this->token = new Token();
-        $this->token->setId(            $tokenObj->id);
-        $this->token->setUserId(        $tokenObj->user_id);
-        $this->token->setContent(       $tokenObj->content);
-        $this->token->setExpirationDate( new DateTime($tokenObj->expiration_date));
-        $this->token->setType(          $tokenObj->type);
+        $this->token->setId($tokenObj->id);
+        $this->token->setUserId($tokenObj->user_id);
+        $this->token->setContent($tokenObj->content);
+        $this->token->setExpirationDate(new DateTime($tokenObj->expiration_date));
+        $this->token->setType($tokenObj->type);
         return $this->token;
     }
 
@@ -49,15 +53,20 @@ class TokenController extends MainController
     {
         if (is_int($data)) {
             $tokenObj = $this->tokenModel->getTokenById($data);
-            if (is_null($tokenObj)) throw new Exception('Token id not found');
+
+            if (is_null($tokenObj)) {
+                throw new Exception('Token id not found');
+            }
+
             return $this->buildToken($tokenObj);
-        }
-        else if (is_string($data)) {
+
+        } elseif (is_string($data)) {
             $tokenObj = $this->tokenModel->getTokenByContent($data);
-            if (is_null($tokenObj)) throw new Exception('Token content not found');
+            if (is_null($tokenObj)) {
+                throw new Exception('Token content not found');
+            }
             return $this->buildToken($tokenObj);
-        }
-        else {
+        } else {
             throw new Exception('Invalid data type');
         }
     }
@@ -67,7 +76,7 @@ class TokenController extends MainController
      * @param int $userId
      * @return array|null
      */
-    public function getUserTokens(int $userId) : array|null
+    public function getUserTokens(int $userId): array|null
     {
         $result = $this->tokenModel->getUserTokens($userId);
         return (!is_null($result)) ? $result : null;
@@ -79,11 +88,13 @@ class TokenController extends MainController
      * @param int $userId
      * @return null|Token
      */
-    public function getLastValidTokenByUserId(int $userId) : null|Token
+    public function getLastValidTokenByUserId(int $userId): null|Token
     {
         $tokens = $this->getUserTokens($userId);
 
-        if (is_null($tokens)) return null;
+        if (is_null($tokens)) {
+            return null;
+        }
 
         $user = $this->userModel->getUserById($userId);
 
@@ -101,31 +112,33 @@ class TokenController extends MainController
      * If a valid token already exists, it is kept and nothing is done.
      * If expired tokens exist, they are deleted.
      * @param int $userId
-     * @return string
+     * @param string $tokenType
+     * @return Res
      */
-    public function createPassChangeToken(int $userId):string {
+    public function createUserToken(int $userId, string $tokenType): Res
+    {
         // Delete expired tokens
         $this->deleteExpiredTokens($userId);
 
         // If a valid token already exists, do nothing
-        if (!is_null($this->getLastValidTokenByUserId($userId))) return 'a-valid-token-already-exists';
+        if (!is_null($this->getLastValidTokenByUserId($userId))) {
+            $this->res->ok('token', $this->res->showMsg('valid-token-exists'), null);
+            return $this->res;
+        }
 
         // Create a new token
         $this->token->setUserId($userId);
         $this->token->setContent($this->generateKey(32));
         $this->token->setExpirationDate(new DateTime('now + 15 minutes'));
-        $this->token->setType('password_change');
+        $this->token->setType($tokenType);
 
-        $insert = $this->tokenModel->insertPassChangeToken($this->token);
-        $this->dump($insert);
-        return 'token-created';
+        if ($this->tokenModel->insertUserToken($this->token)) {
+            $this->res->ok('token', $this->res->showMsg('token-created'), $this->token->getContent());
+        } else {
+            $this->res->ko('token', $this->res->showMsg('token-not-created'), null);
+        }
 
-//        if (!is_null($insert)) {
-//            return 'token-created';
-//        } else {
-//            throw new Exception('Token creation failed');
-//        }
-
+        return $this->res;
     }
 
 
@@ -134,7 +147,8 @@ class TokenController extends MainController
      * @param int $userId
      * @return void
      */
-    public function deleteExpiredTokens(int $userId) {
+    public function deleteExpiredTokens(int $userId)
+    {
         $tokens = $this->getUserTokens($userId);
         $user = $this->userModel->getUserById($userId);
 
@@ -145,7 +159,6 @@ class TokenController extends MainController
                 }
             }
         }
-
     }
 
     /**
@@ -153,7 +166,8 @@ class TokenController extends MainController
      * @param int $tokenId
      * @return void
      */
-    public function deleteTokenById(int $tokenId) : void {
+    public function deleteTokenById(int $tokenId): void
+    {
         $this->tokenModel->deleteTokenById($tokenId);
     }
 

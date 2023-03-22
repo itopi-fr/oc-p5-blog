@@ -72,7 +72,24 @@ class Res
             default:
                 return $type;
                 break;
+        }
+    }
 
+    public function showMsg(string $msg): string
+    {
+        switch ($msg) {
+            case "pass-format":
+                return "Le mot de passe doit contenir au moins 8 caractères, 1 majuscule, 1 minuscule et 1 chiffre";
+                break;
+            case "register-success":
+                return "Inscription réussie";
+                break;
+            case "pass-not-match":
+                return "Les mots de passe ne correspondent pas";
+                break;
+            default:
+                return $msg;
+                break;
         }
     }
 

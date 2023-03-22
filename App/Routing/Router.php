@@ -22,6 +22,7 @@ class Router
      */
     private array $urlParts;
     private string $userAction;
+    private string $userActionSub;
 
 
     public function __construct()
@@ -30,10 +31,11 @@ class Router
     }
 
 
-    public function run() : void
+    public function run(): void
     {
 
         try {
+            $this->userActionSub = '';
             $this->urlParts = explode('/', $_GET['p']);
             $pageBase = $this->urlParts[0];
 
@@ -45,11 +47,13 @@ class Router
                 $this->userAction = 'home';
             }
 
-//          elseif ($this->urlParts[0] == 'owner') {
-//                $pageBase = 'own_' . $this->urlParts[1];
-//            } elseif ($this->urlParts[0] == 'test') {
-//                $pageBase = 'own_' . $this->urlParts[1];
-//            }
+            // Activation
+            if ($this->urlParts[0] == 'user' && $this->urlParts[1] == 'activation') {
+                if (isset($this->urlParts[2]) && !empty($this->urlParts[2])) {
+                    $this->userActionSub = $this->urlParts[2];
+                }
+            }
+
 
             switch ($pageBase) {
                 case (''):
@@ -69,7 +73,7 @@ class Router
 
                 case ('user'):
                     $controller = new UserController();
-                    $controller->index($this->userAction);        // /!\ Ajouter un check
+                    $controller->index($this->userAction, $this->userActionSub);        // /!\ Ajouter un check
                     break;
 
 //                case ('err'):
@@ -77,10 +81,6 @@ class Router
 //                    $controller->index();
 //                    break;
 
-                case ('test'):
-                    $controller = new UserController();
-                    $controller->test($this->userAction);
-                    break;
 
                 default:
                     $controller = new ErrorPageController();

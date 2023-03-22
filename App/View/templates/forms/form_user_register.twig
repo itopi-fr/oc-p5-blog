@@ -1,0 +1,30 @@
+{% use "forms/form_block_messages.twig" %}
+{% block form_user_register %}
+    {# Form Register #}
+    <div class="col-md-8">
+        <form action="inscription" method="POST" enctype="multipart/form-data" class="row form-general">
+            <div class="form-group">
+                <label for="pseudo">Pseudo</label>
+                <input type="text" name="pseudo" class="form-control" id="pseudo" placeholder="Pseudo" value="newuser">
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="text" name="email" class="form-control" id="email" placeholder="Adresse email" value="newuser@test.fr">
+            </div>
+            <div class="form-group">
+                <label for="pass">Mot de passe</label>
+                <input type="password" name="pass" class="form-control" id="pass" placeholder="Mot de passe" value="pass">
+            </div>
+            <div class="form-group">
+                <label for="pass-confirm">Confirmation</label>
+                <input type="password" name="pass-confirm" class="form-control" id="pass-confirm" placeholder="Confirmation" value="pass">
+            </div>
+            <div class="form-group text-center">
+                <input type="submit" name="submit-register"/>
+            </div>
+
+            {{ block('form_block_messages') }}
+
+        </form>
+    </div>
+{% endblock %}

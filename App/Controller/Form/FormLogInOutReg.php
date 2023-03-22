@@ -27,6 +27,37 @@ class FormLogInOutReg extends FormController
         $this->mc = new MainController();
     }
 
+    public function register(string $pseudo, string $email, string $password, string $password2)
+    {
+        // hash
+        $password = $this->hashPassword($password);
+        $password2 = $this->hashPassword($password2);
+
+        //Checks
+        if ($password !== $password2) {
+            $this->res->ko('register', $this->res->showMsg('pass-not-match'), null);
+        }
+
+        if ($this->userModel->userExistsByEmail($email)) {
+             $this->res->ko('register', 'Email déjà utilisé', null);
+        }
+
+        if (!$this->checkPasswordFormat($password)) {
+            $this->res->ko('register', $this->res->showMsg('pass-format'), null);
+        }
+
+        // TODO : checks de format de l'email, du pseudo
+
+        // If ok
+        if ($this->userController->regCreateUser($pseudo, $email, $password)->getId() > -1) {
+            $this->res->ok('register', $this->res->showMsg('register-success-wait-mail-confirm'), null);
+        } else {
+            $this->res->ko('register', $this->res->showMsg('register-fail'), null);
+        }
+
+        return $this->res;
+    }
+
     public function login(string $email, string $password)
     {
         // hash
@@ -39,10 +70,9 @@ class FormLogInOutReg extends FormController
             // start session
             $_SESSION['userid'] = $this->user->getId();
 
-            $this->res->ok('connect','Connexion réussie', null);
-        }
-        else {
-            $this->res->ko('connect','Aucune correspondance email/pass', null);
+            $this->res->ok('connect', 'Connexion réussie', null);
+        } else {
+            $this->res->ko('connect', 'Aucune correspondance email/pass', null);
         }
         return $this->res;
     }
@@ -51,7 +81,7 @@ class FormLogInOutReg extends FormController
     {
         // destroy session
         session_destroy();
-        $this->res->ok('disconnect','Déconnexion réussie', null);
+        $this->res->ok('disconnect', 'Déconnexion réussie', null);
         return $this->res;
     }
 

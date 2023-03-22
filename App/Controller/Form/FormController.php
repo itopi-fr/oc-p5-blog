@@ -14,7 +14,9 @@ class FormController extends MainController
     private array $imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
     private array $docExtensions = ['pdf', 'doc', 'docx'];
     private array $imageMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
-    private array $docMimeTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    private array $docMimeTypes = [ 'application/pdf',
+                                    'application/msword',
+                                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
     private int $photoMaxSize = 2097152; // 2 Mo
     private int $cvMaxSize = 5242880; // 5 Mo
     private int $avatarMaxSize = 524288; // 512 Ko
@@ -61,7 +63,7 @@ class FormController extends MainController
      */
     protected function isAlphaNumSpacesPonct(string $value)
     {
-        return preg_match("/^[\w\d,!\(\)\. \-]*$/", $value);
+        return preg_match("/^[\w\d,!(). \-]*$/", $value);
     }
 
 
@@ -190,11 +192,9 @@ class FormController extends MainController
     {
         if (!$this->isSet($_POST[$field])) {
             $this->res->ko($field, 'Non renseigné');
-        }
-        else if (!$this->isAlphaNumPlus($_POST[$field])) {
+        } elseif (!$this->isAlphaNumPlus($_POST[$field])) {
             $this->res->ko($field, 'ne doit contenir que des lettres, des chiffres, des tirets ou des underscores');
-        }
-        else if (!$this->isBetween($_POST[$field], $min, $max)) {
+        } elseif (!$this->isBetween($_POST[$field], $min, $max)) {
             $this->res->ko($field, 'doit contenir entre ' . $min . ' et ' . $max . ' caractères');
         }
         return $this->res;
@@ -211,11 +211,12 @@ class FormController extends MainController
     {
         if (!$this->isSet($_POST[$field])) {
             $this->res->ko($field, 'Non renseigné');
-        }
-        else if (!$this->isAlphaNumSpacesPonct($_POST[$field])) {
-            $this->res->ko($field, 'ne doit contenir que des lettres, des chiffres, des espaces, des tirets ou des underscores');
-        }
-        else if (!$this->isBetween($_POST[$field], $min, $max)) {
+        } elseif (!$this->isAlphaNumSpacesPonct($_POST[$field])) {
+            $this->res->ko(
+                $field,
+                'ne doit contenir que des lettres, des chiffres, des espaces, des tirets ou des underscores'
+            );
+        } elseif (!$this->isBetween($_POST[$field], $min, $max)) {
             $this->res->ko($field, 'doit contenir entre ' . $min . ' et ' . $max . ' caractères');
         }
         return $this->res;
@@ -232,11 +233,9 @@ class FormController extends MainController
     {
         if (!$this->isSet($_POST[$field])) {
             $this->res->ko($field, 'Non renseigné');
-        }
-        else if (!$this->isEmail($_POST[$field])) {
+        } elseif (!$this->isEmail($_POST[$field])) {
             $this->res->ko($field, 'format non valide');
-        }
-        else if (!$this->isBetween($_POST[$field], $min, $max)) {
+        } elseif (!$this->isBetween($_POST[$field], $min, $max)) {
             $this->res->ko($field, 'doit contenir entre ' . $min . ' et ' . $max . ' caractères');
         }
         return $this->res;
@@ -260,9 +259,23 @@ class FormController extends MainController
         return $fileCtrl->getFileById((int) $insert);
     }
 
+    /**
+     * @param string $password
+     * @return string
+     */
     protected function hashPassword(string $password): string
     {
         return hash('sha256', $password);
+    }
+
+    /**
+     * Check the password format matches the requirements : 8 characters, 1 uppercase, 1 lowercase, 1 number
+     * @param string $password
+     * @return bool
+     */
+    protected function checkPasswordFormat(string $password): bool
+    {
+        return preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/', $password);
     }
 
     /**
