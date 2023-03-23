@@ -37,8 +37,6 @@ class UserController extends MainController
 
     public function index($userAction, $userActionSub = null)
     {
-        $this->dump($userAction);
-
         if ($userAction === 'inscription') {
             // Form Register
             if (isset($_POST["submit-register"])) {
@@ -55,7 +53,7 @@ class UserController extends MainController
         }
 
         if ($userAction === 'activation') {
-            $this->dump($userActionSub);
+//            $this->dump($userActionSub);
             if (isset($userActionSub)) {
                 // /user/activation?token=123456789
                 $this->token = $this->tokenController->getToken($userActionSub);
@@ -143,10 +141,13 @@ class UserController extends MainController
         $this->user->setRole('user-validation-waiting');
 
         $userCreatedId = $this->userModel->createUser($this->user);
+//        $this->dump($userCreatedId);
 
         if ($userCreatedId > -1) {
             $this->user = $this->userModel->getUserById($userCreatedId);
             $tokenContent = $this->tokenController->createUserToken($this->user->getId(), 'user-validation');
+//            $this->dump($this->user);
+//            $this->dump($tokenContent);
         }
 
         // TODO : send mail with $tokenContent

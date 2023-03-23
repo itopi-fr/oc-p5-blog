@@ -46,7 +46,7 @@ class FormLogInOutReg extends FormController
             $this->res->ko('register', $this->res->showMsg('pass-format'), null);
         }
 
-        // TODO : checks de format de l'email, du pseudo
+        // TODO : checks de format de l'email, du pseudo, userExists, isUnique
 
         // If ok
         if ($this->userController->regCreateUser($pseudo, $email, $password)->getId() > -1) {
