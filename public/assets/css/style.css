@@ -1,15 +1,17 @@
 /* General */
+button > a {
+  color: #fff;
+}
+
 a {
-  color: #0085A1;
+  color: #0085a1;
 }
 
 a:hover {
   color: #48d0ee;
 }
 
-button > a {
-  color: #ffffff;
-}
+
 
 h2 {
   margin-top: 25px;
@@ -40,18 +42,17 @@ label {
   width: 80%;
   height: auto;
   max-height: 75%;
-  background-color: #000000;
-  color: #ffffff;
+  background-color: #000;
+  color: #fff;
   font-size: 18px;
   font-family: monospace;
   padding: 10px;
   top: 100px;
   opacity: 85%;
-  border: 1px solid #ffffff;
-  box-shadow: 0 0 10px #ffffff;
+  border: 1px solid #fff;
+  box-shadow: 0 0 10px #fff;
   border-radius: 5px;
   z-index: 999;
-
 }
 
 
