@@ -35,62 +35,6 @@ class FormController extends MainController
     }
 
     /**
-     * Check if a value is set
-     * @param mixed $value
-     * @return bool
-     */
-    protected function isSet($value)
-    {
-        return isset($value) && !empty($value);
-    }
-
-    /**
-     * Check if a string is alphanumeric, plus - and _
-     * @param string $value
-     * @return bool
-     * @see https://www.php.net/manual/fr/function.ctype-alnum.php
-     */
-    protected function isAlphaNumPlus(string $value)
-    {
-        return preg_match("/^[a-zA-Z0-9_\-]+$/", $value);
-    }
-
-    /**
-     * Check if a string is alphanumeric, plus -, _ and spaces
-     * @param string $value
-     * @return bool
-     * @see https://www.php.net/manual/fr/function.ctype-alnum.php
-     */
-    protected function isAlphaNumSpacesPonct(string $value)
-    {
-        return preg_match("/^[\w\d,!(). \-]*$/", $value);
-    }
-
-
-
-    /**
-     * Check if a string is between 2 lengths
-     * @param string $value
-     * @param int $min
-     * @param int $max
-     * @return bool
-     */
-    protected function isBetween(string $value, int $min, int $max)
-    {
-        return strlen($value) >= $min && strlen($value) <= $max;
-    }
-
-    /**
-     * Check if a string is a valid email
-     * @param string $value
-     * @return bool
-     */
-    protected function isEmail(string $value)
-    {
-        return filter_var($value, FILTER_VALIDATE_EMAIL);
-    }
-
-    /**
      * Check if a file is sent through a POST form
      * @param array $posted_file
      * @return bool

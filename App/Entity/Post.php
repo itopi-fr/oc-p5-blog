@@ -6,18 +6,18 @@ use DateTime;
 
 class Post
 {
-    private int $id;
-    private int $author_id;
-    private User $author_user;
-    private int $feat_img_id;
-    private File $feat_img_file;
-    private string $title;
-    private string $slug;
-    private string $excerpt;
-    private string $content;
-    private DateTime $creation_date;
-    private DateTime $last_update;
-    private string $status;
+    protected int $id;
+    protected int $author_id;
+    protected User $author_user;
+    protected int $feat_img_id;
+    protected File $feat_img_file;
+    protected string $title;
+    protected string $slug;
+    protected string $excerpt;
+    protected string $content;
+    protected DateTime $creation_date;
+    protected DateTime $last_update;
+    protected string $status;
 
     /**
      * ----------------------------------------------------------------------------------------------- Getters & Setters

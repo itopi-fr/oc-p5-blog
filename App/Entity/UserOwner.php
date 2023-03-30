@@ -5,19 +5,14 @@ namespace App\Entity;
 class UserOwner extends User
 {
     private int $owner_id;
-    private int $photo_file_id;
+    private int|null $photo_file_id;
     private File $photo_file;
-    private int $cv_file_id;
+    private int|null $cv_file_id;
     private File $cv_file;
-    private string $first_name;
-    private string $last_name;
-    private string $catch_phrase;
+    private string|null $first_name;
+    private string|null $last_name;
+    private string|null $catch_phrase;
 
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     /**
      * ----------------------------------------------------------------------------------------------- Getters & Setters
@@ -41,9 +36,9 @@ class UserOwner extends User
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getPhotoFileId(): int
+    public function getPhotoFileId(): int|null
     {
         return $this->photo_file_id;
     }
@@ -75,9 +70,9 @@ class UserOwner extends User
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getCvFileId(): int
+    public function getCvFileId(): int|null
     {
         return $this->cv_file_id;
     }
@@ -109,9 +104,9 @@ class UserOwner extends User
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getFirstName(): string
+    public function getFirstName(): string|null
     {
         return $this->first_name;
     }
@@ -126,9 +121,9 @@ class UserOwner extends User
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getLastName(): string
+    public function getLastName(): string|null
     {
         return $this->last_name;
     }
@@ -143,9 +138,9 @@ class UserOwner extends User
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getCatchPhrase(): string
+    public function getCatchPhrase(): string|null
     {
         return $this->catch_phrase;
     }

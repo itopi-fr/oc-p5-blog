@@ -19,7 +19,6 @@ class Connection
     private string $username;
     private string $password;
     private ?PDO $conn;
-    protected MainController $mc;
 
 
 
@@ -29,7 +28,6 @@ class Connection
         $this->dbname = $_ENV['DB_NAME'];
         $this->username = $_ENV['DB_USER'];
         $this->password = $_ENV['DB_PASS'];
-        $this->mc = new MainController();
     }
 
     /**
@@ -46,9 +44,10 @@ class Connection
                     $this->password
                 );
                 $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $this->conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false); // mysql bug : int converted to string
             }
         } catch (PDOException $e) {
-            throw new PDOException($e->getMessage());
+            throw new PDOException($e);
         }
         return $this->conn;
     }
@@ -73,7 +72,7 @@ class Connection
             $result = $req->fetch();
             return $result ? $result : null;
         } catch (PDOException $e) {
-            throw new PDOException($e->getMessage());
+            throw new PDOException($e);
         }
     }
 
@@ -93,7 +92,7 @@ class Connection
             $result = $req->fetch();
             return $result ? $result : null;
         } catch (PDOException $e) {
-            throw new PDOException($e->getMessage());
+            throw new PDOException($e);
         }
     }
 
@@ -111,28 +110,31 @@ class Connection
             $req->setFetchMode(PDO::FETCH_OBJ);
             $req->execute($data);
             $result = $req->fetchAll();
+
+
             return $result ? $result : null;
         } catch (PDOException $e) {
-            throw new PDOException($e->getMessage());
+            throw new PDOException($e);
         }
     }
 
     /**
-     * Inserts a single element into the database. Returns the last inserted id.
+     * Inserts a single element into the database. Returns the id of the last inserted element or a null value.
      * @param string $statement
      * @param array $data
-     * @return bool|null
+     * @return int|null
      * @throws PDOException
      */
-    protected function insert(string $statement, array $data): bool | null
+    protected function insert(string $statement, array $data): int | null
     {
         try {
             $req = $this->connect()->prepare($statement);
             $req->execute($data);
+
             $result = $this->connect()->lastInsertId();
             return $result ? $result : null;
         } catch (PDOException $e) {
-            throw new PDOException($e->getMessage());
+            throw new PDOException($e);
         }
     }
 
@@ -150,7 +152,7 @@ class Connection
             $result = $req->execute($data);
             return $result ? $result : null;
         } catch (PDOException $e) {
-            throw new PDOException($e->getMessage());
+            throw new PDOException($e);
         }
     }
 
@@ -167,9 +169,9 @@ class Connection
             $req = $this->connect()->prepare($statement);
             $req->execute($data);
             $res = $req->fetch();
-            return $res[0] === '1';
+            return $res[0] === 1;
         } catch (PDOException $e) {
-            throw new PDOException($e->getMessage());
+            throw new PDOException($e);
         }
     }
 
@@ -187,7 +189,19 @@ class Connection
             $req->execute($data);
             return $req->rowCount();
         } catch (PDOException $e) {
-            throw new PDOException($e->getMessage());
+            throw new PDOException($e);
+        }
+    }
+
+    protected function getMaxId(string $statement, array $data): int
+    {
+        try {
+            $req = $this->connect()->prepare($statement);
+            $req->execute($data);
+            $res = $req->fetch();
+            return $res[0];
+        } catch (PDOException $e) {
+            throw new PDOException($e);
         }
     }
 }

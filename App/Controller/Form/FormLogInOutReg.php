@@ -10,12 +10,12 @@ use App\Model\UserModel;
 
 class FormLogInOutReg extends FormController
 {
-    private Res $res;
+    protected Res $res;
 
-    private User $user;
-    private UserController $userController;
-    private UserModel $userModel;
-    private MainController $mc;
+    protected User $user;
+    protected UserController $userController;
+    protected UserModel $userModel;
+    protected MainController $mc;
 
 
     public function __construct()
@@ -38,6 +38,10 @@ class FormLogInOutReg extends FormController
             $this->res->ko('register', $this->res->showMsg('pass-not-match'), null);
         }
 
+        if ($this->userModel->userExistsByPseudo($pseudo)) {
+             $this->res->ko('register', 'Pseudo déjà utilisé', null);
+        }
+
         if ($this->userModel->userExistsByEmail($email)) {
              $this->res->ko('register', 'Email déjà utilisé', null);
         }
@@ -46,10 +50,11 @@ class FormLogInOutReg extends FormController
             $this->res->ko('register', $this->res->showMsg('pass-format'), null);
         }
 
-        // TODO : checks de format de l'email, du pseudo, userExists, isUnique
+        // TODO : checks de format de l'email, du pseudo
 
         // If ok
-        if ($this->userController->regCreateUser($pseudo, $email, $password)->getId() > -1) {
+        $createdUser = $this->userController->regCreateUser($pseudo, $email, $password);
+        if ($createdUser->getId() > -1) {
             $this->res->ok('register', $this->res->showMsg('register-success-wait-mail-confirm'), null);
         } else {
             $this->res->ko('register', $this->res->showMsg('register-fail'), null);
@@ -62,7 +67,6 @@ class FormLogInOutReg extends FormController
     {
         // hash
         $password = $this->hashPassword($password);
-//        $this->dump($password);
 
         if ($this->userModel->userExistsByEmailPassword($email, $password)) {
             $this->user = $this->userModel->getUserByEmail($email);

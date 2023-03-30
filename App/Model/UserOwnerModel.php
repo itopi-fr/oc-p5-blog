@@ -14,7 +14,6 @@ class UserOwnerModel extends UserModel
     private UserOwner $owner;
 
 
-
     public function __construct()
     {
         parent::__construct();
@@ -56,8 +55,11 @@ class UserOwnerModel extends UserModel
      * @return int | Exception
      * @throws Exception
      */
-    public function updateUserOwner(UserOwner $userOwner) {
-        if (!$this->userExistsById($userOwner->getOwnerId())) throw new Exception('Utilisateur inconnu');
+    public function updateUserOwner(UserOwner $userOwner)
+    {
+        if (!$this->userOwnerExistsById($userOwner->getOwnerId())) {
+            throw new Exception('Profil inconnu');
+        }
 
         // TODO : Si l'user change de photo ou de CV, supprimer les anciens (fichiers + BDD)
 
@@ -68,12 +70,20 @@ class UserOwnerModel extends UserModel
                             last_name=?, 
                             catch_phrase=? 
                         WHERE owner_id=?';
+
         return $this->update($sql, [
             $userOwner->getPhotoFileId(),
             $userOwner->getCvFileId(),
             $userOwner->getFirstName(),
             $userOwner->getLastName(),
             $userOwner->getCatchPhrase(),
-            $userOwner->getId()]);
+            $userOwner->getOwnerId()
+        ]);
+    }
+
+    public function userOwnerExistsById($userOwnerId)
+    {
+        $sql = "SELECT EXISTS(SELECT * FROM user_owner_infos WHERE owner_id = ?)";
+        return $this->exists($sql, [$userOwnerId]);
     }
 }

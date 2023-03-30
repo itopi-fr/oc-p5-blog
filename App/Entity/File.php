@@ -11,6 +11,7 @@ class File
     private string $mime;
     private float $size;
 
+
     /**
      * ----------------------------------------------------------------------------------------------- Getters & Setters
      */

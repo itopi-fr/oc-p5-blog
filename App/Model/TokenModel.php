@@ -10,6 +10,7 @@ use PDOException;
 class TokenModel extends Connection
 {
     public Token $token;
+
     public function __construct()
     {
         parent::__construct();
@@ -45,7 +46,7 @@ class TokenModel extends Connection
      * @param string $tokenContent
      * @return object|null
      */
-    public function getTokenByContent(string $tokenContent): object | null
+    public function getTokenByContent(string $tokenContent): object|null
     {
         $req = 'SELECT * FROM token WHERE content =?';
         $result = $this->getSingleAsObject($req, [$tokenContent]);

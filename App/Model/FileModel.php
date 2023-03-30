@@ -3,9 +3,10 @@
 namespace App\Model;
 
 
+use App\Database\Connection;
 use App\Entity\File;
 
-class FileModel extends \App\Database\Connection
+class FileModel extends Connection
 {
 
 
@@ -60,7 +61,8 @@ class FileModel extends \App\Database\Connection
     /**
      * Delete a file from the database based on its id
      */
-    public function deleteFileById(int $fileId) {
+    public function deleteFileById(int $fileId)
+    {
         $sql = "DELETE FROM file WHERE id = ?";
         return $this->delete($sql, [$fileId]);
     }

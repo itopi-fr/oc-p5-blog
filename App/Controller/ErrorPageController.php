@@ -12,6 +12,6 @@ class ErrorPageController extends MainController
     }
     public function index()
     {
-        echo  $this->twig->render("pages/fo/fo_error.twig", $this->twigData);
+        echo  $this->twig->render("pages/page_fo_error.twig", $this->twigData);
     }
 }

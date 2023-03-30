@@ -8,6 +8,7 @@ use App\Controller\Form\FormUserProfile;
 use App\Entity\Res;
 use App\Entity\Token;
 use App\Entity\UserOwner;
+use App\Model\MailModel;
 use App\Model\UserOwnerModel;
 use App\Entity\User;
 use App\Model\UserModel;
@@ -49,24 +50,24 @@ class UserController extends MainController
             }
 
             // Display page
-            echo $this->twig->render("pages/bo/page_bo_register.twig", $this->twigData);
+            echo $this->twig->render("pages/page_bo_register.twig", $this->twigData);
         }
 
         if ($userAction === 'activation') {
-//            $this->dump($userActionSub);
+            // /user/activation/123456789
+            // $this->dump($userActionSub);
+
             if (isset($userActionSub)) {
-                // /user/activation?token=123456789
                 $this->token = $this->tokenController->getToken($userActionSub);
                 if ($this->token->getId() > -1) {
                     $this->user = $this->userModel->getUserById($this->token->getUserId());
                     if ($this->user->getId() > -1) {
                         $this->user->setRole('user');
                         $this->userModel->updateUser($this->user);
-                        $this->tokenController->deleteTokenById($this->token->getId());
+//                        $this->tokenController->deleteTokenById($this->token->getId());
                         $this->res->ok('activation', 'Votre compte a bien été activé', null);
                         $this->twigData['result'] = $this->res;
-                        echo $this->twig->render("pages/bo/page_bo_activate.twig", $this->twigData);
-                        $this->redirectTo('/user/profil', 3);
+                        $this->redirectTo('/user/connexion', 3);
                     }
                 }
             }
@@ -83,6 +84,7 @@ class UserController extends MainController
         if ($userId > -1) {
             $this->user = $this->userModel->getUserById($userId);
 
+
             // Owner
             if ($this->user->getRole() == 'owner') {
                 $this->userOwner = (new UserOwnerModel())->getUserOwnerById($this->user->getId());
@@ -90,6 +92,10 @@ class UserController extends MainController
                 // Form Owner
                 if ($userAction == 'profil' && isset($_POST["submit-owner-profile"])) {
                     $this->twigData['result'] = (new FormUserProfile())->treatFormUserOwner($this->userOwner);
+
+                    // Refresh owner info
+                    $_SESSION['ownerinfo'] = (new OwnerInfoController())->getOwnerInfo();
+                    $this->refresh();
                 }
                 $this->twigData['owner'] = $this->userOwner;
             }
@@ -120,7 +126,7 @@ class UserController extends MainController
         }
 
         // Display page
-        echo $this->twig->render("pages/bo/page_bo_user.twig", $this->twigData);
+        echo $this->twig->render("pages/page_bo_user.twig", $this->twigData);
     }
 
     /**
@@ -137,21 +143,43 @@ class UserController extends MainController
         $this->user->setPseudo($pseudo);
         $this->user->setEmail($email);
         $this->user->setPass($password);
-        $this->user->setAvatarId(-1);
+        $this->user->setAvatarId(1); // default avatar
         $this->user->setRole('user-validation-waiting');
+        $resToken = new Res();
 
         $userCreatedId = $this->userModel->createUser($this->user);
-//        $this->dump($userCreatedId);
 
         if ($userCreatedId > -1) {
-            $this->user = $this->userModel->getUserById($userCreatedId);
-            $tokenContent = $this->tokenController->createUserToken($this->user->getId(), 'user-validation');
-//            $this->dump($this->user);
-//            $this->dump($tokenContent);
+            if ($this->userModel->getUserById($userCreatedId)->getId() > -1) {
+                $this->user = $this->userModel->getUserById($userCreatedId);
+                $resToken = $this->tokenController->createUserToken($this->user->getId(), 'user-validation');
+//                $this->dump($resToken);
+            }
+
+            if (!$resToken->isErr()) {
+                // TODO : Create mail templates with twig
+
+                // Build mail content
+                $token = $resToken->getResult()['token'];
+                $mailTo = $this->user->getEmail();
+                $mailToName = $this->user->getPseudo();
+                $mailSubject = 'Activation de votre compte';
+                $mailContent = 'Bonjour ' . $this->user->getPseudo() . ',<br><br>';
+                $mailContent .= 'Pour activer votre compte, veuillez cliquer sur le lien ci-dessous :<br />';
+                $mailContent .= '<a href="http://ocp5blog/user/activation/' . $token . '">Activer mon compte</a><br /><br />';
+                $mailContent .= 'Cordialement,<br />';
+                $mailContent .= 'L\'équipe de p5blog';
+
+                // Send mail
+                $tokenValidateEmail = new MailController();
+                $tokenValidateEmail->sendEmail($mailTo, $mailToName, $mailSubject, $mailContent);
+            } else {
+                $this->res->ko('reg-create-user', 'Erreur lors de la création du token de validation', null);
+            }
+
+        } else {
+            $this->res->ko('reg-create-user', 'Erreur lors de la création de l\'utilisateur', null);
         }
-
-        // TODO : send mail with $tokenContent
-
         return $this->user;
     }
 
@@ -177,6 +205,13 @@ class UserController extends MainController
     {
         $this->userOwnerModel = new UserOwnerModel();
         return $this->userOwnerModel->updateUserOwner($userOwner);
+    }
+
+    public function getOwnerInfo()
+    {
+        $this->userOwnerModel = new UserOwnerModel();
+        $maxId = $this->userOwnerModel->getLastOwnerId();
+        return $this->userOwnerModel->getUserOwnerById($maxId);
     }
 
 

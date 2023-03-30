@@ -10,6 +10,7 @@ use Exception;
 class UserModel extends Connection
 {
     public User $user;
+
     public function __construct()
     {
         parent::__construct();
@@ -53,7 +54,7 @@ class UserModel extends Connection
      * @param string $userEmail
      * @return User|Exception
      */
-    public function getUserByEmail(string $userEmail): null | User
+    public function getUserByEmail(string $userEmail): null|User
     {
         try {
             $sql = 'SELECT * FROM user WHERE email =?';
@@ -80,11 +81,14 @@ class UserModel extends Connection
      * Create a user providing a user object
      * @param User $user
      * @return int|Exception
+     * @throws Exception
      */
     public function createUser(User $user): int|Exception
     {
+
         $sql = 'INSERT INTO user (avatar_id, pseudo, pass, email, role) VALUES (?, ?, ?, ?, ?)';
-        return $this->insert(
+
+        $createdUserId = $this->insert(
             $sql,
             [
                 null,
@@ -94,6 +98,12 @@ class UserModel extends Connection
                 $user->getRole()
             ]
         );
+
+        if (is_null($createdUserId)) {
+            throw new Exception('Erreur lors de la création de l\'utilisateur');
+        } else {
+            return $createdUserId;
+        }
     }
 
     /**
@@ -102,7 +112,7 @@ class UserModel extends Connection
      * @return int | Exception
      * @throws Exception
      */
-    public function updateUser(User $user): int | Exception
+    public function updateUser(User $user): int|Exception
     {
         if (!$this->userExistsById($user->getId())) {
             throw new Exception('Utilisateur inconnu');
@@ -111,13 +121,15 @@ class UserModel extends Connection
         // TODO : Si l'user change d'avatar, supprimer l'ancien (fichiers + BDD)
 
 
-        $sql = 'UPDATE user SET avatar_id=?, pseudo=?, pass=?, email=? WHERE id=?';
+        $sql = 'UPDATE user SET avatar_id=?, pseudo=?, pass=?, email=?, role=? WHERE id=?';
         return $this->update(
             $sql,
-            [$user->getAvatarId(),
+            [
+                $user->getAvatarId(),
                 $user->getPseudo(),
                 $user->getPass(),
                 $user->getEmail(),
+                $user->getRole(),
                 $user->getId()
             ]
         );
@@ -130,8 +142,20 @@ class UserModel extends Connection
      */
     public function userExistsById(int $userId): bool
     {
+
         $sql = "SELECT EXISTS(SELECT * FROM user WHERE id = ?)";
         return $this->exists($sql, [$userId]);
+    }
+
+    /**
+     * Checks if a user exists in database based on its pseudo
+     * @param string $userPseudo
+     * @return bool
+     */
+    public function userExistsByPseudo(string $userPseudo): bool
+    {
+        $sql = "SELECT EXISTS(SELECT * FROM user WHERE pseudo = ?)";
+        return $this->exists($sql, [$userPseudo]);
     }
 
     /**

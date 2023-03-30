@@ -84,6 +84,12 @@ label {
     padding: 0;
 }
 
+/* Post Single */
+.post-single-feat-img {
+    width: 100%;
+    height: auto;
+}
+
 /* Surcharge Starter Theme */
 @media (min-width: 992px) {
     header.masthead {

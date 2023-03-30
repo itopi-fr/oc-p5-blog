@@ -10,7 +10,7 @@ use App\Entity\UserOwner;
 class FormUserProfile extends FormController
 {
     private Res $res;
-    private UserController $userController;
+    protected UserController $userController;
 
     public function __construct()
     {
@@ -27,6 +27,7 @@ class FormUserProfile extends FormController
      */
     public function treatFormUser(User $user): Res
     {
+//        $this->dump($user);
 
 
         // ------------------------------------------------------------------------------------------------------ Checks
@@ -39,10 +40,9 @@ class FormUserProfile extends FormController
         $this->res = $this->checkIfUnique('email', $user->getId());
 
         // file-avatar : checks
-        if (!$this->fileIsSent($_FILES['file-avatar']) && !is_a($user->getAvatarFile(), 'App\Entity\File') ) {
+        if (!$this->fileIsSent($_FILES['file-avatar']) && !is_a($user->getAvatarFile(), 'App\Entity\File')) {
             $this->res->ko('avatar', 'Veuillez renseigner un fichier');
-        }
-        else if ($this->fileIsSent($_FILES['file-avatar']) ) {
+        } elseif ($this->fileIsSent($_FILES['file-avatar'])) {
             if (!$this->checkFileIsImage($_FILES['file-avatar'])) {
                 $this->res->ko('avatar', 'le fichier n\'est pas une image');
             }
@@ -52,7 +52,10 @@ class FormUserProfile extends FormController
         }
 
         $this->res->setType('profil');
-        if ($this->res->isErr()) return $this->res;
+
+        if ($this->res->isErr()) {
+            return $this->res;
+        }
 
         // -------------------------------------------------------------------------------------------------- Treatment
         // User avatar file : treatment
@@ -71,7 +74,7 @@ class FormUserProfile extends FormController
 
         if ($result === 0) {
             $this->res->ok('profil', 'Aucun changement apporté au profil', null);
-        } else if ($result === 1) {
+        } elseif ($result === 1) {
             $this->res->ok('profil', 'Le profil a bien été mis à jour', null);
         } else {
             $this->res->ko('profil', 'Une erreur est survenue');
@@ -89,10 +92,9 @@ class FormUserProfile extends FormController
         $this->res->setType('auteur');
 
         // file-cv : checks
-        if (!$this->fileIsSent($_FILES['file-cv']) && !is_a($userOwner->getCvFile(), 'App\Entity\File') ) {
+        if (!$this->fileIsSent($_FILES['file-cv']) && !is_a($userOwner->getCvFile(), 'App\Entity\File')) {
             $this->res->ko('cv', 'Veuillez renseigner un fichier');
-        }
-        else if ($this->fileIsSent($_FILES['file-cv']) ) {
+        } elseif ($this->fileIsSent($_FILES['file-cv'])) {
             if (!$this->checkFileIsDoc($_FILES['file-cv'])) {
                 $this->res->ko('cv', 'le fichier n\'est pas un pdf');
             }
@@ -102,10 +104,9 @@ class FormUserProfile extends FormController
         }
 
         // file-photo : checks
-        if (!$this->fileIsSent($_FILES['file-photo']) && !is_a($userOwner->getPhotoFile(), 'App\Entity\File') ) {
+        if (!$this->fileIsSent($_FILES['file-photo']) && !is_a($userOwner->getPhotoFile(), 'App\Entity\File')) {
             $this->res->ko('photo', 'Veuillez renseigner un fichier');
-        }
-        else if ($this->fileIsSent($_FILES['file-photo']) ) {
+        } elseif ($this->fileIsSent($_FILES['file-photo'])) {
             if (!$this->checkFileIsImage($_FILES['file-photo'])) {
                 $this->res->ko('photo', 'le fichier n\'est pas une image');
             }
@@ -115,7 +116,9 @@ class FormUserProfile extends FormController
         }
 
 
-        if ($this->res->isErr()) return $this->res;
+        if ($this->res->isErr()) {
+            return $this->res;
+        }
 
         // Owner simple fields : treatment
         $userOwner->setFirstName($_POST['firstname']);
@@ -142,7 +145,7 @@ class FormUserProfile extends FormController
 
         if ($result === 0) {
             $this->res->ok('auteur', 'Aucun changement apporté aux informations de l\'auteur', null);
-        } else if ($result === 1) {
+        } elseif ($result === 1) {
             $this->res->ok('auteur', 'Les informations de l\'auteur ont bien été mises à jour', null);
         } else {
             $this->res->ko('auteur', 'Une erreur est survenue');

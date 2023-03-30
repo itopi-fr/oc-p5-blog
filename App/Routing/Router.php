@@ -5,11 +5,11 @@ namespace App\Routing;
 use App\Controller\HomeController;
 use App\Controller\ErrorPageController;
 use App\Controller\MainController;
+use App\Controller\OwnerInfoController;
 use App\Controller\PostController;
 //use App\Controller\ProfileController;
 use App\Controller\UserController;
 use Exception;
-
 
 class Router
 {
@@ -23,6 +23,7 @@ class Router
     private array $urlParts;
     private string $userAction;
     private string $userActionSub;
+    private OwnerInfoController $ownerInfoController;
 
 
     public function __construct()
@@ -52,6 +53,13 @@ class Router
                 if (isset($this->urlParts[2]) && !empty($this->urlParts[2])) {
                     $this->userActionSub = $this->urlParts[2];
                 }
+            }
+
+            // Owner info
+            if (!isset($_SESSION['ownerinfo']) || empty($_SESSION['ownerinfo']) || $_SESSION['ownerinfo'] == null) {
+                $this->ownerInfoController = new OwnerInfoController();
+                $ownerInfo = $this->ownerInfoController->getOwnerInfo();
+                $_SESSION['ownerinfo'] = $ownerInfo;
             }
 
 
@@ -88,12 +96,10 @@ class Router
                     break;
             }
         } catch (Exception $e) {
-            if($_ENV['MODE_DEV'] == 'true') {
+            if ($_ENV['MODE_DEV'] == 'true') {
                 $this->mc->dump($e);
             }
 
         }
-
-
     }
 }

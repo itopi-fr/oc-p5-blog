@@ -10,7 +10,9 @@
             <input type="email" name="email" class="form-control" id="email" placeholder="Email" value="{{ user.getEmail() }}">
         </div>
         Avatar
-        <img src="{{ user.getAvatarFile().getUrl() }}" alt="Avatar" class="img-thumbnail" width="25px">
+        {% if user.getAvatarId() is not null %}
+            <img src="{{ user.getAvatarFile().getUrl() }}" alt="Avatar" class="img-thumbnail" width="25px">
+        {% endif %}
 
         <div class="form-group">
             <label for="file-avatar">Mettre à jour : </label>

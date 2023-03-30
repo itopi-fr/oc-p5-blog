@@ -2,28 +2,22 @@
 
 namespace App\Controller;
 
+use App\Model\UserOwnerModel;
 use Exception;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
+use App\Controller\OwnerInfoController;
 
 class MainController
 {
     protected FilesystemLoader $loader;
     protected Environment $twig;
+    protected UserController $userController;
     public array $toDump = [];
+    protected array $twigData = [];
+    private UserOwnerModel $userOwnerModel;
+    private OwnerInfoController $ownerInfoController;
 
-    protected array $twigData = [
-        'posts' => [1 => ['id' => 1, 'title' => 'Article 1', 'content' => 'Content 1', 'date' => '2023-01-01'],
-            2 => ['id' => 2, 'title' => 'Article 2', 'content' => 'Content 2', 'date' => '2022-12-15'],
-            3 => ['id' => 3, 'title' => 'Article 3', 'content' => 'Content 3', 'date' => '2023-02-01'],
-            4 => ['id' => 4, 'title' => 'Article 4', 'content' => 'Content 4', 'date' => '2023-01-01'],
-            5 => ['id' => 5, 'title' => 'Article 5', 'content' => 'Content 5', 'date' => '2023-01-01'],
-            6 => ['id' => 6, 'title' => 'Article 6', 'content' => 'Content 6', 'date' => '2023-01-01'],
-            7 => ['id' => 7, 'title' => 'Article 7', 'content' => 'Content 7', 'date' => '2023-01-01'],
-            8 => ['id' => 8, 'title' => 'Article 8', 'content' => 'Content 8', 'date' => '2023-01-01'],
-            9 => ['id' => 9, 'title' => 'Article 9', 'content' => 'Content 9', 'date' => '2023-01-01'],
-            10 => ['id' => 10, 'title' => 'Article 10', 'content' => 'Content 10', 'date' => '2023-01-01']]
-    ];
 
     public function __construct()
     {
@@ -36,6 +30,58 @@ class MainController
     }
 
     /** -------------------------------------------------- Methods -------------------------------------------------  */
+
+    /**
+     * Check if a value is set
+     * @param mixed $value
+     * @return bool
+     */
+    protected function isSet($value)
+    {
+        return isset($value) && !empty($value);
+    }
+
+    /**
+     * Check if a string is alphanumeric, - and _
+     * @param string $value
+     * @return bool
+     */
+    protected function isAlphaNumPlus(string $value)
+    {
+        return preg_match("/^[a-zA-Z0-9_\-]+$/", $value);
+    }
+
+    /**
+     * Check if a string is alphanumeric, "-", "_" and spaces
+     * @param string $value
+     * @return bool
+     */
+    protected function isAlphaNumSpacesPonct(string $value)
+    {
+        return preg_match("/^[\w\d,!(). \-]*$/", $value);
+    }
+
+    /**
+     * Check if a string is between 2 lengths
+     * @param string $value
+     * @param int $min
+     * @param int $max
+     * @return bool
+     */
+    protected function isBetween(string $value, int $min, int $max)
+    {
+        return strlen($value) >= $min && strlen($value) <= $max;
+    }
+
+    /**
+     * Check if a string is a valid email
+     * @param string $value
+     * @return bool
+     */
+    protected function isEmail(string $value)
+    {
+        return filter_var($value, FILTER_VALIDATE_EMAIL);
+    }
 
     /**
      * Every dump is stored inside the $toDump array.
@@ -93,7 +139,7 @@ class MainController
      */
     protected function redirectTo(string $route, int $delay): void
     {
-        header("refresh:$delay;url=$route");
+        header("Refresh:$delay; url=$route");
     }
 
     /**
@@ -142,6 +188,11 @@ class MainController
             isset($_SESSION['userid']) ?
                 $this->twig->addGlobal('userid', $_SESSION['userid']) :
                 $this->twig->addGlobal('userid', -1);
+
+            isset($_SESSION['ownerinfo']) ?
+                $this->twig->addGlobal('ownerinfo', $_SESSION['ownerinfo']) :
+                $this->twig->addGlobal('ownerinfo', null);
+
         } else {
             $this->twig->addGlobal('userid', -1);
         }

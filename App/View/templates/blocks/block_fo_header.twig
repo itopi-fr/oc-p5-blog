@@ -8,6 +8,15 @@
                         {% if userid > -1 %}
                             <div>User Id : {{ userid }}</div>
                         {% endif %}
+
+                        {% if ownerinfo is not null %}
+                            {{ ownerinfo.firstname }} {{ ownerinfo.lastname }}<br>
+                            Catch phrase : {{ ownerinfo.catchphrase }}<br>
+                            Photo : <img src="{{ ownerinfo.getPhotoFile().getUrl() }}" alt="photo" width="25px" height="25px"><br>
+                            <a href="{{ ownerinfo.getCvFile().getUrl() }}" target="_blank">Curriculum Vitae</a><br>
+                        {% endif %}
+
+
                     </div>
                 </div>
             </div>
