@@ -27,8 +27,8 @@ SET time_zone = "+00:00";
 -- Structure de la table `comment`
 --
 
-DROP TABLE IF EXISTS 'comment';
-CREATE TABLE IF NOT EXISTS 'comment' (
+DROP TABLE IF EXISTS comment;
+CREATE TABLE IF NOT EXISTS comment (
   `id` int NOT NULL AUTO_INCREMENT,
   `post_id` int NOT NULL,
   `author_id` int NOT NULL,
@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS file (
 -- Déchargement des données de la table `file`
 --
 
-INSERT INTO `file` (`id`, `title`, `url`, `ext`, `mime`, `size`) VALUES
+INSERT INTO file (`id`, `title`, `url`, `ext`, `mime`, `size`) VALUES
 (1, 'default-avatar', '/public/assets/img/default-avatar.jpg', 'jpg', 'image/jpeg', 20),
 (2, 'default-post', '/public/assets/img/default-post.jpg', 'jpg', 'image/jpeg', 693),
 (47, 'test.jpg', '/public/upload/owner/test_a5eab1.jpg', 'jpg', 'image/jpeg', 693),
@@ -91,8 +91,8 @@ INSERT INTO `file` (`id`, `title`, `url`, `ext`, `mime`, `size`) VALUES
 -- Structure de la table `post`
 --
 
-DROP TABLE IF EXISTS `post`;
-CREATE TABLE IF NOT EXISTS `post` (
+DROP TABLE IF EXISTS post;
+CREATE TABLE IF NOT EXISTS post (
   `id` int NOT NULL AUTO_INCREMENT,
   `author_id` int NOT NULL,
   `feat_img_id` int DEFAULT NULL,
@@ -112,7 +112,7 @@ CREATE TABLE IF NOT EXISTS `post` (
 -- Déchargement des données de la table `post`
 --
 
-INSERT INTO `post` (`id`, `author_id`, `feat_img_id`, `title`, `slug`, `excerpt`, `content`, `creation_date`, `last_update`, `status`) VALUES
+INSERT INTO post (`id`, `author_id`, `feat_img_id`, `title`, `slug`, `excerpt`, `content`, `creation_date`, `last_update`, `status`) VALUES
 (13, 89, 2, 'Premier post', 'premier-post', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit\r\n', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', '2023-03-01 11:37:28', '2023-03-01 11:37:28', 'pub'),
 (14, 89, 2, 'Un deuxième post', 'un-deuxieme-post', 'Lorem ipsum dolor sit amet', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', '2023-03-02 11:37:28', '2023-03-02 11:37:28', 'pub'),
 (15, 89, 2, 'Troisième post', 'troisieme-post', 'Lorem ipsum dolor sit amet', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', '2023-03-03 11:39:43', '2023-03-03 11:39:43', 'pub'),
@@ -125,8 +125,8 @@ INSERT INTO `post` (`id`, `author_id`, `feat_img_id`, `title`, `slug`, `excerpt`
 -- Structure de la table `token`
 --
 
-DROP TABLE IF EXISTS `token`;
-CREATE TABLE IF NOT EXISTS `token` (
+DROP TABLE IF EXISTS token;
+CREATE TABLE IF NOT EXISTS token (
   `id` int NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
   `content` varchar(10000) COLLATE utf8mb4_general_ci NOT NULL,
@@ -142,8 +142,8 @@ CREATE TABLE IF NOT EXISTS `token` (
 -- Structure de la table `user`
 --
 
-DROP TABLE IF EXISTS `user`;
-CREATE TABLE IF NOT EXISTS `user` (
+DROP TABLE IF EXISTS user;
+CREATE TABLE IF NOT EXISTS user (
   `id` int NOT NULL AUTO_INCREMENT,
   `avatar_id` int DEFAULT NULL,
   `pseudo` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
@@ -158,7 +158,7 @@ CREATE TABLE IF NOT EXISTS `user` (
 -- Déchargement des données de la table `user`
 --
 
-INSERT INTO `user` (`id`, `avatar_id`, `pseudo`, `pass`, `email`, `role`) VALUES
+INSERT INTO user (`id`, `avatar_id`, `pseudo`, `pass`, `email`, `role`) VALUES
 (89, 66, 'owner', 'a8c23cc814179578e3a774418ac5fc4702a66eb3b78c876df81b290465e6e334', 'md@itopi.fr', 'owner');
 
 -- --------------------------------------------------------
@@ -167,8 +167,8 @@ INSERT INTO `user` (`id`, `avatar_id`, `pseudo`, `pass`, `email`, `role`) VALUES
 -- Structure de la table `user_owner_infos`
 --
 
-DROP TABLE IF EXISTS `user_owner_infos`;
-CREATE TABLE IF NOT EXISTS `user_owner_infos` (
+DROP TABLE IF EXISTS user_owner_infos;
+CREATE TABLE IF NOT EXISTS user_owner_infos (
   `owner_id` int NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
   `photo_file_id` int DEFAULT NULL,
@@ -186,7 +186,7 @@ CREATE TABLE IF NOT EXISTS `user_owner_infos` (
 -- Déchargement des données de la table `user_owner_infos`
 --
 
-INSERT INTO `user_owner_infos` (`owner_id`, `user_id`, `photo_file_id`, `cv_file_id`, `first_name`, `last_name`, `catch_phrase`) VALUES
+INSERT INTO user_owner_infos (`owner_id`, `user_id`, `photo_file_id`, `cv_file_id`, `first_name`, `last_name`, `catch_phrase`) VALUES
 (2, 89, 65, 67, 'Maxime', 'Degueldre', 'test');
 
 --
@@ -196,33 +196,33 @@ INSERT INTO `user_owner_infos` (`owner_id`, `user_id`, `photo_file_id`, `cv_file
 --
 -- Contraintes pour la table `comment`
 --
-ALTER TABLE `comment`
+ALTER TABLE comment
   ADD CONSTRAINT `fk_comment_post1` FOREIGN KEY (`post_id`) REFERENCES `post` (`id`),
   ADD CONSTRAINT `fk_comment_user1` FOREIGN KEY (`author_id`) REFERENCES `user` (`id`);
 
 --
 -- Contraintes pour la table `post`
 --
-ALTER TABLE `post`
+ALTER TABLE post
   ADD CONSTRAINT `post_ibfk_1` FOREIGN KEY (`feat_img_id`) REFERENCES `file` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `post_ibfk_2` FOREIGN KEY (`author_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `token`
 --
-ALTER TABLE `token`
+ALTER TABLE token
   ADD CONSTRAINT `fk_token_user1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 
 --
 -- Contraintes pour la table `user`
 --
-ALTER TABLE `user`
+ALTER TABLE user
   ADD CONSTRAINT `user_ibfk_2` FOREIGN KEY (`avatar_id`) REFERENCES `file` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `user_owner_infos`
 --
-ALTER TABLE `user_owner_infos`
+ALTER TABLE user_owner_infos
   ADD CONSTRAINT `user_owner_infos_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `user_owner_infos_ibfk_2` FOREIGN KEY (`photo_file_id`) REFERENCES `file` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `user_owner_infos_ibfk_3` FOREIGN KEY (`cv_file_id`) REFERENCES `file` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
