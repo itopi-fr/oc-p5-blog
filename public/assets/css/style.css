@@ -1,17 +1,15 @@
 /* General */
-button > a {
-  color: #fff;
-}
-
 a {
   color: #0085a1;
+}
+
+button > a {
+  color: #fff;
 }
 
 a:hover {
   color: #48d0ee;
 }
-
-
 
 h2 {
   margin-top: 25px;
@@ -55,7 +53,6 @@ label {
   z-index: 999;
 }
 
-
 .vardump > pre {
   overflow-wrap: anywhere;
   white-space: pre-wrap;
@@ -73,7 +70,6 @@ label {
 .vardump-close > svg {
   height: 1.5rem;
 }
-
 
 .abs-center {
   position: absolute;
