@@ -27,8 +27,8 @@ SET time_zone = "+00:00";
 -- Structure de la table `comment`
 --
 
-DROP TABLE IF EXISTS `comment`;
-CREATE TABLE IF NOT EXISTS `comment` (
+DROP TABLE IF EXISTS 'comment';
+CREATE TABLE IF NOT EXISTS 'comment' (
   `id` int NOT NULL AUTO_INCREMENT,
   `post_id` int NOT NULL,
   `author_id` int NOT NULL,
@@ -46,8 +46,8 @@ CREATE TABLE IF NOT EXISTS `comment` (
 -- Structure de la table `file`
 --
 
-DROP TABLE IF EXISTS `file`;
-CREATE TABLE IF NOT EXISTS `file` (
+DROP TABLE IF EXISTS file;
+CREATE TABLE IF NOT EXISTS file (
   `id` int NOT NULL AUTO_INCREMENT,
   `title` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
   `url` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
