@@ -133,6 +133,19 @@ class Res
             case "user-profile-file-avatar-ko-not-image":
                 return "Avatar : le fichier n'est pas une image valide (jpg, jpeg, png, gif)";
                 break;
+            // ----------------------------------------------------------------- user-change-pass
+            case "user-change-pass-ok-updated":
+                return "Mot de passe changé";
+                break;
+            case "user-change-pass-ko-wrong-format":
+                return "Mot de passe : le format n'est pas correct";
+                break;
+            case "user-change-pass-ko-pass-dont-match":
+                return "Les nouveaux mots de passe saisis ne correspondent pas";
+                break;
+            case "user-change-pass-ko-old-pass-incorrect":
+                return "L'ancien mot de passe est incorrect";
+                break;
             // -------------------------------------------------------------------- owner-profile
             case "owner-profile-ok-no-change":
                 return "Aucun changement apporté aux informations de l\'auteur";

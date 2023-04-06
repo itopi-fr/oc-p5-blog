@@ -33,18 +33,15 @@ class FormUserChangePass extends FormController
                 if ($this->checkNewPassFormat($new)) {
                     $user->setPass($this->hashPassword($new));
                     $this->userModel->updateUser($user);
-                    $res->ok('changePass', 'Mot de passe changé', null);
+                    $res->ok('user-change-pass', 'user-change-pass-ok-updated', null);
+                } else {
+                    $res->ko('user-change-pass', 'user-change-pass-ko-wrong-format', null);
                 }
-                else {
-                    $res->ko('changePass', 'Format du nouveau mot de passe incorrect', null);
-                }
+            } else {
+                $res->ko('user-change-pass', 'user-change-pass-ko-pass-dont-match', null);
             }
-            else {
-                $res->ko('changePass', 'Les mots de passe ne correspondent pas', null);
-            }
-        }
-        else {
-            $res->ko('changePass', 'Ancien mot de passe incorrect', null);
+        } else {
+            $res->ko('user-change-pass', 'user-change-pass-ko-old-pass-incorrect', null);
         }
 
         return $res;

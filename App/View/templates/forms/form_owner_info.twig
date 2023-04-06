@@ -1,26 +1,14 @@
 {% block form_owner_info %}
     {% use "blocks/block_res_message.twig" %}
-    {% set targetType = "owner-profile" %}
     {% set getType = "" %}
     {% set getMess = "" %}
+    {% set targetType = "owner-profile" %}
 
     {% if owner %}
         <h2>Auteur du blog</h2>
+
         {# Messages #}
         {{ block('res_message') }}
-{#        <div class="col-12 text-center">#}
-{#            {% if (result) %}#}
-{#                <div class="alert alert-{{ (result.isErr()) ? 'warning' : 'success' }}" role="alert">#}
-{#                    {% for type, msg in result.getMsg() %}#}
-{#                        {% if type == 'owner-profile' %}#}
-{#                            {{ result.showMsg(msg) }}<br />#}
-
-{#                        {% endif %}#}
-
-{#                    {% endfor %}#}
-{#                </div>#}
-{#            {% endif %}#}
-{#        </div>#}
 
         {# Form #}
         <form action="profil" method="POST" enctype="multipart/form-data" class="row form-general">
