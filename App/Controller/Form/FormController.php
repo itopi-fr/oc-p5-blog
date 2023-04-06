@@ -7,6 +7,7 @@ use App\Controller\MainController;
 use App\Entity\File;
 use App\Entity\Res;
 use App\Model\UserModel;
+use Exception;
 
 class FormController extends MainController
 {
@@ -27,26 +28,15 @@ class FormController extends MainController
     private string $avatarPath = 'public/upload/user/';
 
 
-
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         parent::__construct();
         $this->res = new Res();
     }
 
-    /**
-     * Check if a file is sent through a POST form
-     * @param array $posted_file
-     * @return bool
-     */
-    protected function fileIsSent(array $posted_file)
-    {
-        return !empty($posted_file)
-            && !empty($posted_file['name'])
-            && !empty($posted_file['type'])
-            && !empty($posted_file['tmp_name'])
-            && !empty($posted_file['size']);
-    }
 
     /**
      * Check if file size is ok based on its type
@@ -115,12 +105,12 @@ class FormController extends MainController
      * @param int $id
      * @return Res $res
      */
-    protected function checkIfUnique(string $field, int $id)
+    protected function checkIfUnique(string $formName, string $field, int $id): Res
     {
 
         $userModel = new UserModel();
         if (!$userModel->isUnique($_POST[$field], $field, $id)) {
-            $this->res->ko($field, 'déjà utilisé par une autre personne');
+            $this->res->ko($formName, $formName . '-ko-' . $field . '-not-unique');
         }
         return $this->res;
     }
@@ -132,14 +122,14 @@ class FormController extends MainController
      * @param int $max
      * @return Res
      */
-    protected function checkPostFieldText(string $field, int $min, int $max)
+    protected function checkPostFieldText(string $formName, string $field, int $min, int $max): Res
     {
-        if (!$this->isSet($_POST[$field])) {
-            $this->res->ko($field, 'Non renseigné');
-        } elseif (!$this->isAlphaNumPlus($_POST[$field])) {
-            $this->res->ko($field, 'ne doit contenir que des lettres, des chiffres, des tirets ou des underscores');
-        } elseif (!$this->isBetween($_POST[$field], $min, $max)) {
-            $this->res->ko($field, 'doit contenir entre ' . $min . ' et ' . $max . ' caractères');
+        if ($this->isSet($_POST[$field]) === false) {
+            $this->res->ko($formName, $formName . '-ko-' . $field . '-empty');
+        } elseif ($this->isAlphaNumPlus($_POST[$field]) === false) {
+            $this->res->ko($formName, $formName . '-ko-' . $field . '-not-alpha-num-plus');
+        } elseif ($this->isBetween($_POST[$field], $min, $max) === false) {
+            $this->res->ko($formName, $formName . '-ko-' . $field . '-not-between- ' . $min . '-and-' . $max);
         }
         return $this->res;
     }
@@ -151,16 +141,16 @@ class FormController extends MainController
      * @param int $max
      * @return Res
      */
-    protected function checkPostFieldTextarea(string $field, int $min, int $max)
+    protected function checkPostFieldTextarea(string $field, int $min, int $max): Res
     {
-        if (!$this->isSet($_POST[$field])) {
+        if ($this->isSet($_POST[$field]) === false) {
             $this->res->ko($field, 'Non renseigné');
-        } elseif (!$this->isAlphaNumSpacesPonct($_POST[$field])) {
+        } elseif ($this->isAlphaNumSpacesPonct($_POST[$field]) === false) {
             $this->res->ko(
                 $field,
                 'ne doit contenir que des lettres, des chiffres, des espaces, des tirets ou des underscores'
             );
-        } elseif (!$this->isBetween($_POST[$field], $min, $max)) {
+        } elseif ($this->isBetween($_POST[$field], $min, $max) === false) {
             $this->res->ko($field, 'doit contenir entre ' . $min . ' et ' . $max . ' caractères');
         }
         return $this->res;
@@ -173,14 +163,80 @@ class FormController extends MainController
      * @param int $max
      * @return Res
      */
-    protected function checkPostFieldTextEmail(string $field, int $min, int $max)
+    protected function checkPostFieldTextEmail(string $formName, string $field, int $min, int $max): Res
     {
-        if (!$this->isSet($_POST[$field])) {
-            $this->res->ko($field, 'Non renseigné');
-        } elseif (!$this->isEmail($_POST[$field])) {
-            $this->res->ko($field, 'format non valide');
-        } elseif (!$this->isBetween($_POST[$field], $min, $max)) {
-            $this->res->ko($field, 'doit contenir entre ' . $min . ' et ' . $max . ' caractères');
+        if ($this->isSet($_POST[$field]) === false) {
+            $this->res->ko($formName, $formName . '-ko-' . $field . '-empty');
+        } elseif ($this->isEmail($_POST[$field]) === false) {
+            $this->res->ko($formName, $formName . '-ko-' . $field . '-not-email-format');
+        } elseif ($this->isBetween($_POST[$field], $min, $max) === false) {
+            $this->res->ko($formName, $formName . '-ko-' . $field . '-not-between-' . $min . '-and-' . $max);
+        }
+        return $this->res;
+    }
+
+    /**
+     * This method performs the following checks:
+     * - if a POST file is sent or already set
+     * - if the file is a valide image
+     * - if the file size is not too big
+     * @param string $formName
+     * @param string $type
+     * @param array $postFile
+     * @param File $usrFile
+     * @param string $fileType
+     * @param int $maxSize
+     * @return Res
+     */
+    protected function checkPostFileImg(
+        string $formName,
+        string $type,
+        array $postFile,
+        File $userFileObject,
+        int $maxSize
+    ): Res {
+        if (($postFile['error'] == 4) && ($userFileObject->getId() == 0)) {
+            $this->res->ko($formName, $formName . '-' . $type . '-ko-missing');
+        } elseif ($postFile['error'] == 0) {
+            if ($this->checkFileIsImage($postFile) === false) {
+                $this->res->ko($formName, $formName . '-' . $type . '-ko-not-image');
+            }
+            if ($this->checkFileSize($postFile, $maxSize) === false) {
+                $this->res->ko($formName, $formName . '-' . $type . '-ko-too-big');
+            }
+        }
+        return $this->res;
+    }
+
+    /**
+     * This method performs the following checks:
+     * - if a POST file is sent or already set
+     * - if the file is a valide pdf
+     * - if the file size is not too big
+     * @param string $formName
+     * @param string $type
+     * @param array $postFile
+     * @param File $usrFile
+     * @param string $fileType
+     * @param int $maxSize
+     * @return Res
+     */
+    protected function checkPostFileDoc(
+        string $formName,
+        string $type,
+        array $postFile,
+        File $userFileObject,
+        int $maxSize
+    ): Res {
+        if (($postFile['error'] == 4) && ($userFileObject->getId() == 0)) {
+            $this->res->ko($formName, $formName . '-' . $type . '-ko-missing');
+        } elseif ($postFile['error'] == 0) {
+            if ($this->checkFileIsDoc($postFile) === false) {
+                $this->res->ko($formName, $formName . '-' . $type . '-ko-not-image');
+            }
+            if ($this->checkFileSize($postFile, $maxSize) === false) {
+                $this->res->ko($formName, $formName . '-' . $type . '-ko-too-big');
+            }
         }
         return $this->res;
     }
@@ -192,15 +248,15 @@ class FormController extends MainController
      * @param $posted_file
      * @param $file_type
      * @return File|array
-     * @throws \Exception
+     * @throws Exception
      */
     protected function treatFile($posted_file, $file_type)
     {
         $posted_file = $this->buildFileDestPath($posted_file, $file_type);
         $fileCtrl = new FileController();
-        $file = $fileCtrl->uploadFile($posted_file);
-        $insert = $fileCtrl->insertFile($file);
-        return $fileCtrl->getFileById((int) $insert);
+        $uploadedFile = $fileCtrl->uploadFile($posted_file);
+        $insertedFileId = $fileCtrl->insertFile($uploadedFile);
+        return $fileCtrl->getFileById($insertedFileId);
     }
 
     /**

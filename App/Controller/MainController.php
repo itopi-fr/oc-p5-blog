@@ -19,6 +19,9 @@ class MainController
     private OwnerInfoController $ownerInfoController;
 
 
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         $this->initTwig();
@@ -26,7 +29,9 @@ class MainController
 
     public function __destruct()
     {
-        $this->showDump();
+        if ($_ENV['MODE_DEV'] === 'true') {
+            $this->showDump();
+        }
     }
 
     /** -------------------------------------------------- Methods -------------------------------------------------  */
@@ -116,7 +121,7 @@ class MainController
      */
     protected function showDump(): void
     {
-        if (!empty($this->toDump)) {
+        if (empty($this->toDump) === false) {
             echo "<pre class='vardump abs-center'>";
             echo "<h1>Debug</h1>";
             echo "<div class='vardump-close' onclick='this.parentElement.remove()'>
@@ -143,12 +148,13 @@ class MainController
     }
 
     /**
-     * Refresh current page after 2 seconds (to display a message before refreshing)
+     * Refresh current page after a given number of seconds
+     * @param int $seconds
      * @return void
      */
-    protected function refresh(): void
+    protected function refresh(int $seconds = 5): void
     {
-        header("Refresh:2");
+        header("Refresh:$seconds");
     }
 
     /**
@@ -184,17 +190,17 @@ class MainController
             'debug' => true,
         ]);
 
-        if (isset($_SESSION)) {
-            isset($_SESSION['userid']) ?
+        if (isset($_SESSION) === true) {
+            (isset($_SESSION['userid']) === true) ?
                 $this->twig->addGlobal('userid', $_SESSION['userid']) :
-                $this->twig->addGlobal('userid', -1);
+                $this->twig->addGlobal('userid', null);
 
-            isset($_SESSION['ownerinfo']) ?
+            isset($_SESSION['ownerinfo']) === true ?
                 $this->twig->addGlobal('ownerinfo', $_SESSION['ownerinfo']) :
                 $this->twig->addGlobal('ownerinfo', null);
 
         } else {
-            $this->twig->addGlobal('userid', -1);
+            $this->twig->addGlobal('userid', null);
         }
     }
 }

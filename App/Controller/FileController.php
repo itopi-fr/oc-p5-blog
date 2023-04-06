@@ -11,12 +11,15 @@ class FileController extends MainController
     private array $filePosted;
     private File $file;
 
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         parent::__construct();
     }
 
-    public function buildFileObjectFromPostedFile($filePosted)
+    public function buildFileObjectFromPostedFile($filePosted): File
     {
         $this->file = new File();
         $this->file->setTitle($filePosted['name']);
@@ -28,43 +31,39 @@ class FileController extends MainController
     }
 
 
-    public function getFileById(int $fileId)
+    public function getFileById(int $fileId): File|bool
     {
-        if (!(new FileModel())->fileExistsById($fileId)) {
-            $return['err'] = true;
-            $return['msg'] = 'Fichier non trouvé dans la base de données';
-            return $return;
-        }
         return (new FileModel())->getFileById($fileId);
     }
 
     /**
      * Upload file to the file system
      * @param array $user_file
-     * @param string $file_type
-     * @return File|Exception
+     * @return File
      * @throws Exception
      */
-    public function uploadFile(array $user_file)
+    public function uploadFile(array $user_file): File
     {
         try {
             $this->filePosted = $user_file;
 
-            if (empty($this->filePosted)) throw new Exception('Erreur du fichier posté');
+            if (empty($this->filePosted) === true) {
+                throw new Exception('Erreur du fichier posté');
+            }
 
             // Upload
             $uploaded = move_uploaded_file($this->filePosted['tmp_name'], $this->filePosted['dest-path']);
+
 
             if ($uploaded) {
                 // Build File object
                 $this->file = $this->buildFileObjectFromPostedFile($this->filePosted);
                 return $this->file;
-
             } else {
                 throw new Exception('Erreur lors de l\'upload du fichier');
             }
         } catch (Exception $e) {
-            return $e;
+            $this->dump($e);
         }
     }
 
@@ -73,7 +72,7 @@ class FileController extends MainController
      * @param File $file
      * @return string|null
      */
-    public function insertFile(File $file)
+    public function insertFile(File $file): string|null
     {
         return (new FileModel())->insertFile($file);
     }
@@ -83,7 +82,7 @@ class FileController extends MainController
      * @param int $fileId
      * @return array $return
      */
-    public function deleteFileById(int $fileId)
+    public function deleteFileById(int $fileId): array
     {
         try {
             $return = [];
@@ -100,7 +99,7 @@ class FileController extends MainController
 
             // Delete file from the database
             $result_db = (new FileModel())->deleteFileById($fileId);
-            if (is_null($result_db)) {
+            if (is_null($result_db) === false) {
                 $return['err'] = true;
                 $return['msg'] = 'Fichier non supprimé de la base de données';
                 return $return;

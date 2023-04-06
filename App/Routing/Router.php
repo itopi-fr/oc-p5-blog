@@ -9,6 +9,7 @@ use App\Controller\OwnerInfoController;
 use App\Controller\PostController;
 //use App\Controller\ProfileController;
 use App\Controller\UserController;
+use App\Entity\Res;
 use Exception;
 
 class Router
@@ -21,14 +22,20 @@ class Router
      * @var array
      */
     private array $urlParts;
-    private string $userAction;
-    private string $userActionSub;
+    private string $pageBase;
+    private string $pageAction = '';
+    private string $pageActionParam = '';
     private OwnerInfoController $ownerInfoController;
+    private Res $res;
 
 
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         $this->mc = new MainController();
+        $this->res = new Res();
     }
 
 
@@ -36,34 +43,27 @@ class Router
     {
 
         try {
-            $this->userActionSub = '';
-            $this->urlParts = explode('/', $_GET['p']);
-            $pageBase = $this->urlParts[0];
+            // TODO: Revoir ce système de routing (.htaccess)
 
-            if (isset($this->urlParts[1]) && !empty($this->urlParts[1])) {
-                $this->userAction = $this->urlParts[1];
-            }
-
-            if (($this->urlParts[0] == 'user' || 'test') && (empty($this->urlParts[1]))) {
-                $this->userAction = 'home';
-            }
-
-            // Activation
-            if ($this->urlParts[0] == 'user' && $this->urlParts[1] == 'activation') {
-                if (isset($this->urlParts[2]) && !empty($this->urlParts[2])) {
-                    $this->userActionSub = $this->urlParts[2];
-                }
-            }
+            // Extract URL parts
+            $this->urlParts =           explode('/', $_GET['p']);
+            $this->pageBase =           (array_key_exists(0, $this->urlParts)) ? $this->urlParts[0] : 'home';
+            $this->pageAction =         (array_key_exists(1, $this->urlParts)) ? $this->urlParts[1] : '';
+            $this->pageActionParam =    (array_key_exists(2, $this->urlParts)) ? $this->urlParts[2] : '';
 
             // Owner info
-            if (!isset($_SESSION['ownerinfo']) || empty($_SESSION['ownerinfo']) || $_SESSION['ownerinfo'] == null) {
+            if (
+                (isset($_SESSION['ownerinfo']) === false) ||
+                (empty($_SESSION['ownerinfo']) === true) ||
+                ($_SESSION['ownerinfo'] == null)
+            ) {
                 $this->ownerInfoController = new OwnerInfoController();
                 $ownerInfo = $this->ownerInfoController->getOwnerInfo();
                 $_SESSION['ownerinfo'] = $ownerInfo;
             }
 
-
-            switch ($pageBase) {
+            // Route
+            switch ($this->pageBase) {
                 case (''):
                     $controller = new HomeController();
                     $controller->index();
@@ -76,28 +76,27 @@ class Router
 
                 case ('article'):
                     $controller = new PostController();
-                    $controller->single($this->userAction);
+                    $controller->single($this->pageAction);
                     break;
 
                 case ('user'):
                     $controller = new UserController();
-                    $controller->index($this->userAction, $this->userActionSub);        // /!\ Ajouter un check
+                    $controller->index($this->pageAction, $this->pageActionParam);
                     break;
 
-//                case ('err'):
-//                    $controller = new ErrorPageController();
-//                    $controller->index();
-//                    break;
-
-
                 default:
+                    $this->res->ko('general', "La page demandée n'existe pas");
                     $controller = new ErrorPageController();
-                    $controller->index();
+                    $controller->index($this->res);
                     break;
             }
         } catch (Exception $e) {
             if ($_ENV['MODE_DEV'] == 'true') {
                 $this->mc->dump($e);
+            } else {
+                $controller = new ErrorPageController();
+                $this->res->ko('general', $e->getMessage());
+                $controller->index($this->res);
             }
 
         }

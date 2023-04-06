@@ -6,6 +6,10 @@ class HomeController extends MainController
 {
     protected PostController $postController;
 
+
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         parent::__construct();

@@ -6,10 +6,17 @@ use App\Database\Connection;
 
 class OwnerInfoModel extends Connection
 {
+
+
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         parent::__construct();
     }
+
+
     public function getOwnerId()
     {
         $sql = "SELECT * FROM user_owner_infos o INNER JOIN user u ON o.user_id = u.id WHERE u.role ='owner'";
@@ -17,6 +24,9 @@ class OwnerInfoModel extends Connection
         return $owner->owner_id;
     }
 
+    /**
+     * @return mixed
+     */
     public function getOwnerInfo()
     {
         $ownerId = $this->getOwnerId();

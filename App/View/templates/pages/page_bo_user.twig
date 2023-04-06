@@ -15,8 +15,9 @@
 
     {% if userid > 0 %}
 
+        {{ block('form_user_logout') }}
+
         <div class="col-md-6">
-            {{ block('form_user_logout') }}
             {{ block('form_user_profile') }}
             {{ block('form_user_password') }}
         </div>

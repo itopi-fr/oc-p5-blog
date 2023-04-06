@@ -11,6 +11,10 @@ class TokenModel extends Connection
 {
     public Token $token;
 
+
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         parent::__construct();
@@ -71,7 +75,7 @@ class TokenModel extends Connection
         );
         $result = $this->insert($req, $params);
 
-        return (!is_null($result)) ? $result : null;
+        return (is_null($result) === false) ? $result : null;
     }
 
     /**

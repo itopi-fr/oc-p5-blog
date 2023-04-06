@@ -21,7 +21,9 @@ class Connection
     private ?PDO $conn;
 
 
-
+    /**
+     * Constructor
+     */
     protected function __construct()
     {
         $this->host = $_ENV['DB_HOST'];
@@ -37,7 +39,7 @@ class Connection
     private function connect(): PDO
     {
         try {
-            if (!isset($this->conn)) {
+            if (isset($this->conn) === false) {
                 $this->conn = new PDO(
                     "mysql:host=" . $this->host . ";dbname=" . $this->dbname,
                     $this->username,
@@ -54,6 +56,7 @@ class Connection
 
     /**
      * Returns a single result as specific class object.
+     * TODO: faire une méthode par type de classe : getSingleAsComment, getSingleAsFile, etc.
      * @param string $statement
      * @param array $data
      * @param string $class_name
@@ -77,13 +80,33 @@ class Connection
     }
 
     /**
+     * Returns a single result as File class object.
+     * @param string $statement
+     * @param array $data
+     * @return File|null
+     * @throws PDOException
+     */
+    public function getSingleAsFile(string $statement, array $data): File|null
+    {
+        try {
+            $req = $this->connect()->prepare($statement);
+            $req->setFetchMode(PDO::FETCH_CLASS, 'App\Entity\File');
+            $req->execute($data);
+            $result = $req->fetch();
+            return $result ? $result : null;
+        } catch (PDOException $e) {
+            throw new PDOException($e);
+        }
+    }
+
+    /**
      * Returns a single element as an object.
      * @param string $statement
      * @param array $data
-     * @return mixed
+     * @return object|null
      * @throws PDOException
      */
-    public function getSingleAsObject(string $statement, array $data): mixed
+    public function getSingleAsObject(string $statement, array $data): object|null
     {
         try {
             $req = $this->connect()->prepare($statement);

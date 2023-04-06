@@ -6,12 +6,17 @@ use App\Controller\UserController;
 use App\Entity\Res;
 use App\Entity\User;
 use App\Entity\UserOwner;
+use Exception;
 
 class FormUserProfile extends FormController
 {
     private Res $res;
     protected UserController $userController;
 
+
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         parent::__construct();
@@ -24,131 +29,105 @@ class FormUserProfile extends FormController
      * Treats the user part of the form
      * @param User $user
      * @return Res
+     * @throws Exception
      */
     public function treatFormUser(User $user): Res
     {
-//        $this->dump($user);
-
-
-        // ------------------------------------------------------------------------------------------------------ Checks
+        // -------------------------------------------------------------------- Checks
         // user-pseudo : checks
-        $this->res = $this->checkPostFieldText('pseudo', 4, 30);
-        $this->res = $this->checkIfUnique('pseudo', $user->getId());
+        $this->res = $this->checkPostFieldText('user-profile', 'pseudo', 4, 30);
+        $this->res = $this->checkIfUnique('user-profile', 'pseudo', $user->getId());
 
         // user-email : checks
-        $this->res = $this->checkPostFieldTextEmail('email', 6, 254);
-        $this->res = $this->checkIfUnique('email', $user->getId());
+        $this->res = $this->checkPostFieldTextEmail('user-profile', 'email', 6, 254);
+        $this->res = $this->checkIfUnique('user-profile', 'email', $user->getId());
 
         // file-avatar : checks
-        if (!$this->fileIsSent($_FILES['file-avatar']) && !is_a($user->getAvatarFile(), 'App\Entity\File')) {
-            $this->res->ko('avatar', 'Veuillez renseigner un fichier');
-        } elseif ($this->fileIsSent($_FILES['file-avatar'])) {
-            if (!$this->checkFileIsImage($_FILES['file-avatar'])) {
-                $this->res->ko('avatar', 'le fichier n\'est pas une image');
+        $this->res = $this->checkPostFileImg(
+            'user-profile',
+            'file-avatar',
+            $_FILES['file-avatar'],
+            $user->getAvatarFile(),
+            $this->getAvatarMaxSize()
+        );
+
+        // -------------------------------------------------------------------- Treatment
+        if ($this->res->isErr() === false) {
+            // User avatar file : treatment
+            if ($_FILES['file-avatar']['error'] === 0) {
+                $savedFile = $this->treatFile($_FILES['file-avatar'], 'avatar');
+                $user->setAvatarFile($savedFile);
+                $user->setAvatarId($savedFile->getId());
             }
-            if (!$this->checkFileSize($_FILES['file-avatar'], $this->getAvatarMaxSize())) {
-                $this->res->ko('avatar', 'le fichier est trop volumineux');
+
+            // User simple fields : treatment
+            $user->setPseudo($_POST['pseudo']);
+            $user->setEmail($_POST['email']);
+
+            // User update
+            if ($this->res->isErr() === false) {
+                $this->res = $this->userController->updateUser($user);
             }
         }
-
-        $this->res->setType('profil');
-
-        if ($this->res->isErr()) {
-            return $this->res;
-        }
-
-        // -------------------------------------------------------------------------------------------------- Treatment
-        // User avatar file : treatment
-        if ($this->fileIsSent($_FILES['file-avatar'])) {
-            $savedFile = $this->treatFile($_FILES['file-avatar'], 'avatar');
-            $user->setAvatarFile($savedFile);
-            $user->setAvatarId($savedFile->getId());
-        }
-
-        // User simple fields : treatment
-        $user->setPseudo($_POST['pseudo']);
-        $user->setEmail($_POST['email']);
-
-        // User update
-        $result = $this->userController->updateUser($user);
-
-        if ($result === 0) {
-            $this->res->ok('profil', 'Aucun changement apporté au profil', null);
-        } elseif ($result === 1) {
-            $this->res->ok('profil', 'Le profil a bien été mis à jour', null);
-        } else {
-            $this->res->ko('profil', 'Une erreur est survenue');
-        }
-
         return $this->res;
     }
 
+    /**
+     * @param UserOwner $userOwner
+     * @return Res
+     * @throws Exception
+     */
     public function treatFormUserOwner(UserOwner $userOwner): Res
     {
+        // -------------------------------------------------------------------- Checks
         // Checks
-        $this->res = $this->checkPostFieldText('firstname', 4, 30);
-        $this->res = $this->checkPostFieldText('lastname', 4, 30);
+        $this->res = $this->checkPostFieldText('owner-profile', 'firstname', 4, 30);
+        $this->res = $this->checkPostFieldText('owner-profile', 'lastname', 4, 30);
         $this->res = $this->checkPostFieldTextarea('catchphrase', 4, 254);
-        $this->res->setType('auteur');
 
         // file-cv : checks
-        if (!$this->fileIsSent($_FILES['file-cv']) && !is_a($userOwner->getCvFile(), 'App\Entity\File')) {
-            $this->res->ko('cv', 'Veuillez renseigner un fichier');
-        } elseif ($this->fileIsSent($_FILES['file-cv'])) {
-            if (!$this->checkFileIsDoc($_FILES['file-cv'])) {
-                $this->res->ko('cv', 'le fichier n\'est pas un pdf');
-            }
-            if (!$this->checkFileSize($_FILES['file-cv'], $this->getCvMaxSize())) {
-                $this->res->ko('cv', 'le fichier est trop volumineux');
-            }
-        }
+        $this->res = $this->checkPostFileDoc(
+            'owner-profile',
+            'file-cv',
+            $_FILES['file-cv'],
+            $userOwner->getCvFile(),
+            $this->getCvMaxSize()
+        );
 
         // file-photo : checks
-        if (!$this->fileIsSent($_FILES['file-photo']) && !is_a($userOwner->getPhotoFile(), 'App\Entity\File')) {
-            $this->res->ko('photo', 'Veuillez renseigner un fichier');
-        } elseif ($this->fileIsSent($_FILES['file-photo'])) {
-            if (!$this->checkFileIsImage($_FILES['file-photo'])) {
-                $this->res->ko('photo', 'le fichier n\'est pas une image');
+        $this->res = $this->checkPostFileImg(
+            'owner-profile',
+            'file-photo',
+            $_FILES['file-photo'],
+            $userOwner->getPhotoFile(),
+            $this->getPhotoMaxSize()
+        );
+
+        // -------------------------------------------------------------------- Treatment
+        if ($this->res->isErr() === false) {
+            // Owner simple fields : treatment
+            $userOwner->setFirstName($_POST['firstname']);
+            $userOwner->setLastName($_POST['lastname']);
+            $userOwner->setCatchPhrase($_POST['catchphrase']);
+
+            // Owner CV file : treatment
+            if ($_FILES['file-cv']['error'] === 0) {
+                $savedCvFile = $this->treatFile($_FILES['file-cv'], 'cv');
+                $userOwner->setCvFile($savedCvFile);
+                $userOwner->setCvFileId($savedCvFile->getId());
             }
-            if (!$this->checkFileSize($_FILES['file-photo'], $this->getPhotoMaxSize())) {
-                $this->res->ko('photo', 'le fichier est trop volumineux');
+
+            // Owner photo file : treatment
+            if ($_FILES['file-photo']['error'] === 0) {
+                $savedPhotoFile = $this->treatFile($_FILES['file-photo'], 'photo');
+                $userOwner->setPhotoFile($savedPhotoFile);
+                $userOwner->setPhotoFileId($savedPhotoFile->getId());
             }
-        }
 
-
-        if ($this->res->isErr()) {
-            return $this->res;
-        }
-
-        // Owner simple fields : treatment
-        $userOwner->setFirstName($_POST['firstname']);
-        $userOwner->setLastName($_POST['lastname']);
-        $userOwner->setCatchPhrase($_POST['catchphrase']);
-
-        // Owner CV file : treatment
-        if ($this->fileIsSent($_FILES['file-cv'])) {
-            $savedCvFile = $this->treatFile($_FILES['file-cv'], 'cv');
-            $userOwner->setCvFile($savedCvFile);
-            $userOwner->setCvFileId($savedCvFile->getId());
-        }
-
-        // Owner photo file : treatment
-        if ($this->fileIsSent($_FILES['file-photo'])) {
-            $savedPhotoFile = $this->treatFile($_FILES['file-photo'], 'photo');
-            $userOwner->setPhotoFile($savedPhotoFile);
-            $userOwner->setPhotoFileId($savedPhotoFile->getId());
-        }
-
-
-        // User update
-        $result = $this->userController->updateUserOwner($userOwner);
-
-        if ($result === 0) {
-            $this->res->ok('auteur', 'Aucun changement apporté aux informations de l\'auteur', null);
-        } elseif ($result === 1) {
-            $this->res->ok('auteur', 'Les informations de l\'auteur ont bien été mises à jour', null);
-        } else {
-            $this->res->ko('auteur', 'Une erreur est survenue');
+            // Owner update
+            if ($this->res->isErr() === false) {
+                $this->res = $this->userController->updateUserOwner($userOwner);
+            }
         }
         return $this->res;
     }

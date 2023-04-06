@@ -4,13 +4,12 @@ namespace App\Entity;
 
 class File
 {
-    private int $id;
-    private string $title;
-    private string $url;
-    private string $ext;
-    private string $mime;
-    private float $size;
-
+    private int $id = 0;
+    private string $title = '';
+    private string $url = '';
+    private string $ext = '';
+    private string $mime = '';
+    private float $size = 0.0;
 
     /**
      * ----------------------------------------------------------------------------------------------- Getters & Setters

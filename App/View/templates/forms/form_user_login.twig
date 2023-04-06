@@ -20,14 +20,8 @@
             <div class="col-12 text-center">
                 {% if (result) %}
                     <div class="alert alert-{{ (result.isErr()) ? 'warning' : 'success' }}" role="alert">
-                        {% for key, m in result.getMsg() %}
-
-                            {% if result.isErr() %}
-                                {{ result.translateType(key) }} :
-                            {% endif %}
-
-                            {{ m }}<br />
-
+                        {% for type, msg in result.getMsg() %}
+                            {{ result.showMsg(msg) }}
                         {% endfor %}
                     </div>
                 {% endif %}

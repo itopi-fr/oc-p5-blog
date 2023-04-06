@@ -18,6 +18,9 @@ class TokenController extends MainController
     private UserModel $userModel;
 
 
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         parent::__construct();
@@ -51,23 +54,22 @@ class TokenController extends MainController
      */
     public function getToken(int | string $data): Token
     {
-        if (is_int($data)) {
+        if (is_int($data) === true) {
             $tokenObj = $this->tokenModel->getTokenById($data);
 
-            if (is_null($tokenObj)) {
-                throw new Exception('Token id not found');
+            if (is_null($tokenObj) === true) {
+                throw new Exception('token-id-not-found');
             }
-
             return $this->buildToken($tokenObj);
 
-        } elseif (is_string($data)) {
+        } elseif (is_string($data) === true) {
             $tokenObj = $this->tokenModel->getTokenByContent($data);
-            if (is_null($tokenObj)) {
-                throw new Exception('Token content not found');
+            if (is_null($tokenObj) === true) {
+                throw new Exception('token-content-not-found');
             }
             return $this->buildToken($tokenObj);
         } else {
-            throw new Exception('Invalid data type');
+            throw new Exception('token-invalid-data-type');
         }
     }
 
@@ -92,7 +94,7 @@ class TokenController extends MainController
     {
         $tokens = $this->getUserTokens($userId);
 
-        if (is_null($tokens)) {
+        if (is_null($tokens) === true) {
             return null;
         }
 
@@ -121,7 +123,7 @@ class TokenController extends MainController
         $this->deleteExpiredTokens($userId);
 
         // If a valid token already exists, do nothing
-        if (!is_null($this->getLastValidTokenByUserId($userId))) {
+        if (is_null($this->getLastValidTokenByUserId($userId)) === false) {
             $this->res->ok('token', $this->res->showMsg('valid-token-exists'), null);
             return $this->res;
         }
@@ -152,7 +154,7 @@ class TokenController extends MainController
         $tokens = $this->getUserTokens($userId);
         $user = $this->userModel->getUserById($userId);
 
-        if (!is_null($tokens)) {
+        if (is_null($tokens) === false) {
             foreach ($tokens as $token) {
                 if ($this->verifyPassChangeToken($token->content, $user->getEmail()) !== "token-ok") {
                     $this->tokenModel->deleteTokenById($token->id);
@@ -182,7 +184,7 @@ class TokenController extends MainController
     public function verifyPassChangeToken(string $token, string $email)
     {
         $getToken = $this->tokenModel->getTokenByContent($token);
-        if (is_null($getToken)) {
+        if (is_null($getToken) === false) {
             return "token-content-not-found";
         }
         $this->token = $this->buildToken($getToken);

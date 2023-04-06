@@ -9,11 +9,16 @@ class PostModel extends Connection
 {
     protected Post $post;
 
+
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         parent::__construct();
         $post = new Post();
     }
+
 
     public function getLastPubPosts(int $max = 3): array|null
     {

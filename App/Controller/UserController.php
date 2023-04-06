@@ -27,6 +27,10 @@ class UserController extends MainController
     protected TokenController $tokenController;
     protected UserOwnerModel $userOwnerModel;
 
+
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         parent::__construct();
@@ -38,9 +42,15 @@ class UserController extends MainController
 
     public function index($userAction, $userActionSub = null)
     {
+        // TODO: clean all this mess
+        //  Distribute actions to separate methods : connect(), disconnect(), register(), etc.
+
+        isset($_SESSION['userid']) === true ? $userId = $_SESSION['userid'] : $userId = null;
+
+        // -------------------------------------------------------------------------------------------- user/inscription
         if ($userAction === 'inscription') {
             // Form Register
-            if (isset($_POST["submit-register"])) {
+            if (isset($_POST["submit-register"]) === true) {
                 $this->twigData['result'] = (new FormLogInOutReg())->register(
                     $_POST['pseudo'],
                     $_POST['email'],
@@ -53,60 +63,46 @@ class UserController extends MainController
             echo $this->twig->render("pages/page_bo_register.twig", $this->twigData);
         }
 
+        // --------------------------------------------------------------------------------------------- user/activation
         if ($userAction === 'activation') {
-            // /user/activation/123456789
-            // $this->dump($userActionSub);
-
-            if (isset($userActionSub)) {
-                $this->token = $this->tokenController->getToken($userActionSub);
-                if ($this->token->getId() > -1) {
-                    $this->user = $this->userModel->getUserById($this->token->getUserId());
-                    if ($this->user->getId() > -1) {
-                        $this->user->setRole('user');
-                        $this->userModel->updateUser($this->user);
-//                        $this->tokenController->deleteTokenById($this->token->getId());
-                        $this->res->ok('activation', 'Votre compte a bien été activé', null);
-                        $this->twigData['result'] = $this->res;
-                        $this->redirectTo('/user/connexion', 3);
-                    }
-                }
+            if (isset($userActionSub) === true) {
+                $this->userActivate($userActionSub);
             }
         }
 
-        isset($_SESSION['userid']) ? $userId = $_SESSION['userid'] : $userId = -1;
-
-        // Form Login
-        if ($userAction == 'connexion' && isset($_POST["submit-connect"])) {
-            $this->twigData['result'] = (new FormLogInOutReg())->login($_POST['email'], $_POST['pass']);
-            $this->refresh();
+        // ---------------------------------------------------------------------------------------------- user/connexion
+        if ($userAction == 'connexion' && isset($_POST["submit-connect"]) === true) {
+            $this->userLogin();
         }
 
-        if ($userId > -1) {
+        // ------------------------------------------------------------------------------------------------- user/profil
+        if (is_null($userId) === false) {
             $this->user = $this->userModel->getUserById($userId);
 
-
-            // Owner
+            // Owner Profile
             if ($this->user->getRole() == 'owner') {
                 $this->userOwner = (new UserOwnerModel())->getUserOwnerById($this->user->getId());
 
-                // Form Owner
-                if ($userAction == 'profil' && isset($_POST["submit-owner-profile"])) {
+                if ($userAction == 'profil' && isset($_POST["submit-owner-profile"]) === true) {
                     $this->twigData['result'] = (new FormUserProfile())->treatFormUserOwner($this->userOwner);
-
-                    // Refresh owner info
                     $_SESSION['ownerinfo'] = (new OwnerInfoController())->getOwnerInfo();
-                    $this->refresh();
+
+                    // Refresh page if no error
+                    if ($this->twigData['result']->isErr() === false) {
+                        $this->refresh();
+                    }
+
                 }
                 $this->twigData['owner'] = $this->userOwner;
             }
 
-            // Form User Profile
-            if ($userAction == 'profil' && isset($_POST["submit-user-profile"])) {
+            // User Profile
+            if ($userAction == 'profil' && isset($_POST["submit-user-profile"]) === true) {
                 $this->twigData['result'] = (new FormUserProfile())->treatFormUser($this->user);
             }
 
             // Form User Change Password
-            if ($userAction == 'profil' && isset($_POST["submit-user-pass"])) {
+            if ($userAction == 'profil' && isset($_POST["submit-user-pass"]) === true) {
                 $this->twigData['result'] = (new FormUserChangePass())->treatFormChangePass(
                     $this->user,
                     $_POST["pass-old"],
@@ -116,9 +112,10 @@ class UserController extends MainController
             }
 
             // Form Logout
-            if ($userAction == 'deconnexion') {
+            if ($userAction === 'deconnexion') {
+                $this->dump('deconnexion');
                 $this->twigData['result'] = (new FormLogInOutReg())->logout();
-                $this->refreshNow();
+                $this->refresh(3);
             }
 
             // User
@@ -127,6 +124,70 @@ class UserController extends MainController
 
         // Display page
         echo $this->twig->render("pages/page_bo_user.twig", $this->twigData);
+    }
+
+    public function userLogin()
+    {
+        $user = $this->getUserByEmail($_POST['email']);
+
+        if ($user != null) {
+            if ($user->getRole() == 'user-validation') {
+                $this->res->ko('login', 'account-token-not-validated', null);
+                $this->twigData['result'] = $this->res;
+                return;
+            }
+            $this->twigData['result'] = (new FormLogInOutReg())->login($_POST['email'], $_POST['pass']);
+            $this->refresh();
+        } else {
+            $this->res->ko('login', 'email-or-pass-incorrect', null);
+            $this->twigData['result'] = $this->res;
+        }
+    }
+
+    /**
+     * Activate a user account. This method is called when a user click on the activation link in the email.
+     * This email contains a link with a token : /user/activation/123456789
+     * If the token is valid, not expired and the user exists, the user is activated and the token is deleted.
+     * @return void
+     * @throws Exception
+     */
+    public function userActivate($tokenContent)
+    {
+        $this->token = $this->tokenController->getToken($tokenContent);
+        $tokenId = $this->token->getId();
+        $this->user = $this->userModel->getUserById($this->token->getUserId());
+        $this->user->setRole('user');
+
+        if (is_int($this->userModel->updateUser($this->user)) === true) {
+            $this->tokenController->deleteTokenById($this->token->getId());
+            $this->res->ok('activation', 'account-activated', null);
+            $this->twigData['result'] = $this->res;
+            $this->redirectTo('/user/connexion', 3);
+        } else {
+            $this->res->ko('activation', 'account-activation-failed', null);
+            $this->twigData['result'] = $this->res;
+            return;
+        }
+    }
+
+    /**
+     * Get a user by its id
+     * @param int $id
+     * @return User
+     */
+    public function getUserById(int $id): User
+    {
+        return $this->userModel->getUserById($id);
+    }
+
+    /**
+     * Get a user by its email
+     * @param string $email
+     * @return User
+     */
+    public function getUserByEmail(string $email): User
+    {
+        return $this->userModel->getUserByEmail($email);
     }
 
     /**
@@ -187,24 +248,44 @@ class UserController extends MainController
     /**
      * Updates a user providing a user object
      * @param User $user
-     * @return Exception|int
-     * @throws Exception
+     * @return Res
      */
-    public function updateUser(User $user): Exception|int
+    public function updateUser(User $user): Res
     {
-        return $this->userModel->updateUser($user);
+        try {
+            $result = $this->userModel->updateUser($user);
+            if ($result === 0) {
+                $this->res->ok('user-profile', 'user-profile-ok-no-change', null);
+            } elseif ($result === 1) {
+                $this->res->ok('user-profile', 'user-profile-ok-updated', null);
+            } else {
+                $this->res->ko('user-profile', 'user-profile-ko-error');
+            }
+        } catch (Exception $e) {
+            $this->dump($e);
+            $this->res->ko('user-profile', 'user-profile-ko-error');
+        }
+        return $this->res;
     }
 
 
     /**
      * @param UserOwner $userOwner
-     * @return Exception|int
-     * @throws Exception
+     * @return Res
      */
-    public function updateUserOwner(UserOwner $userOwner): Exception|int
+    public function updateUserOwner(UserOwner $userOwner): Res
     {
         $this->userOwnerModel = new UserOwnerModel();
-        return $this->userOwnerModel->updateUserOwner($userOwner);
+        $result = $this->userOwnerModel->updateUserOwner($userOwner);
+
+        if ($result === 0) {
+            $this->res->ok('owner-profile', 'owner-profile-ok-no-change', null);
+        } elseif ($result === 1) {
+            $this->res->ok('owner-profile', 'owner-profile-ok-updated', null);
+        } else {
+            $this->res->ko('owner-profile', 'owner-profile-ko-error');
+        }
+        return $this->res;
     }
 
     public function getOwnerInfo()

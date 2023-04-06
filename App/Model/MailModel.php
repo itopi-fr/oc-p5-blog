@@ -13,7 +13,17 @@ class MailModel
     protected Res $res;
 //    protected MainController $mc;
 
-    public function sendEmailSmtp(string $to, string $toName, string $subject, string $messageHtml, string $messageRaw): Res
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->res = new Res();
+//        $this->mc = new MainController();
+    }
+
+    public function sendEmailSmtp(string $to, string $toName, string $subject, string $msgHtml, string $msgRaw): Res
     {
         $mail = new PHPMailer();
         $mail->IsSMTP();
@@ -31,8 +41,8 @@ class MailModel
 
         $mail->AddAddress($to, $toName);
         $mail->Subject =  $subject;
-        $mail->AltBody = $messageRaw;
-        $mail->MsgHTML($messageHtml);
+        $mail->AltBody = $msgRaw;
+        $mail->MsgHTML($msgHtml);
         $mail->smtpConnect();
 
         if ($mail->send()) {
@@ -41,11 +51,4 @@ class MailModel
             return $this->res->ko('send-email', 'send-email-failed');
         }
     }
-
-    public function __construct()
-    {
-        $this->res = new Res();
-//        $this->mc = new MainController();
-    }
-
 }

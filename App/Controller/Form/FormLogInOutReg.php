@@ -17,7 +17,9 @@ class FormLogInOutReg extends FormController
     protected UserModel $userModel;
     protected MainController $mc;
 
-
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         parent::__construct();
@@ -68,6 +70,8 @@ class FormLogInOutReg extends FormController
         // hash
         $password = $this->hashPassword($password);
 
+//        $this->dump($password);
+
         if ($this->userModel->userExistsByEmailPassword($email, $password)) {
             $this->user = $this->userModel->getUserByEmail($email);
 
@@ -83,6 +87,7 @@ class FormLogInOutReg extends FormController
 
     public function logout()
     {
+        $this->dump($_SESSION);
         // destroy session
         session_destroy();
         $this->res->ok('disconnect', 'Déconnexion réussie', null);

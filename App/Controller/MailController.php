@@ -21,6 +21,10 @@ class MailController extends MainController
     protected string $mailMessageRaw;
     protected string $mailMessageHtml;
 
+
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         parent::__construct();
@@ -45,21 +49,21 @@ class MailController extends MainController
         $this->mailMessageRaw = $this->generateRawMessage($messageHtml);
 
         // Check mailTo
-        if (!$this->isSet($this->mailTo)) {
+        if ($this->isSet($this->mailTo) === false) {
             return $this->res->ko("send-email", 'missing-mail-to');
         } elseif (!$this->isEmail($this->mailTo)) {
             return $this->res->ko("send-email", 'invalid-format-mail-to');
         }
 
         // Check mailToName
-        if (!$this->isSet($this->mailToName)) {
+        if ($this->isSet($this->mailToName) === false) {
             return $this->res->ko("send-email", 'missing-mail-to-name');
         } elseif (!$this->isAlphaNumPlus($this->mailToName)) {
             return $this->res->ko("send-email", 'invalid-format-mail-to-name');
         }
 
         // Check mailSubject
-        if (!$this->isSet($this->mailSubject)) {
+        if ($this->isSet($this->mailSubject) === false) {
             return $this->res->ko("send-email", 'missing-mail-subject');
         }
 

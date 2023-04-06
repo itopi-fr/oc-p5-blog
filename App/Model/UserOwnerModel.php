@@ -14,10 +14,14 @@ class UserOwnerModel extends UserModel
     private UserOwner $owner;
 
 
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         parent::__construct();
     }
+
 
     public function getUserOwnerById($userOwnerId)
     {
@@ -25,21 +29,21 @@ class UserOwnerModel extends UserModel
         $this->owner = $this->getSingleAsClass($sqlOwner, [$userOwnerId], 'App\Entity\UserOwner');
 
         $AvatarModel = new FileModel();
-        if (!is_null($this->owner->getAvatarId())) {
+        if (is_null($this->owner->getAvatarId()) === false) {
             $this->owner->setAvatarFile($AvatarModel->getFileById($this->owner->getAvatarId()));
         } else {
             $this->owner->setAvatarFile(new File());
         }
 
         $CvModel = new FileModel();
-        if (!is_null($this->owner->getCvFileId())) {
+        if (is_null($this->owner->getCvFileId()) === false) {
             $this->owner->setCvFile($CvModel->getFileById($this->owner->getCvFileId()));
         } else {
             $this->owner->setCvFile(new File());
         }
 
         $PhotoModel = new FileModel();
-        if (!is_null($this->owner->getPhotoFileId())) {
+        if (is_null($this->owner->getPhotoFileId()) === false) {
             $this->owner->setPhotoFile($PhotoModel->getFileById($this->owner->getPhotoFileId()));
         } else {
             $this->owner->setPhotoFile(new File());

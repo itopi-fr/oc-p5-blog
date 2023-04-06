@@ -11,6 +11,10 @@ class UserModel extends Connection
 {
     public User $user;
 
+
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         parent::__construct();
@@ -37,11 +41,13 @@ class UserModel extends Connection
      */
     public function getUserById(int $userId): User
     {
+
         $sqlUser = "SELECT * FROM user WHERE id =?";
         $this->user = $this->getSingleAsClass($sqlUser, [$userId], 'App\Entity\User');
+
         $fileModel = new FileModel();
 
-        if (!is_null($this->user->getAvatarId())) {
+        if (is_null($this->user->getAvatarId()) === false) {
             $this->user->setAvatarFile($fileModel->getFileById($this->user->getAvatarId()));
         } else {
             $this->user->setAvatarFile(new File());
@@ -66,7 +72,7 @@ class UserModel extends Connection
 
             $fileModel = new FileModel();
 
-            if (!is_null($this->user->getAvatarId())) {
+            if (is_null($this->user->getAvatarId()) === false) {
                 $this->user->setAvatarFile($fileModel->getFileById($this->user->getAvatarId()));
             } else {
                 $this->user->setAvatarFile(new File());
@@ -99,7 +105,7 @@ class UserModel extends Connection
             ]
         );
 
-        if (is_null($createdUserId)) {
+        if (is_null($createdUserId) === true) {
             throw new Exception('Erreur lors de la création de l\'utilisateur');
         } else {
             return $createdUserId;

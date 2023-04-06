@@ -1,6 +1,15 @@
 {% block form_user_profile %}
+    {% use "blocks/block_res_message.twig" %}
+    {% set targetType = "user-profile" %}
+    {% set getType = "" %}
+    {% set getMess = "" %}
+
+
+    <h2>Utilisateur</h2>
+
+    {{ block('res_message') }}
+
     <form action="profil" method="POST" enctype="multipart/form-data" class="row form-general">
-        <h2>Utilisateur</h2>
         <div class="form-group">
             <label for="pseudo">Pseudo</label>
             <input type="text" name="pseudo" class="form-control" id="pseudo" placeholder="Pseudo" value="{{ user.getPseudo() }}">
@@ -21,23 +30,6 @@
 
         <div class="form-group text-center">
             <input type="submit" name="submit-user-profile"/>
-        </div>
-
-        <div class="col-12 text-center">
-
-            {% if (result) and (result.getType()) == 'profil' %}
-                <div class="alert alert-{{ (result.isErr()) ? 'warning' : 'success' }}" role="alert">
-                    {% for key, m in result.getMsg() %}
-
-                        {% if result.isErr() %}
-                            {{ result.translateType(key) }} :
-                        {% endif %}
-
-                        {{ m }}<br />
-
-                    {% endfor %}
-                </div>
-            {% endif %}
         </div>
     </form>
 {% endblock %}

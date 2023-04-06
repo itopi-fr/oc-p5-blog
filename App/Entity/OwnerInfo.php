@@ -5,12 +5,12 @@ namespace App\Entity;
 class OwnerInfo
 {
     protected int $owner_id;
-    protected string $first_name;
-    protected string $last_name;
-    protected string $catch_phrase;
-    protected int $photo_file_id;
+    protected string $first_name = '';
+    protected string $last_name = '';
+    protected string $catch_phrase = '';
+    protected int $photo_file_id = 0;
     protected File $photo_file;
-    protected int $cv_file_id;
+    protected int $cv_file_id = 0;
     protected File $cv_file;
 
 

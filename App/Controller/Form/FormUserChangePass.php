@@ -13,6 +13,10 @@ class FormUserChangePass extends FormController
 
     private UserModel $userModel;
 
+
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         parent::__construct();

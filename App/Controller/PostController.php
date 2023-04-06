@@ -14,6 +14,9 @@ class PostController extends MainController
     protected Post $postSingle;
     protected FileController $fileController;
 
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         parent::__construct();
