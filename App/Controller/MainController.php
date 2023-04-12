@@ -2,60 +2,104 @@
 
 namespace App\Controller;
 
+use App\Model\UserOwnerModel;
+use Exception;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
-
-
+use App\Controller\OwnerInfoController;
+use App\Sys\SuperGlobals;
 
 class MainController
 {
-
-    /**
-     * @var FilesystemLoader
-     */
     protected FilesystemLoader $loader;
+    protected Environment $twig;
+    protected UserController $userController;
+    public array $toDump = [];
+    protected array $twigData = [];
+    private UserOwnerModel $userOwnerModel;
+    private OwnerInfoController $ownerInfoController;
+    private SuperGlobals $superGlobals;
 
 
     /**
-     * @var Environment
+     * Constructor
      */
-    protected Environment $twig;
-
     public function __construct()
     {
         $this->initTwig();
+        $this->superGlobals = new SuperGlobals();
     }
 
     public function __destruct()
     {
-        $this->showDump();
+        if ($this->superGlobals->getEnv('MODE_DEV') === 'true') {
+            $this->showDump();
+        }
     }
 
-    protected array $twigData = [
-        'posts' => [1 => ['id' => 1, 'title' => 'Article 1', 'content' => 'Content 1', 'date' => '2023-01-01'],
-        2 => ['id' => 2, 'title' => 'Article 2', 'content' => 'Content 2', 'date' => '2022-12-15'],
-        3 => ['id' => 3, 'title' => 'Article 3', 'content' => 'Content 3', 'date' => '2023-02-01'],
-        4 => ['id' => 4, 'title' => 'Article 4', 'content' => 'Content 4', 'date' => '2023-01-01'],
-        5 => ['id' => 5, 'title' => 'Article 5', 'content' => 'Content 5', 'date' => '2023-01-01'],
-        6 => ['id' => 6, 'title' => 'Article 6', 'content' => 'Content 6', 'date' => '2023-01-01'],
-        7 => ['id' => 7, 'title' => 'Article 7', 'content' => 'Content 7', 'date' => '2023-01-01'],
-        8 => ['id' => 8, 'title' => 'Article 8', 'content' => 'Content 8', 'date' => '2023-01-01'],
-        9 => ['id' => 9, 'title' => 'Article 9', 'content' => 'Content 9', 'date' => '2023-01-01'],
-        10 => ['id' => 10, 'title' => 'Article 10', 'content' => 'Content 10', 'date' => '2023-01-01']]
-    ];
-
+    /** -------------------------------------------------- Methods -------------------------------------------------  */
 
     /**
-     * @var array
+     * Check if a value is set
+     * @param mixed $value
+     * @return bool
      */
-    public array $toDump = [];
+    protected function isSet($value)
+    {
+        return isset($value) && !empty($value);
+    }
 
     /**
-     * Every dump is stored inside the $toDump array. It will be displayed using showDump() method called in the __destruct() method of MainController class. Must be called using parent::dump($var) in the child class in order to have all the dumped variables displayed in the same block.
+     * Check if a string is alphanumeric, - and _
+     * @param string $value
+     * @return bool
+     */
+    protected function isAlphaNumPlus(string $value)
+    {
+        return preg_match("/^[a-zA-Z0-9_\-]+$/", $value);
+    }
+
+    /**
+     * Check if a string is alphanumeric, "-", "_" and spaces
+     * @param string $value
+     * @return bool
+     */
+    protected function isAlphaNumSpacesPonct(string $value)
+    {
+        return preg_match("/^[\w\d,!(). \-]*$/", $value);
+    }
+
+    /**
+     * Check if a string is between 2 lengths
+     * @param string $value
+     * @param int $min
+     * @param int $max
+     * @return bool
+     */
+    protected function isBetween(string $value, int $min, int $max)
+    {
+        return strlen($value) >= $min && strlen($value) <= $max;
+    }
+
+    /**
+     * Check if a string is a valid email
+     * @param string $value
+     * @return bool
+     */
+    protected function isEmail(string $value)
+    {
+        return filter_var($value, FILTER_VALIDATE_EMAIL);
+    }
+
+    /**
+     * Every dump is stored inside the $toDump array.
+     * It will be displayed using showDump() method called in the __destruct() method of MainController class.
+     * Must be called using parent::dump($var) in the child class
+     * in order to have all the dumped variables displayed in the same block.
      * @param $dumpThis
      * @return void
      */
-    public function dump($dumpThis)
+    public function dump($dumpThis): void
     {
         $caller = debug_backtrace()[0];
         preg_match('/.*(root.*)/', $caller['file'], $match);
@@ -70,29 +114,77 @@ class MainController
     }
 
     /**
-     * Displays all dumped information using dump() method inside a pre tag. This method is called in the __destruct() method.  Should be called using parent::showDump() in the child class in order to have all the dumped variables displayed in the same block.
+     * Displays all dumped information using dump() method inside a pre tag.
+     * This method is called in the __destruct() method.
+     * Should be called using parent::showDump() in the child class
+     * in order to have all the dumped variables displayed in the same block.
      * @return void
      *
-     *
-     * /!\ Faire plus propre
+     * TODO : Faire plus propre
      */
-    protected function showDump()
+    protected function showDump(): void
     {
-        if (!empty($this->toDump)) {
+        if (empty($this->toDump) === false) {
             echo "<pre class='vardump abs-center'>";
             echo "<h1>Debug</h1>";
-            echo "<div class='vardump-close' onclick='this.parentElement.remove()'><i class='fa fa-window-close' aria-hidden='true'></i></div>";
+            echo "<div class='vardump-close' onclick='this.parentElement.remove()'>
+                    <i class='fa fa-window-close' aria-hidden='true'></i>
+                  </div>";
 
             foreach ($this->toDump as $dumpLine) {
                 echo "<p<strong>Dumped from : {$dumpLine['caller_file']}</strong></p>";
                 var_dump($dumpLine['data']);
             }
-
             echo "</pre>";
         }
     }
 
-    protected function initTwig()
+    /**
+     * Redirects to the given route
+     * @param string $route
+     * @param int $delay
+     * @return void
+     */
+    protected function redirectTo(string $route, int $delay): void
+    {
+        header("Refresh:$delay; url=$route");
+    }
+
+    /**
+     * Refresh current page after a given number of seconds
+     * @param int $seconds
+     * @return void
+     */
+    protected function refresh(int $seconds = 5): void
+    {
+        header("Refresh:$seconds");
+    }
+
+    /**
+     * Refresh instantly current page
+     * @return void
+     */
+    protected function refreshNow(): void
+    {
+        header("Refresh:0");
+    }
+
+    /**
+     * Generates a random key
+     * @param int $length
+     * @return string
+     * @throws Exception
+     */
+    public function generateKey(int $length): string
+    {
+        return (bin2hex(random_bytes($length)));
+    }
+
+    /**
+     * Initializes Twig
+     * @return void
+     */
+    protected function initTwig(): void
     {
         $this->loader = new FilesystemLoader(__DIR__ . '/../View/templates');
 
@@ -100,14 +192,18 @@ class MainController
             'cache' => false,
             'debug' => true,
         ]);
-    }
 
-    /**
-     * Generates a random key
-     * @return string
-     */
-    public function generateKey(int $length) : string
-    {
-        return ( bin2hex( random_bytes($length) ) );
+        if (isset($_SESSION) === true) {
+            (isset($_SESSION['userid']) === true) ?
+                $this->twig->addGlobal('userid', $_SESSION['userid']) :
+                $this->twig->addGlobal('userid', null);
+
+            isset($_SESSION['ownerinfo']) === true ?
+                $this->twig->addGlobal('ownerinfo', $_SESSION['ownerinfo']) :
+                $this->twig->addGlobal('ownerinfo', null);
+
+        } else {
+            $this->twig->addGlobal('userid', null);
+        }
     }
 }

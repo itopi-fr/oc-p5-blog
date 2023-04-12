@@ -1,7 +1,7 @@
-{% use "blocks/block_head.twig" %}
-{% use "blocks/block_nav.twig" %}
-{% use "blocks/block_header.twig" %}
-{% use "blocks/block_footer.twig" %}
+{% use "blocks/block_fo_head.twig" %}
+{% use "blocks/block_fo_nav.twig" %}
+{% use "blocks/block_fo_header.twig" %}
+{% use "blocks/block_fo_footer.twig" %}
 
 <!doctype html>
 <html lang="en">
@@ -13,8 +13,10 @@
 
     <!-- Main Content-->
     <div class="container px-4 px-lg-5">
-        {% block content %}
-        {% endblock %}
+        <div class="row">
+            {% block content %}
+            {% endblock %}
+        </div>
     </div>
 
     {{ block('footer') }}

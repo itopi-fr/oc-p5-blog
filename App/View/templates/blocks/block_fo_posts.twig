@@ -1,0 +1,29 @@
+{% block fo_posts %}
+    <section class="row gx-4 gx-lg-5 justify-content-center last-posts">
+        <h1>Articles</h1>
+            {%  for post in posts |slice(0, 10) %}
+                <article class="row post-preview">
+                    <div class="col-md-10">
+                        <a href="/article/{{ post.slug }}">
+                            <h2 class="post-title">{{ post.title }}</h2>
+                        </a>
+                        <p class="post-meta">
+                            Le {{ post.date|date('d/m/Y') }}
+                        </p>
+                        <div class="post-excerpt">
+                            {{ post.excerpt }}
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <a href="/article/{{ post.slug }}">
+                            <img src="{{ post.getFeatImgFile().getUrl() }}" alt="{{ post.title }}" class="img-fluid">
+                        </a>
+                    </div>
+                </article>
+
+                {% if not loop.last %}
+                    <hr class="my-4"/>
+                {% endif %}
+            {% endfor %}
+    </section>
+{% endblock %}

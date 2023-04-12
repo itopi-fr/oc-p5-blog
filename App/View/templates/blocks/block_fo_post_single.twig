@@ -1,0 +1,10 @@
+{% block fo_post_single %}
+    <div class="col-10">
+        <h1>{{ post.title }}</h1>
+        <p>{{ post.content }}</p>
+    </div>
+    <div class="col-2">
+        <img class="post-single-feat-img" src="{{ post.getFeatImgFile().getUrl() }}" alt="" class="src">
+    </div>
+
+{% endblock %}

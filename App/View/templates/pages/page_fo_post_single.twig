@@ -1,0 +1,16 @@
+{% extends "layout.twig" %}
+{% use "blocks/block_fo_post_single.twig" %}
+{% use "blocks/block_fo_post_single_comments.twig" %}
+
+{% block meta %}
+    <meta name="description" content="{{ post.meta_description }}">
+    <meta name="keywords" content="{{ post.meta_keywords }}">
+{% endblock %}
+{% block title %}
+{{ post.title }}
+{% endblock %}
+
+{% block content %}
+    {{ block('fo_post_single') }}
+    {{ block('fo_post_single_comments') }}
+{% endblock %}

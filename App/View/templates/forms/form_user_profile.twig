@@ -1,0 +1,35 @@
+{% block form_user_profile %}
+    {% use "blocks/block_res_message.twig" %}
+    {% set getType = "" %}
+    {% set getMess = "" %}
+    {% set targetType = "user-profile" %}
+
+    <h2>Utilisateur</h2>
+
+    {{ block('res_message') }}
+
+    <form action="profil" method="POST" enctype="multipart/form-data" class="row form-general">
+        <div class="form-group">
+            <label for="pseudo">Pseudo</label>
+            <input type="text" name="pseudo" class="form-control" id="pseudo" placeholder="Pseudo" value="{{ user.getPseudo() }}">
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" name="email" class="form-control" id="email" placeholder="Email" value="{{ user.getEmail() }}">
+        </div>
+        Avatar
+        {% if user.getAvatarId() is not null %}
+            <img src="{{ user.getAvatarFile().getUrl() }}" alt="Avatar" class="img-thumbnail" width="25px">
+        {% endif %}
+
+        <div class="form-group">
+            <label for="file-avatar">Mettre à jour : </label>
+            <input type="file" name="file-avatar" class="form-control" id="file-avatar" placeholder="Avatar">
+        </div>
+
+        <div class="form-group text-center">
+            <input type="submit" name="submit-user-profile"/>
+        </div>
+    </form>
+{% endblock %}
+

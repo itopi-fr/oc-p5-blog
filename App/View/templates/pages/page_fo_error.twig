@@ -1,0 +1,20 @@
+{% extends "layout.twig" %}
+{% block title %}
+    Erreur
+{% endblock %}
+
+{% block content %}
+    <h1>Erreur</h1>
+    <p>Une erreur est survenue</p>
+
+    <div class="col-12 text-center form-block-messages">
+        {% if (result) %}
+            <div class="alert alert-{{ (result.isErr()) ? 'warning' : 'success' }}" role="alert">
+                {% for type, msg in result.getMsg() %}
+                    {{ result.showMsg(msg) }}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+{% endblock %}

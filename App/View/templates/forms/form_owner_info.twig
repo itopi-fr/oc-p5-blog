@@ -1,0 +1,56 @@
+{% block form_owner_info %}
+    {% use "blocks/block_res_message.twig" %}
+    {% set getType = "" %}
+    {% set getMess = "" %}
+    {% set targetType = "owner-profile" %}
+
+    {% if owner %}
+        <h2>Auteur du blog</h2>
+
+        {# Messages #}
+        {{ block('res_message') }}
+
+        {# Form #}
+        <form action="profil" method="POST" enctype="multipart/form-data" class="row form-general">
+            <div class="form-group">
+                <label for="firstname"><h5>Prénom</h5></label>
+                <input type="text" name="firstname" class="form-control" id="firstname" placeholder="Prénom" value="{{ owner.getFirstName() }}">
+            </div>
+
+
+            <div class="form-group">
+                <label for="lastname"><h5>Nom</h5></label>
+                <input type="text" name="lastname" class="form-control" id="lastname" placeholder="Nom" value="{{ owner.getLastName() }}">
+            </div>
+
+
+            <div class="form-group">
+                <label for="catchphrase"><h5>Phrase d'accroche</h5></label>
+                <textarea name="catchphrase" class="form-control" id="catchphrase" placeholder="Phrase d'accroche">{{ owner.getCatchPhrase() }}</textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="file-cv"><h5>Curriculum Vitae</h5></label>
+                {% if owner.getCvFileId() is not null %}
+                    <div><a href="{{ owner.getCvFile().getUrl() }}" target="_blank">{{ owner.getCvFile().getTitle() }}</a></div>
+                {% endif %}
+                <input type="file" name="file-cv" class="form-control" id="file-cv" placeholder="CV">
+            </div>
+
+            <div class="form-group">
+                <h5>Photo</h5>
+                {% if owner.getPhotoFileId() is not null %}
+                    <img src="{{ owner.getPhotoFile().getUrl() }}" alt="Photo" class="img-thumbnail" width="25px">
+                {% endif %}
+                <label for="file-photo"></label>
+                <input type="file" name="file-photo" class="form-control" id="file-photo" placeholder="Photo">
+            </div>
+
+
+            <div class="form-group text-center">
+                <input type="submit" name="submit-owner-profile"/>
+            </div>
+
+        </form>
+    {% endif %}
+{% endblock %}

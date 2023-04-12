@@ -10,6 +10,11 @@ use PDOException;
 class TokenModel extends Connection
 {
     public Token $token;
+
+
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         parent::__construct();
@@ -21,10 +26,10 @@ class TokenModel extends Connection
      * @param int $userId
      * @return array|null
      */
-    public function getUserTokens(int $userId): array|null
+    public function getUserTokens(int $userId, string $tokenType): array|null
     {
-        $req = "SELECT * FROM token WHERE user_id =?";
-        $result = $this->getMultipleAsObjectsArray($req, [$userId]);
+        $req = "SELECT * FROM token WHERE user_id = ? AND type = ?";
+        $result = $this->getMultipleAsObjectsArray($req, [$userId, $tokenType]);
         return $result ? $result : null;
     }
 
@@ -45,7 +50,7 @@ class TokenModel extends Connection
      * @param string $tokenContent
      * @return object|null
      */
-    public function getTokenByContent(string $tokenContent): object | null
+    public function getTokenByContent(string $tokenContent): object|null
     {
         $req = 'SELECT * FROM token WHERE content =?';
         $result = $this->getSingleAsObject($req, [$tokenContent]);
@@ -55,9 +60,9 @@ class TokenModel extends Connection
     /**
      * Inserts a token in the database.
      * @param Token $token
-     * @return string|null
+     * @return bool|null
      */
-    public function insertPassChangeToken(Token $token): string|null
+    public function insertUserToken(Token $token): bool|null
     {
         $req = "INSERT INTO token (user_id, content, expiration_date, type)
                 VALUES (:user_id, :content, :expiration_date, :type)";
@@ -70,7 +75,7 @@ class TokenModel extends Connection
         );
         $result = $this->insert($req, $params);
 
-        return (!is_null($result)) ? $result : null;
+        return (is_null($result) === false) ? $result : null;
     }
 
     /**

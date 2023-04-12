@@ -1,0 +1,23 @@
+{% block res_message %}
+    <div id="{{ targetType }}" class="col-12 text-center">
+        {% if (result) %}
+
+            {# Get Result type and message #}
+            {% for type, msg in result.getMsg() %}
+                {% if type == targetType %}
+                    {% set getType = type %}
+                    {% set getMess = msg %}
+                {% endif %}
+            {% endfor %}
+
+            {% if getType == targetType %}
+                {# Show Result #}
+                <div class="alert alert-{{ (result.isErr()) ? 'warning' : 'success' }}" role="alert">
+                    <strong>{{ result.showType(getType) }}</strong><br />
+                    {{ result.showMsg(getMess) }}
+                </div>
+            {% endif %}
+
+        {% endif %}
+    </div>
+{% endblock %}

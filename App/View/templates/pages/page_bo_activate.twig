@@ -1,0 +1,15 @@
+{% extends "layout.twig" %}
+{% use "blocks/block_res_message.twig" %}
+    {% set getType = "" %}
+    {% set getMess = "" %}
+    {% set targetType = "user-activate" %}
+
+{% block title %}
+    Activation compte
+{% endblock %}
+
+{% block content %}
+    <h1>Activation de votre compte</h1>
+    {{ block('res_message') }}
+
+{% endblock %}

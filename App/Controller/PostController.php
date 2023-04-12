@@ -2,40 +2,86 @@
 
 namespace App\Controller;
 
+use App\Entity\File;
+use App\Entity\Post;
+use App\Model\PostModel;
+use DateTime;
+
 class PostController extends MainController
 {
-    /**
-     * @var array|string[]
-     */
+    protected array $posts;
+    protected PostModel $postModel;
+    protected Post $postSingle;
+    protected FileController $fileController;
 
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         parent::__construct();
+        $this->postModel = new PostModel();
     }
 
     public function index()
     {
-        echo  $this->twig->render("pages/fo/fo_posts.twig", $this->twigData);
+        $this->posts = $this->getLastPubPosts(10);
+
+        // hydrate each post
+        foreach ($this->posts as $key => $post) {
+            $this->posts[$key] = $this->hydratePostObject($post);
+        }
+
+        $this->twigData['posts'] = $this->posts;
+        echo  $this->twig->render("pages/page_fo_posts.twig", $this->twigData);
     }
 
-    private function postExists($postId) : bool
+    public function getLastPubPosts(): array|null
     {
-        return isset($this->twigData['posts'][$postId]);
+        return $this->postModel->getLastPubPosts(3);
     }
 
-    public function single($postId)
+    public function single($postSlug)
     {
-        if (!$this->postExists($postId)) {
+        $this->postSingle = new Post();
 
-            // /!\ Créer une classe Error
-            $this->twigData['error'] = ['code' => 404, 'title' => 'erreur article', 'message' => "L'article n'existe pas"];
-
-
-            echo  $this->twig->render("pages/fo/fo_error.twig", $this->twigData);
+        if (!$this->postModel->postExistsBySlug($postSlug)) {
+            $this->twigData['error'] = ['code' => 404,
+                                        'title' => 'erreur article',
+                                        'message' => "L'article n'existe pas"];
+            echo  $this->twig->render("pages/page_fo_error.twig", $this->twigData);
             return;
         }
 
-        $this->twigData['post'] = $this->twigData['posts'][$postId];      // /!\ Ajouter un check
-        echo  $this->twig->render("pages/fo/fo_post_single.twig", $this->twigData);
+        $postObject = $this->postModel->getPostBySlug($postSlug);
+        $this->postSingle = $this->hydratePostObject($postObject);
+
+        $this->twigData['post'] = $this->postSingle;
+        echo  $this->twig->render("pages/page_fo_post_single.twig", $this->twigData);
+    }
+
+    /**
+     * Hydrate the Post class object with the data from a post standard object
+     *
+     * @param object $postObject
+     * @return void
+     */
+    private function hydratePostObject($postObject): Post
+    {
+        $fileController = new FileController();
+        $post = new Post();
+
+        $post->setId($postObject->id);
+        $post->setAuthorId($postObject->author_id);
+        $post->setFeatImgId($postObject->feat_img_id);
+        $post->setFeatImgFile($fileController->getFileById($postObject->feat_img_id));
+        $post->setTitle($postObject->title);
+        $post->setSlug($postObject->slug);
+        $post->setExcerpt($postObject->excerpt);
+        $post->setContent($postObject->content);
+        $post->setCreationDate(new DateTime($postObject->creation_date));
+        $post->setLastUpdate(new DateTime($postObject->last_update));
+        $post->setStatus($postObject->status);
+        return $post;
     }
 }
