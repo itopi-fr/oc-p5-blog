@@ -11,7 +11,6 @@ use App\Model\UserModel;
 class FormLogInOutReg extends FormController
 {
     protected Res $res;
-
     protected User $user;
     protected UserController $userController;
     protected UserModel $userModel;
@@ -29,48 +28,65 @@ class FormLogInOutReg extends FormController
         $this->mc = new MainController();
     }
 
-    public function register(string $pseudo, string $email, string $password, string $password2)
+    /**
+     * This method is used to create a new user.
+     * It checks if entered passwords match, if the pseudo and email are not already used.
+     * @param string $pseudo
+     * @param string $email
+     * @param string $password
+     * @param string $password2
+     * @return Res
+     */
+    public function register(string $pseudo, string $email, string $password, string $password2): Res
     {
-        // hash
-        $password = $this->hashPassword($password);
-        $password2 = $this->hashPassword($password2);
-
         //Checks
         if ($password !== $password2) {
-            $this->res->ko('register', $this->res->showMsg('pass-not-match'), null);
+            $this->res->ko('register', 'pass-not-match');
+            return $this->res;
         }
 
-        if ($this->userModel->userExistsByPseudo($pseudo)) {
-             $this->res->ko('register', 'Pseudo déjà utilisé', null);
+        if ($this->userModel->userExistsByPseudo($pseudo) === true) {
+            $this->res->ko('register', 'Pseudo déjà utilisé');
+            return $this->res;
         }
 
-        if ($this->userModel->userExistsByEmail($email)) {
-             $this->res->ko('register', 'Email déjà utilisé', null);
+        if ($this->userModel->userExistsByEmail($email) === true) {
+            $this->res->ko('register', 'Email déjà utilisé');
+            return $this->res;
         }
 
-        if (!$this->checkPasswordFormat($password)) {
-            $this->res->ko('register', $this->res->showMsg('pass-format'), null);
+        if ($this->checkPasswordFormat($password) === false) {
+            $this->res->ko('register', 'pass-format');
+            return $this->res;
         }
 
-        // TODO : checks de format de l'email, du pseudo
+        // TODO : Check email and pseudo format
 
-        // If ok
-        $createdUser = $this->userController->regCreateUser($pseudo, $email, $password);
-        if ($createdUser->getId() > -1) {
-            $this->res->ok('register', $this->res->showMsg('register-success-wait-mail-confirm'), null);
-        } else {
-            $this->res->ko('register', $this->res->showMsg('register-fail'), null);
+        // hash
+        $password = $this->hashPassword($password);
+
+        // If ok, create user
+        $createdUser = $this->userController->regCreateUser($pseudo, $email, $password)->getResult()['reg-create-user'];
+
+        if (is_null($createdUser) === true) {
+            $this->res->ko('register', 'register-fail');
+            return $this->res;
         }
 
+        $this->res->ok('register', 'register-success-wait-mail-confirm', null);
         return $this->res;
     }
 
-    public function login(string $email, string $password)
+    /**
+     * Log in a user.
+     * @param string $email
+     * @param string $password
+     * @return Res
+     */
+    public function login(string $email, string $password): Res
     {
         // hash
         $password = $this->hashPassword($password);
-
-//        $this->dump($password);
 
         if ($this->userModel->userExistsByEmailPassword($email, $password)) {
             $this->user = $this->userModel->getUserByEmail($email);
@@ -85,9 +101,12 @@ class FormLogInOutReg extends FormController
         return $this->res;
     }
 
-    public function logout()
+    /**
+     * Logs out a user by destroying the session.
+     * @return Res
+     */
+    public function logout(): Res
     {
-        $this->dump($_SESSION);
         // destroy session
         session_destroy();
         $this->res->ok('disconnect', 'Déconnexion réussie', null);

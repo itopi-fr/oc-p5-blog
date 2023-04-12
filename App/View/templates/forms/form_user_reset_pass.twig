@@ -1,0 +1,40 @@
+{% block form_user_reset_pass %}
+    {% use "blocks/block_res_message.twig" %}
+    {% set getType = "" %}
+    {% set getMess = "" %}
+    {% set targetType = "user-reset-pass" %}
+
+    {{ block('res_message') }}
+
+    {% if display_form_reset_ask == 'display' %}
+        {# Form Ask Reset Pass #}
+        <div class="col-md-8">
+            <form action="reset-pass-ask" method="POST" enctype="multipart/form-data" class="row form-general">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="text" name="email" class="form-control" id="email" placeholder="Adresse email" value="pub@itopi.fr">
+                </div>
+                <div class="form-group text-center">
+                    <input type="submit" name="submit-reset-pass-ask"/>
+                </div>
+            </form>
+        </div>
+    {% endif %}
+
+    {% if display_form_reset_change == 'display' %}
+        {# Form Reset Change Pass #}
+        <form action="" method="POST" enctype="multipart/form-data" class="row form-general">
+            <div class="form-group">
+                <label for="pseudo">Nouveau mot de passe</label>
+                <input type="password" name="pass-new-a" class="form-control" id="pass-new-a" placeholder="Nouveau mot de passe">
+            </div>
+            <div class="form-group">
+                <label for="pass2">Confirmation</label>
+                <input type="password" name="pass-new-b" class="form-control" id="pass-new-b" placeholder="Confirmation">
+            </div>
+            <div class="form-group text-center">
+                <input type="submit" name="submit-reset-pass-change"/>
+            </div>
+        </form>
+    {% endif %}
+{% endblock %}

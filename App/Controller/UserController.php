@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Controller\Form\FormLogInOutReg;
 use App\Controller\Form\FormUserChangePass;
 use App\Controller\Form\FormUserProfile;
+use App\Controller\Form\FormUserResetPass;
 use App\Entity\Res;
 use App\Entity\Token;
 use App\Entity\UserOwner;
@@ -18,12 +19,8 @@ class UserController extends MainController
 {
     protected Res $res;
     protected UserModel $userModel;
-
     protected User $user;
-
     protected UserOwner $userOwner;
-
-    protected Token $token;
     protected TokenController $tokenController;
     protected UserOwnerModel $userOwnerModel;
 
@@ -40,7 +37,7 @@ class UserController extends MainController
     }
 
 
-    public function index($userAction, $userActionSub = null)
+    public function index($userAction, $userActionData = null)
     {
         // TODO: clean all this mess
         //  Distribute actions to separate methods : connect(), disconnect(), register(), etc.
@@ -61,13 +58,49 @@ class UserController extends MainController
 
             // Display page
             echo $this->twig->render("pages/page_bo_register.twig", $this->twigData);
+            return;
         }
 
-        // --------------------------------------------------------------------------------------------- user/activation
+        // ----------------------------------------------------------------------------------------- user/activation/123
         if ($userAction === 'activation') {
-            if (isset($userActionSub) === true) {
-                $this->userActivate($userActionSub);
+            if (isset($userActionData) === true) {
+                $this->twigData['result'] = $this->userActivate($userActionData);
             }
+            // Display page
+            echo $this->twig->render("pages/page_bo_activate.twig", $this->twigData);
+            return;
+        }
+
+        // ----------------------------------------------------------------------------------------- user/reset-pass-ask
+        if ($userAction === 'reset-pass-ask') {
+            if (isset($_POST["submit-reset-pass-ask"]) === true) {
+                // Form Reset sent : treat form
+                $this->twigData['result'] = (new FormUserResetPass())->treatFormPassAsk($_POST['email']);
+            } else {
+                // Form Reset not sent : display form
+                $this->twigData['display_form_reset_ask'] = 'display';
+            }
+            // Display page
+            echo $this->twig->render("pages/page_bo_reset_pass.twig", $this->twigData);
+            return;
+        }
+
+        // -------------------------------------------------------------------------------------- user/reset-pass-change
+        if ($userAction === 'reset-pass-change') {
+            // Form Reset Change sent : treat form
+            if (isset($userActionData) === true && isset($_POST["submit-reset-pass-change"]) === true) {
+                $this->twigData['result'] = (new FormUserResetPass())->treatFormPassChange(
+                    $userActionData,
+                    $_POST['pass-new-a'],
+                    $_POST['pass-new-b']
+                );
+            } else {
+                // Display Form Change Password
+                $this->twigData['display_form_reset_change'] = 'display';
+            }
+            // Display page
+            echo $this->twig->render("pages/page_bo_reset_pass.twig", $this->twigData);
+            return;
         }
 
         // ---------------------------------------------------------------------------------------------- user/connexion
@@ -107,15 +140,15 @@ class UserController extends MainController
                     $this->user,
                     $_POST["pass-old"],
                     $_POST["pass-new-a"],
-                    $_POST["pass-new-b"]
+                    $_POST["pass-new-b"],
+                    false
                 );
             }
 
             // Form Logout
             if ($userAction === 'deconnexion') {
-                $this->dump('deconnexion');
                 $this->twigData['result'] = (new FormLogInOutReg())->logout();
-                $this->refresh(3);
+                $this->refresh(0);
             }
 
             // User
@@ -126,6 +159,10 @@ class UserController extends MainController
         echo $this->twig->render("pages/page_bo_user.twig", $this->twigData);
     }
 
+
+    /**
+     * @return void
+     */
     public function userLogin()
     {
         $user = $this->getUserByEmail($_POST['email']);
@@ -137,38 +174,63 @@ class UserController extends MainController
                 return;
             }
             $this->twigData['result'] = (new FormLogInOutReg())->login($_POST['email'], $_POST['pass']);
-            $this->refresh();
+            $this->refresh(2);
         } else {
             $this->res->ko('login', 'email-or-pass-incorrect', null);
             $this->twigData['result'] = $this->res;
         }
     }
 
+
     /**
      * Activate a user account. This method is called when a user click on the activation link in the email.
      * This email contains a link with a token : /user/activation/123456789
      * If the token is valid, not expired and the user exists, the user is activated and the token is deleted.
-     * @return void
-     * @throws Exception
+     * @param string $tokenContent
+     * @return Res
      */
-    public function userActivate($tokenContent)
+    public function userActivate(string $tokenContent): Res
     {
-        $this->token = $this->tokenController->getToken($tokenContent);
-        $tokenId = $this->token->getId();
-        $this->user = $this->userModel->getUserById($this->token->getUserId());
+        // Get token
+        $token = new Token();
+        $resToken = $this->tokenController->getToken($tokenContent);
+        if ($resToken->isErr() === true) {
+            $this->res->ko('user-activate', 'user-activate-ko-token-not-found');
+            return $this->res;
+        }
+        $token = $resToken->getResult()['token'];
+
+        // Get User by Token Content
+        $resUserByToken = $this->getUserByToken($token->getContent());
+        if ($resUserByToken->isErr() === true) {
+            $this->res->ko('user-activate', 'user-activate-ko-user-by-token');
+            return $this->res;
+        }
+        $this->user = $resUserByToken->getResult()['user-by-token'];
+
+        // Verify token
+        $resVerifyToken = $this->tokenController->verifyToken($token->getContent(), $this->user->getEmail());
+        if ($resVerifyToken->getMsg()['verify-token'] !== 'verify-token-ok') {
+            $this->res->ko('user-activate', 'user-activate-ko-verify-token');
+            return $this->res;
+        }
+
+        // Update User Role
         $this->user->setRole('user');
 
-        if (is_int($this->userModel->updateUser($this->user)) === true) {
-            $this->tokenController->deleteTokenById($this->token->getId());
-            $this->res->ok('activation', 'account-activated', null);
-            $this->twigData['result'] = $this->res;
-            $this->redirectTo('/user/connexion', 3);
-        } else {
-            $this->res->ko('activation', 'account-activation-failed', null);
-            $this->twigData['result'] = $this->res;
-            return;
+        // Update User
+        if (is_null($this->userModel->updateUser($this->user)) === true) {
+            $this->res->ko('user-activate', 'user-activate-ko-failed');
+            return $this->res;
         }
+
+        // Delete Token
+        $this->tokenController->deleteTokenById($token->getId());
+        $this->res->ok('user-activate', 'user-activate-account-activated', null);
+        $this->redirectTo('/user/connexion', 5);
+        return $this->res;
     }
+
 
     /**
      * Get a user by its id
@@ -180,6 +242,7 @@ class UserController extends MainController
         return $this->userModel->getUserById($id);
     }
 
+
     /**
      * Get a user by its email
      * @param string $email
@@ -190,14 +253,43 @@ class UserController extends MainController
         return $this->userModel->getUserByEmail($email);
     }
 
+
+    /**
+     * Get a user by a token
+     * @param int|string $tokenData
+     * @return Res
+     */
+    public function getUserByToken(int|string $tokenData): Res
+    {
+        // Get Token
+        $token = new Token();
+        $resToken = $this->tokenController->getToken($tokenData);
+        if ($resToken->isErr() === true) {
+            $this->res->ko('user-by-token', 'user-by-token-token-not-found');
+            return $this->res;
+        }
+        $token = $resToken->getResult()['token'];
+
+        // Get User
+        if ($this->userModel->userExistsById($token->getUserId()) === false) {
+            $this->res->ko('user-by-token', 'user-by-token-assoc-user-not-found');
+            return $this->res;
+        }
+
+        // If everything is ok, return the user
+        $this->res->ok('user-by-token', 'user-by-token-ok', $this->userModel->getUserById($token->getUserId()));
+        return $this->res;
+    }
+
+
     /**
      * Create a user providing a pseudo, an email and a password
      * @param string $pseudo
      * @param string $email
      * @param string $password
-     * @return Exception|User
+     * @return Res
      */
-    public function regCreateUser(string $pseudo, string $email, string $password): Exception|User
+    public function regCreateUser(string $pseudo, string $email, string $password): Res
     {
         $this->res = new Res();
         $this->user = new User();
@@ -205,43 +297,51 @@ class UserController extends MainController
         $this->user->setEmail($email);
         $this->user->setPass($password);
         $this->user->setAvatarId(1); // default avatar
-        $this->user->setRole('user-validation-waiting');
+        $this->user->setRole('user-validation');
         $resToken = new Res();
 
+        // Create user
         $userCreatedId = $this->userModel->createUser($this->user);
-
-        if ($userCreatedId > -1) {
-            if ($this->userModel->getUserById($userCreatedId)->getId() > -1) {
-                $this->user = $this->userModel->getUserById($userCreatedId);
-                $resToken = $this->tokenController->createUserToken($this->user->getId(), 'user-validation');
-//                $this->dump($resToken);
-            }
-
-            if (!$resToken->isErr()) {
-                // TODO : Create mail templates with twig
-
-                // Build mail content
-                $token = $resToken->getResult()['token'];
-                $mailTo = $this->user->getEmail();
-                $mailToName = $this->user->getPseudo();
-                $mailSubject = 'Activation de votre compte';
-                $mailContent = 'Bonjour ' . $this->user->getPseudo() . ',<br><br>';
-                $mailContent .= 'Pour activer votre compte, veuillez cliquer sur le lien ci-dessous :<br />';
-                $mailContent .= '<a href="http://ocp5blog/user/activation/' . $token . '">Activer mon compte</a><br /><br />';
-                $mailContent .= 'Cordialement,<br />';
-                $mailContent .= 'L\'équipe de p5blog';
-
-                // Send mail
-                $tokenValidateEmail = new MailController();
-                $tokenValidateEmail->sendEmail($mailTo, $mailToName, $mailSubject, $mailContent);
-            } else {
-                $this->res->ko('reg-create-user', 'Erreur lors de la création du token de validation', null);
-            }
-
-        } else {
-            $this->res->ko('reg-create-user', 'Erreur lors de la création de l\'utilisateur', null);
+        if (is_null($userCreatedId) === true) {
+            $this->res->ko('reg-create-user', 'reg-create-user-ko');
+            return $this->res;
         }
-        return $this->user;
+
+        // Get user
+        $getUser = $this->userModel->getUserById($userCreatedId);
+        if (is_null($getUser) === true) {
+            $this->res->ko('reg-create-user', 'reg-create-user-ko');
+            return $this->res;
+        }
+        $this->user = $getUser;
+        $resToken = $this->tokenController->createUserToken($this->user->getId(), 'user-validation');
+
+        if ($resToken->isErr() === true) {
+            $this->res->ko('reg-create-user', 'Erreur lors de la création du token de validation');
+            return $this->res;
+        }
+
+        // TODO : Create mail templates with twig
+
+        // Build mail content
+        $token = $resToken->getResult()['token'];
+        $mailTo = $this->user->getEmail();
+        $mailToName = $this->user->getPseudo();
+        $mailSubject = 'Activation de votre compte';
+        $mailContent = 'Bonjour ' . $this->user->getPseudo() . ',<br><br>';
+        $mailContent .= 'Pour activer votre compte, veuillez cliquer sur le lien ci-dessous :<br />';
+        $mailContent .= '<a href="http://ocp5blog/user/activation/' . $token . '">Activer mon compte</a><br /><br />';
+        $mailContent .= 'Cordialement,<br />';
+        $mailContent .= 'L\'équipe de p5blog';
+
+        // TODO : Check result of sendMail before returning ok
+        // Send mail
+        $tokenValidateEmail = new MailController();
+        $tokenValidateEmail->sendEmail($mailTo, $mailToName, $mailSubject, $mailContent);
+
+        $this->res->ok('reg-create-user', 'reg-create-user-success', $this->user);
+
+        return $this->res;
     }
 
 

@@ -275,7 +275,7 @@ class FormController extends MainController
      */
     protected function checkPasswordFormat(string $password): bool
     {
-        return preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/', $password);
+        return preg_match('/^(?=.*[0-9])(?=.*[A-Z]).{8,20}$/', $password);
     }
 
     /**

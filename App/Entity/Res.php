@@ -78,6 +78,12 @@ class Res
             case "owner-profile":
                 return "Profil de l'auteur";
                 break;
+            case "user-change-pass":
+                return "Mise à jour du mot de passe";
+                break;
+            case "user-reset-pass":
+                return "Réinitialisation du mot de passe";
+                break;
             default:
                 return $type;
                 break;
@@ -138,13 +144,17 @@ class Res
                 return "Mot de passe changé";
                 break;
             case "user-change-pass-ko-wrong-format":
-                return "Mot de passe : le format n'est pas correct";
+                return "Le format du mot de passe n'est pas correct : doit être composé de 8 à 30 caractères,
+                dont au moins une lettre minuscule, une lettre majuscule et un chiffre";
                 break;
             case "user-change-pass-ko-pass-dont-match":
                 return "Les nouveaux mots de passe saisis ne correspondent pas";
                 break;
             case "user-change-pass-ko-old-pass-incorrect":
                 return "L'ancien mot de passe est incorrect";
+                break;
+            case "user-reset-pass-ok-updated":
+                return "Mot de passe défini avec succès. Redirection en cours...";
                 break;
             // -------------------------------------------------------------------- owner-profile
             case "owner-profile-ok-no-change":
@@ -188,6 +198,27 @@ class Res
             // -------------------------------------------------------------------- user-token
             case "token-content-not-found":
                 return "Ce token n'existe pas ou est expiré";
+                break;
+            // -------------------------------------------------------------------- send-email
+            case "send-email-success":
+                return "Email envoyé avec succès";
+                break;
+            case "send-email-failed":
+                return "Erreur lors de l'envoi de l'email";
+                break;
+            // -------------------------------------------------------------------- user-reset-pass
+            case "user-reset-pass-success":
+                return "Un email vous a été envoyé pour réinitialiser votre mot de passe";
+                break;
+            case "user-reset-pass-ko-email-not-found":
+                return "Aucun compte associé à cette adresse email";
+                break;
+            case "user-reset-pass-ko-token-not-found":
+            case "user-reset-pass-ko-verify-token":
+                return "Demande non valide. Veuillez redemander un email de réinitialisation de mot de passe";
+                break;
+            case "user-reset-pass-ko-user-by-token":
+                return "Aucun compte associé à ce token";
                 break;
             // -------------------------------------------------------------------- default
             default:

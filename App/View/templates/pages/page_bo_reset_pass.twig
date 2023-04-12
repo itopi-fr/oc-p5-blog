@@ -1,0 +1,15 @@
+{% extends "layout.twig" %}
+
+{% use "forms/form_user_reset_pass.twig" %}
+{% use "forms/form_user_password.twig" %}
+
+{% block title %}
+    Réinitialisation du mot de passe
+{% endblock %}
+
+{% block content %}
+    <h1>Réinitialisation du mot de passe</h1>
+
+    {{ block('form_user_reset_pass') }}
+
+{% endblock %}

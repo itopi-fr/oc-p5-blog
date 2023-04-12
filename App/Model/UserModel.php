@@ -5,6 +5,7 @@ namespace App\Model;
 use App\Database\Connection;
 use App\Entity\User;
 use App\Entity\File;
+use App\Entity\Token;
 use Exception;
 
 class UserModel extends Connection
@@ -37,9 +38,9 @@ class UserModel extends Connection
     /**
      * Returns a user object based on its id.
      * @param int $userId
-     * @return User
+     * @return User|null
      */
-    public function getUserById(int $userId): User
+    public function getUserById(int $userId): User|null
     {
 
         $sqlUser = "SELECT * FROM user WHERE id =?";
@@ -86,12 +87,10 @@ class UserModel extends Connection
     /**
      * Create a user providing a user object
      * @param User $user
-     * @return int|Exception
-     * @throws Exception
+     * @return int|null
      */
-    public function createUser(User $user): int|Exception
+    public function createUser(User $user): int|null
     {
-
         $sql = 'INSERT INTO user (avatar_id, pseudo, pass, email, role) VALUES (?, ?, ?, ?, ?)';
 
         $createdUserId = $this->insert(
@@ -104,28 +103,19 @@ class UserModel extends Connection
                 $user->getRole()
             ]
         );
-
-        if (is_null($createdUserId) === true) {
-            throw new Exception('Erreur lors de la création de l\'utilisateur');
-        } else {
-            return $createdUserId;
-        }
+        return $createdUserId;
     }
 
     /**
      * Updates a user in database
      * @param User $user
-     * @return int | Exception
-     * @throws Exception
+     * @return int|null
      */
-    public function updateUser(User $user): int|Exception
+    public function updateUser(User $user): int|null
     {
-        if (!$this->userExistsById($user->getId())) {
-            throw new Exception('Utilisateur inconnu');
+        if ($this->userExistsById($user->getId()) === false) {
+            return null;
         }
-
-        // TODO : Si l'user change d'avatar, supprimer l'ancien (fichiers + BDD)
-
 
         $sql = 'UPDATE user SET avatar_id=?, pseudo=?, pass=?, email=?, role=? WHERE id=?';
         return $this->update(

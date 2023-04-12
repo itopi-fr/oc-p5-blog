@@ -10,6 +10,7 @@ use App\Entity\User;
 use App\Entity\UserOwner;
 use PDO;
 use PDOException;
+use App\Sys\SuperGlobals;
 use App\Controller\MainController;
 
 class Connection
@@ -19,6 +20,7 @@ class Connection
     private string $username;
     private string $password;
     private ?PDO $conn;
+    private SuperGlobals $superGlobals;
 
 
     /**
@@ -26,10 +28,11 @@ class Connection
      */
     protected function __construct()
     {
-        $this->host = $_ENV['DB_HOST'];
-        $this->dbname = $_ENV['DB_NAME'];
-        $this->username = $_ENV['DB_USER'];
-        $this->password = $_ENV['DB_PASS'];
+        $this->superGlobals = new SuperGlobals();
+        $this->host =       $this->superGlobals->getEnv('DB_HOST');
+        $this->dbname =     $this->superGlobals->getEnv('DB_NAME');
+        $this->username =   $this->superGlobals->getEnv('DB_USER');
+        $this->password =   $this->superGlobals->getEnv('DB_PASS');
     }
 
     /**

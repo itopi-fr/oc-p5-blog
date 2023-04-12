@@ -26,10 +26,10 @@ class TokenModel extends Connection
      * @param int $userId
      * @return array|null
      */
-    public function getUserTokens(int $userId): array|null
+    public function getUserTokens(int $userId, string $tokenType): array|null
     {
-        $req = "SELECT * FROM token WHERE user_id =?";
-        $result = $this->getMultipleAsObjectsArray($req, [$userId]);
+        $req = "SELECT * FROM token WHERE user_id = ? AND type = ?";
+        $result = $this->getMultipleAsObjectsArray($req, [$userId, $tokenType]);
         return $result ? $result : null;
     }
 

@@ -7,6 +7,7 @@ use Exception;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use App\Controller\OwnerInfoController;
+use App\Sys\SuperGlobals;
 
 class MainController
 {
@@ -17,6 +18,7 @@ class MainController
     protected array $twigData = [];
     private UserOwnerModel $userOwnerModel;
     private OwnerInfoController $ownerInfoController;
+    private SuperGlobals $superGlobals;
 
 
     /**
@@ -25,11 +27,12 @@ class MainController
     public function __construct()
     {
         $this->initTwig();
+        $this->superGlobals = new SuperGlobals();
     }
 
     public function __destruct()
     {
-        if ($_ENV['MODE_DEV'] === 'true') {
+        if ($this->superGlobals->getEnv('MODE_DEV') === 'true') {
             $this->showDump();
         }
     }

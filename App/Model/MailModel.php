@@ -3,6 +3,7 @@
 namespace App\Model;
 
 use App\Controller\MainController;
+use App\Sys\SuperGlobals;
 use App\Entity\Res;
 use Exception;
 use PHPMailer\PHPMailer\PHPMailer;
@@ -11,6 +12,7 @@ use PHPMailer\PHPMailer\Exception as PHPMailerException;
 class MailModel
 {
     protected Res $res;
+    private SuperGlobals $superGlobals;
 //    protected MainController $mc;
 
 
@@ -20,11 +22,17 @@ class MailModel
     public function __construct()
     {
         $this->res = new Res();
+        $this->superGlobals = new SuperGlobals();
 //        $this->mc = new MainController();
     }
 
-    public function sendEmailSmtp(string $to, string $toName, string $subject, string $msgHtml, string $msgRaw): Res
-    {
+    public function sendEmailSmtp(
+        string $mailTo,
+        string $mailToName,
+        string $subject,
+        string $msgHtml,
+        string $msgRaw
+    ): Res {
         $mail = new PHPMailer();
         $mail->IsSMTP();
         $mail->SMTPAuth =   1;
@@ -32,14 +40,14 @@ class MailModel
         $mail->CharSet =    'UTF-8';
         $mail->WordWrap   = 50;
         $mail->IsHTML(true);
-        $mail->Host =       $_ENV['MAIL_HOST'];
-        $mail->Port =       $_ENV['MAIL_PORT'];
-        $mail->Username =   $_ENV['MAIL_USER'];
-        $mail->Password =   $_ENV['MAIL_PASS'];
-        $mail->From =       $_ENV['MAIL_FROM'];
-        $mail->FromName =   $_ENV['MAIL_FROM_NAME'];
+        $mail->Host =       $this->superGlobals->getEnv('MAIL_HOST');
+        $mail->Port =       $this->superGlobals->getEnv('MAIL_PORT');
+        $mail->Username =   $this->superGlobals->getEnv('MAIL_USER');
+        $mail->Password =   $this->superGlobals->getEnv('MAIL_PASS');
+        $mail->From =       $this->superGlobals->getEnv('MAIL_FROM');
+        $mail->FromName =   $this->superGlobals->getEnv('MAIL_FROM_NAME');
 
-        $mail->AddAddress($to, $toName);
+        $mail->AddAddress($mailTo, $mailToName);
         $mail->Subject =  $subject;
         $mail->AltBody = $msgRaw;
         $mail->MsgHTML($msgHtml);

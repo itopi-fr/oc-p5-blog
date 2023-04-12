@@ -11,6 +11,7 @@ use App\Controller\PostController;
 use App\Controller\UserController;
 use App\Entity\Res;
 use Exception;
+use App\Sys\SuperGlobals;
 
 class Router
 {
@@ -27,6 +28,7 @@ class Router
     private string $pageActionParam = '';
     private OwnerInfoController $ownerInfoController;
     private Res $res;
+    private SuperGlobals $superGlobals;
 
 
     /**
@@ -36,6 +38,7 @@ class Router
     {
         $this->mc = new MainController();
         $this->res = new Res();
+        $this->superGlobals = new SuperGlobals();
     }
 
 
@@ -91,7 +94,7 @@ class Router
                     break;
             }
         } catch (Exception $e) {
-            if ($_ENV['MODE_DEV'] == 'true') {
+            if ($this->superGlobals->getEnv('MODE_DEV') === 'true') {
                 $this->mc->dump($e);
             } else {
                 $controller = new ErrorPageController();

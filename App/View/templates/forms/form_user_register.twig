@@ -1,4 +1,11 @@
 {% block form_user_register %}
+    {% use "blocks/block_res_message.twig" %}
+    {% set getType = "" %}
+    {% set getMess = "" %}
+    {% set targetType = "register" %}
+
+    {{ block('res_message') }}
+
     {# Form Register #}
     <div class="col-md-8">
         <form action="inscription" method="POST" enctype="multipart/form-data" class="row form-general">
@@ -12,27 +19,15 @@
             </div>
             <div class="form-group">
                 <label for="pass">Mot de passe</label>
-                <input type="password" name="pass" class="form-control" id="pass" placeholder="Mot de passe" value="pass">
+                <input type="password" name="pass" class="form-control" id="pass" placeholder="Mot de passe" value="Pass_P4ss">
             </div>
             <div class="form-group">
                 <label for="pass-confirm">Confirmation</label>
-                <input type="password" name="pass-confirm" class="form-control" id="pass-confirm" placeholder="Confirmation" value="pass">
+                <input type="password" name="pass-confirm" class="form-control" id="pass-confirm" placeholder="Confirmation" value="Pass_P4ss">
             </div>
             <div class="form-group text-center">
                 <input type="submit" name="submit-register"/>
             </div>
-
-            {# Messages #}
-            <div class="col-12 text-center">
-                {% if (result) %}
-                    <div class="alert alert-{{ (result.isErr()) ? 'warning' : 'success' }}" role="alert">
-                        {% for type, msg in result.getMsg() %}
-                            {{ result.showMsg(msg) }}
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            </div>
-
         </form>
     </div>
 {% endblock %}
