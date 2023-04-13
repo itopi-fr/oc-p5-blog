@@ -91,6 +91,13 @@ label {
   height: auto;
 }
 
+/* Owner Manage */
+.owner-menu {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  background-color: #f3f3f3;
+}
+
 /* Surcharge Starter Theme */
 @media (min-width: 992px) {
   header.masthead {

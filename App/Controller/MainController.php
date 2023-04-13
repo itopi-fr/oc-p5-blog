@@ -194,14 +194,20 @@ class MainController
         ]);
 
         if (isset($_SESSION) === true) {
+            // Current user info
             (isset($_SESSION['userid']) === true) ?
                 $this->twig->addGlobal('userid', $_SESSION['userid']) :
                 $this->twig->addGlobal('userid', null);
 
+            // Current User Object
+            (isset($_SESSION['userobj']) === true) ?
+                $this->twig->addGlobal('userobj', $_SESSION['userobj']) :
+                $this->twig->addGlobal('userobj', null);
+
+            // Owner info displayed in the header to all visitors
             isset($_SESSION['ownerinfo']) === true ?
                 $this->twig->addGlobal('ownerinfo', $_SESSION['ownerinfo']) :
                 $this->twig->addGlobal('ownerinfo', null);
-
         } else {
             $this->twig->addGlobal('userid', null);
         }

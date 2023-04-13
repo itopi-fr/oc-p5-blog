@@ -5,6 +5,7 @@ namespace App\Sys;
 class SuperGlobals
 {
     private array $sgEnv;
+    private array $sgSes;
 
     /**
      * Constructor
@@ -16,18 +17,43 @@ class SuperGlobals
 
 
     /**
-     * Get $_ENV
+     * Get all $_ENV variables
      * @return array|null
      */
-    public function getEnvAll(): array
+    public function getEnvAll(): array|null
     {
         return $this->sgEnv;
     }
 
 
+    /**
+     * Get a specific $_ENV variable
+     * @param string $varName
+     * @return string|null
+     */
     public function getEnv(string $varName): string|null
     {
         return $this->sgEnv[$varName] ?? null;
+    }
+
+    /**
+     * Get all $_SESSION variables
+     * @return array|null
+     */
+    public function getSesAll(): array|null
+    {
+        return $this->sgSes;
+    }
+
+
+    /**
+     * Get a specific $_ENV variable
+     * @param string $varName
+     * @return string|null
+     */
+    public function getSes(string $varName): string|null
+    {
+        return $this->sgSes[$varName] ?? null;
     }
 
     /**
@@ -40,6 +66,7 @@ class SuperGlobals
     private function defineSg(): void
     {
         $this->sgEnv = (isset($_ENV)) ? $_ENV : null;
+        $this->sgSes = (isset($_SESSION)) ? $_SESSION : null;
     }
 
 

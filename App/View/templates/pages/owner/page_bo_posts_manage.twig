@@ -1,0 +1,14 @@
+{% extends "layout.twig" %}
+{% use "blocks/owner/block_bo_owner_menu.twig" %}
+{% use "blocks/owner/block_bo_posts_manage.twig" %}
+
+{% block title %}
+    {{ title }}
+{% endblock %}
+
+{% block content %}
+    <h1>{{ title }}</h1>
+    {{ block('bo_owner_menu') }}
+    {{ block('bo_posts_manage') }}
+    template : posts manage
+{% endblock %}

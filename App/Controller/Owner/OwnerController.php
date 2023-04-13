@@ -1,0 +1,81 @@
+<?php
+
+namespace App\Controller\Owner;
+
+use App\Controller\ErrorPageController;
+use App\Controller\MainController;
+use App\Entity\Res;
+use App\Model\UserModel;
+
+class OwnerController extends MainController
+{
+    private Res $res;
+    private UserModel $userModel;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->userModel = new UserModel();
+        $this->res = new Res();
+    }
+
+    /**
+     * Index. Used to call or redirect to the right method or page
+     * @return void
+     */
+    public function index(string $pageAction, string $pageActionParam): void
+    {
+        // Check if the user is an owner, if not, redirect to the error page
+        if ($this->isOwner() === false) {
+            $this->res->ko('general', "La page demandée n'existe pas");
+            $controller = new ErrorPageController();
+            $controller->index($this->res);
+            return;
+        }
+
+        if ($pageAction === 'posts') {
+            $controller = new OwnerPostController();
+            $controller->managePosts();
+            return;
+        } elseif ($pageAction === 'comments') {
+            $controller = new OwnerCommentController();
+            $controller->manageComments();
+        } elseif ($pageAction === 'users') {
+            $controller = new OwnerUserController();
+            $controller->manageUsers();
+            return;
+        } else {
+            $this->twigData['title'] = 'Administration - Accueil';
+            echo  $this->twig->render("pages/owner/page_bo_owner.twig", $this->twigData);
+            return;
+        }
+    }
+
+    /**
+     * Check if the user is an owner
+     * @param string $ownerEmail
+     * @param string $ownerPassword
+     * @return bool
+     */
+    public function isOwner(): bool
+    {
+        if (isset($_SESSION['userobj']) === false) {
+            return false;
+        }
+        if (is_null($_SESSION['userobj']) === true) {
+            return false;
+        }
+        // Verify that the user exists
+        if ($this->userModel->userExistsByEmailPassword($_SESSION['userobj']->getEmail(), $_SESSION['userobj']->getPass()) === false) {
+            return false;
+        } else {
+            // Verify that the user is an owner
+            $user = $this->userModel->getUserByEmail($_SESSION['userobj']->getEmail());
+            if ($user->getRole() === 'owner') {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+}

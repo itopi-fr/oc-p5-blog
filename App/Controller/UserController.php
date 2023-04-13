@@ -41,8 +41,14 @@ class UserController extends MainController
     {
         // TODO: clean all this mess
         //  Distribute actions to separate methods : connect(), disconnect(), register(), etc.
-
+        // ---------------------------------------------------------------------------------------------- session / User
         isset($_SESSION['userid']) === true ? $userId = $_SESSION['userid'] : $userId = null;
+
+        if (is_null($userId) === false) {
+            $_SESSION['userobj'] = $this->userModel->getUserById($_SESSION['userid']);
+        } else {
+            $_SESSION['userobj'] = null;
+        }
 
         // -------------------------------------------------------------------------------------------- user/inscription
         if ($userAction === 'inscription') {
