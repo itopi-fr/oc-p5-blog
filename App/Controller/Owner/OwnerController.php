@@ -33,10 +33,24 @@ class OwnerController extends MainController
             return;
         }
 
+        // TODO : add a check to $pageActionParam
+
         if ($pageAction === 'posts') {
             $controller = new OwnerPostController();
             $controller->managePosts();
             return;
+        } elseif ($pageAction === 'post-create') {
+            $controller = new OwnerPostController();
+            $controller->createPost();
+        } elseif ($pageAction === 'post-edit') {
+            $controller = new OwnerPostController();
+            $controller->editPost($pageActionParam);
+        } elseif ($pageAction === 'post-delete') {
+            $controller = new OwnerPostController();
+            $controller->deletePost($pageActionParam);
+        } elseif ($pageAction === 'post-archive') {
+            $controller = new OwnerPostController();
+            $controller->archivePost($pageActionParam);
         } elseif ($pageAction === 'comments') {
             $controller = new OwnerCommentController();
             $controller->manageComments();

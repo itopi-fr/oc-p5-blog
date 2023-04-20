@@ -8,7 +8,7 @@ use App\Entity\Res;
 use App\Entity\User;
 use App\Model\UserModel;
 
-class FormLogInOutReg extends FormController
+class FormUserLog extends FormController
 {
     protected Res $res;
     protected User $user;

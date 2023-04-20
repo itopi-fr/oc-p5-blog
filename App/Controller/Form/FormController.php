@@ -6,6 +6,7 @@ use App\Controller\FileController;
 use App\Controller\MainController;
 use App\Entity\File;
 use App\Entity\Res;
+use App\Model\PostModel;
 use App\Model\UserModel;
 use Exception;
 
@@ -19,12 +20,12 @@ class FormController extends MainController
                                     'application/msword',
                                     'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
     private int $photoMaxSize = 2097152; // 2 Mo
+    private int $postImgMaxSize = 2097152; // 2 Mo
     private int $cvMaxSize = 5242880; // 5 Mo
-    private int $avatarMaxSize = 524288; // 512 Ko
+    private int $avatarMaxSize = 2097152; // 2 Mo
     private string $photoPath = 'public/upload/owner/';
-
+    private string $postImgPath = 'public/upload/blog/post/';
     private string $cvPath = 'public/upload/owner/';
-
     private string $avatarPath = 'public/upload/user/';
 
 
@@ -95,6 +96,10 @@ class FormController extends MainController
                 $posted_file['dest-path'] = $base_path . $this->avatarPath . $posted_file['unique-name'] . '.' . $posted_file['ext'];
                 $posted_file['url'] = "/" . $this->avatarPath . $posted_file['unique-name'] . '.' . $posted_file['ext'];
                 break;
+            case 'post-image':
+                $posted_file['dest-path'] = $base_path . $this->postImgPath . $posted_file['unique-name'] . '.' . $posted_file['ext'];
+                $posted_file['url'] = "/" . $this->postImgPath . $posted_file['unique-name'] . '.' . $posted_file['ext'];
+                break;
         }
         return $posted_file;
     }
@@ -105,7 +110,7 @@ class FormController extends MainController
      * @param int $id
      * @return Res $res
      */
-    protected function checkIfUnique(string $formName, string $field, int $id): Res
+    protected function isUserUnique(string $formName, string $field, int $id): Res
     {
 
         $userModel = new UserModel();
@@ -126,38 +131,38 @@ class FormController extends MainController
     {
         if ($this->isSet($_POST[$field]) === false) {
             $this->res->ko($formName, $formName . '-ko-' . $field . '-empty');
-        } elseif ($this->isAlphaNumPlus($_POST[$field]) === false) {
-            $this->res->ko($formName, $formName . '-ko-' . $field . '-not-alpha-num-plus');
+        } elseif ($this->isAlphaNumSpacesPunct($_POST[$field]) === false) {
+            $this->res->ko($formName, $formName . '-ko-' . $field . '-not-alpha-num-punct');
         } elseif ($this->isBetween($_POST[$field], $min, $max) === false) {
             $this->res->ko($formName, $formName . '-ko-' . $field . '-not-between- ' . $min . '-and-' . $max);
         }
         return $this->res;
     }
 
+
     /**
-     * Check if a POST field is sent, is alphanumeric (allowing _ and -) and is between 2 lengths
+     * Check if a POST radio is sent, is alphanumeric and "-" and is valid
      * @param string $field
      * @param int $min
      * @param int $max
      * @return Res
      */
-    protected function checkPostFieldTextarea(string $field, int $min, int $max): Res
+    protected function checkPostRadio(string $formName, string $field, array $allowed_values): Res
     {
         if ($this->isSet($_POST[$field]) === false) {
-            $this->res->ko($field, 'Non renseigné');
-        } elseif ($this->isAlphaNumSpacesPonct($_POST[$field]) === false) {
-            $this->res->ko(
-                $field,
-                'ne doit contenir que des lettres, des chiffres, des espaces, des tirets ou des underscores'
-            );
-        } elseif ($this->isBetween($_POST[$field], $min, $max) === false) {
-            $this->res->ko($field, 'doit contenir entre ' . $min . ' et ' . $max . ' caractères');
+            $this->res->ko($formName, $formName . '-ko-' . $field . '-empty');
+        } elseif ($this->isAlphaNumDash($_POST[$field]) === false) {
+            $this->res->ko($formName, $formName . '-ko-' . $field . '-not-alpha-num-punct');
+        } elseif (in_array($_POST[$field], $allowed_values) === false) {
+            $this->res->ko($formName, $formName . '-ko-' . $field . '-value-not-allowed');
         }
         return $this->res;
     }
 
+
     /**
      * Check if a POST field is sent, is a valid email and is between 2 lengths
+     * @param string $formName
      * @param string $field
      * @param int $min
      * @param int $max
@@ -175,6 +180,29 @@ class FormController extends MainController
         return $this->res;
     }
 
+
+    /**
+     * Check if a POST field is sent, is a valid slug (alphanum and "-") and is between 4 and 128 chars
+     * @param string $formName
+     * @param string $field
+     * @return Res
+     */
+    public function checkPostFieldTextSlug(string $formName, string $field, int $postId): Res
+    {
+        $postModel = new PostModel();
+        if ($this->isSet($_POST[$field]) === false) {
+            $this->res->ko($formName, $formName . '-ko-' . $field . '-empty');
+        } elseif ($this->isAlphaNumDash($_POST[$field]) === false) {
+            $this->res->ko($formName, $formName . '-ko-' . $field . '-not-alpha-num-dash');
+        } elseif ($this->isBetween($_POST[$field], 4, 128) === false) {
+            $this->res->ko($formName, $formName . '-ko-' . $field . '-not-between-3-and-64');
+        } elseif ($postModel->postSlugAlreadyExists($_POST[$field], $postId) === true) {
+            $this->res->ko($formName, $formName . '-ko-' . $field . '-not-unique');
+        }
+        return $this->res;
+    }
+
+
     /**
      * This method performs the following checks:
      * - if a POST file is sent or already set
@@ -182,26 +210,24 @@ class FormController extends MainController
      * - if the file size is not too big
      * @param string $formName
      * @param string $type
-     * @param array $postFile
-     * @param File $usrFile
-     * @param string $fileType
+     * @param array $postedFile
      * @param int $maxSize
      * @return Res
      */
-    protected function checkPostFileImg(
+    protected function checkPostedFileImg(
         string $formName,
         string $type,
-        array $postFile,
+        array $postedFile,
         File $userFileObject,
         int $maxSize
     ): Res {
-        if (($postFile['error'] == 4) && ($userFileObject->getId() == 0)) {
+        if (($postedFile['error'] == 4) && ($userFileObject->getId() == 0)) {
             $this->res->ko($formName, $formName . '-' . $type . '-ko-missing');
-        } elseif ($postFile['error'] == 0) {
-            if ($this->checkFileIsImage($postFile) === false) {
+        } elseif ($postedFile['error'] == 0) {
+            if ($this->checkFileIsImage($postedFile) === false) {
                 $this->res->ko($formName, $formName . '-' . $type . '-ko-not-image');
             }
-            if ($this->checkFileSize($postFile, $maxSize) === false) {
+            if ($this->checkFileSize($postedFile, $maxSize) === false) {
                 $this->res->ko($formName, $formName . '-' . $type . '-ko-too-big');
             }
         }
@@ -215,26 +241,24 @@ class FormController extends MainController
      * - if the file size is not too big
      * @param string $formName
      * @param string $type
-     * @param array $postFile
-     * @param File $usrFile
-     * @param string $fileType
+     * @param array $postedFile
      * @param int $maxSize
      * @return Res
      */
-    protected function checkPostFileDoc(
+    protected function checkPostedFileDoc(
         string $formName,
         string $type,
-        array $postFile,
+        array $postedFile,
         File $userFileObject,
         int $maxSize
     ): Res {
-        if (($postFile['error'] == 4) && ($userFileObject->getId() == 0)) {
+        if (($postedFile['error'] == 4) && ($userFileObject->getId() == 0)) {
             $this->res->ko($formName, $formName . '-' . $type . '-ko-missing');
-        } elseif ($postFile['error'] == 0) {
-            if ($this->checkFileIsDoc($postFile) === false) {
+        } elseif ($postedFile['error'] == 0) {
+            if ($this->checkFileIsDoc($postedFile) === false) {
                 $this->res->ko($formName, $formName . '-' . $type . '-ko-not-image');
             }
-            if ($this->checkFileSize($postFile, $maxSize) === false) {
+            if ($this->checkFileSize($postedFile, $maxSize) === false) {
                 $this->res->ko($formName, $formName . '-' . $type . '-ko-too-big');
             }
         }
@@ -247,17 +271,22 @@ class FormController extends MainController
      * TODO : A check, le retour array
      * @param $posted_file
      * @param $file_type
-     * @return File|array
-     * @throws Exception
+     * @return Res
      */
-    protected function treatFile($posted_file, $file_type)
+    protected function treatFile($posted_file, $file_type): Res
     {
-        $posted_file = $this->buildFileDestPath($posted_file, $file_type);
-        $fileCtrl = new FileController();
-        $uploadedFile = $fileCtrl->uploadFile($posted_file);
-        $insertedFileId = $fileCtrl->insertFile($uploadedFile);
-        return $fileCtrl->getFileById($insertedFileId);
+        try {
+            $posted_file = $this->buildFileDestPath($posted_file, $file_type);
+            $fileCtrl = new FileController();
+            $uploadedFile = $fileCtrl->uploadFile($posted_file);
+            $insertedFileId = $fileCtrl->insertFile($uploadedFile);
+            $this->res->ok('treat-file', 'treat-file-ok-upl-and-ins', $fileCtrl->getFileById($insertedFileId));
+        } catch (Exception $e) {
+            $this->res->ko('treat-file', $e->getMessage());
+        }
+        return $this->res;
     }
+
 
     /**
      * @param string $password
@@ -293,6 +322,14 @@ class FormController extends MainController
     /**
      * @return int
      */
+    protected function getPostImgMaxSize(): int
+    {
+        return $this->postImgMaxSize;
+    }
+
+    /**
+     * @return int
+     */
     protected function getCvMaxSize(): int
     {
         return $this->cvMaxSize;
@@ -317,12 +354,18 @@ class FormController extends MainController
     /**
      * @return string
      */
+    protected function getPostImgPath(): string
+    {
+        return $this->postImgPath;
+    }
+
+    /**
+     * @return string
+     */
     protected function getCvPath(): string
     {
         return $this->cvPath;
     }
-
-
 
     /**
      * @return string
@@ -331,5 +374,4 @@ class FormController extends MainController
     {
         return $this->avatarPath;
     }
-
 }

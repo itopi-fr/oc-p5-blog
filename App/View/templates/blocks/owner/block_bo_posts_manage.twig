@@ -1,24 +1,72 @@
 {% block bo_posts_manage %}
-    <section class="row gx-4 gx-lg-5 justify-content-center manage-posts" style="margin-top:25px">
-
+    <section class="row gx-4 gx-lg-5 justify-content-center manage-posts">
+        <div><a href="/owner/post-create"><button class="btn btn-info">Nouvel article</button></a></div>
         <div class="row">
-            <div class="col-1"><strong>Actions</strong></div>
+            <div class="col-2"><strong>Actions</strong></div>
             <div class="col-5"><strong>Titre</strong></div>
-            <div class="col-2"><strong></strong></div>
-            <div class="col-2"><strong>Commentaires</strong></div>
-            <div class="col-2"><strong>Date</strong></div>
+            <div class="col-1"><strong>Statut</strong></div>
+            <div class="col-2"><strong>Créé le</strong></div>
+            <div class="col-2"><strong>Dernière modif.</strong></div>
         </div>
 
         {%  for post in posts |slice(0, 10) %}
             <div class="row">
-                    <div class="col-1"><a href=""><i class="fa-solid fa-pen-to-square"></i></a>&nbsp; | &nbsp;<a href=""><i class="fa-solid fa-trash"></i></a></div>
-                    <div class="col-5">{{ post.title }}</div>
-                    <div class="col-2"></div>
-                    <div class="col-2"></div>
-                    <div class="col-2">{{ post.date|date('d/m/Y') }}</div>
+                    <div class="col-2">
+                        <a href="/owner/post-edit/{{ post.getId() }}"><i class="fa-solid fa-pen-to-square"></i></a>&nbsp; | &nbsp;
+                        <a href="javascript:void(0)"
+                                id="{{ post.getId() }}"
+                                data-bs-toggle="modal"
+                                data-bs-target="#post-delete-modal"
+                                data-post-id="{{ post.getId() }}"
+                                data-post-title="{{ post.getTitle() }}"
+                                onclick=fillModal(this.id)
+                            >
+                                <i class="fa-solid fa-trash"></i>
+
+                        </a>
+{#        TODO : Gérer l'archivage                #}
+{#                        &nbsp; | &nbsp;<a href="/owner/post-archive/{{ post.getId() }}"><i class="fa-solid fa-box-archive"></i></a>#}
+                    </div>
+                    <div class="col-5">{{ post.getTitle() }}</div>
+                    <div class="col-1">{{ post.getStatus() }}</div>
+                    <div class="col-2">{{ post.getCreatedDate()|date('d/m/Y') }}</div>
+                    <div class="col-2">{{ post.getLastUpdate()|date('d/m/Y') }}</div>
             </div>
         {% endfor %}
-
-
     </section>
+
+
+    <!-- Button trigger modal -->
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="post-delete-modal" tabindex="-1" aria-labelledby="post-delete-modal-label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="post-delete-modal-label">Suppression d'un article</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    Article : <span id="postTitle" class="alert-danger"></span><br>
+                    Êtes-vous sûr.e de vouloir supprimer cet article ?<br>
+                    Cette action est irréversible.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="alert" data-bs-dismiss="modal">Annuler</button>
+                    <a id="post-href" href="/owner/post-delete/{{ post.getId() }}" class="alert alert-danger"><i class="fa-solid fa-trash"></i>&nbsp;Supprimer</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        function fillModal(btnId) {
+            let postId = document.getElementById(btnId).getAttribute('data-post-id');
+            let postTitle = document.getElementById(btnId).getAttribute('data-post-title');
+            document.getElementById('postTitle').innerHTML = postTitle;
+            document.getElementById('post-href').href = '/owner/post-delete/' + postId;
+        }
+    </script>
+
 {% endblock %}

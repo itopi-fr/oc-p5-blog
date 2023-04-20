@@ -2,6 +2,7 @@
 {% use "blocks/block_fo_nav.twig" %}
 {% use "blocks/block_fo_header.twig" %}
 {% use "blocks/block_fo_footer.twig" %}
+{% use "blocks/block_fo_scripts.twig" %}
 
 <!doctype html>
 <html lang="en">
@@ -20,5 +21,6 @@
     </div>
 
     {{ block('footer') }}
+    {{ block('scripts') }}
 </body>
 </html>

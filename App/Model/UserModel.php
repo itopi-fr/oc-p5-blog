@@ -138,7 +138,6 @@ class UserModel extends Connection
      */
     public function userExistsById(int $userId): bool
     {
-
         $sql = "SELECT EXISTS(SELECT * FROM user WHERE id = ?)";
         return $this->exists($sql, [$userId]);
     }

@@ -36,14 +36,14 @@ class FormUserProfile extends FormController
         // -------------------------------------------------------------------- Checks
         // user-pseudo : checks
         $this->res = $this->checkPostFieldText('user-profile', 'pseudo', 4, 30);
-        $this->res = $this->checkIfUnique('user-profile', 'pseudo', $user->getId());
+        $this->res = $this->isUserUnique('user-profile', 'pseudo', $user->getId());
 
         // user-email : checks
         $this->res = $this->checkPostFieldTextEmail('user-profile', 'email', 6, 254);
-        $this->res = $this->checkIfUnique('user-profile', 'email', $user->getId());
+        $this->res = $this->isUserUnique('user-profile', 'email', $user->getId());
 
         // file-avatar : checks
-        $this->res = $this->checkPostFileImg(
+        $this->res = $this->checkPostedFileImg(
             'user-profile',
             'file-avatar',
             $_FILES['file-avatar'],
@@ -51,11 +51,17 @@ class FormUserProfile extends FormController
             $this->getAvatarMaxSize()
         );
 
-        // -------------------------------------------------------------------- Treatment
+        // -------------------------------------------------------------------- Treatments
         if ($this->res->isErr() === false) {
             // User avatar file : treatment
             if ($_FILES['file-avatar']['error'] === 0) {
-                $savedFile = $this->treatFile($_FILES['file-avatar'], 'avatar');
+                $resTreatFile = $this->treatFile($_FILES['file-avatar'], 'avatar');
+
+                if ($resTreatFile->isErr() === true) {
+                    $this->res->ko('user-profile', $resTreatFile->getMsg()['treat-file']);
+                }
+
+                $savedFile = $resTreatFile->getResult()['treat-file'];
                 $user->setAvatarFile($savedFile);
                 $user->setAvatarId($savedFile->getId());
             }
@@ -83,10 +89,10 @@ class FormUserProfile extends FormController
         // Checks
         $this->res = $this->checkPostFieldText('owner-profile', 'firstname', 4, 30);
         $this->res = $this->checkPostFieldText('owner-profile', 'lastname', 4, 30);
-        $this->res = $this->checkPostFieldTextarea('catchphrase', 4, 254);
+        $this->res = $this->checkPostFieldText('owner-profile', 'catchphrase', 4, 254);
 
         // file-cv : checks
-        $this->res = $this->checkPostFileDoc(
+        $this->res = $this->checkPostedFileDoc(
             'owner-profile',
             'file-cv',
             $_FILES['file-cv'],
@@ -95,7 +101,7 @@ class FormUserProfile extends FormController
         );
 
         // file-photo : checks
-        $this->res = $this->checkPostFileImg(
+        $this->res = $this->checkPostedFileImg(
             'owner-profile',
             'file-photo',
             $_FILES['file-photo'],
@@ -112,14 +118,29 @@ class FormUserProfile extends FormController
 
             // Owner CV file : treatment
             if ($_FILES['file-cv']['error'] === 0) {
-                $savedCvFile = $this->treatFile($_FILES['file-cv'], 'cv');
+                $resTreatCvFile = $this->treatFile($_FILES['file-cv'], 'cv');
+
+                if ($resTreatCvFile->isErr() === true) {
+                    $this->res->ko('user-profile', $resTreatCvFile->getMsg()['treat-file']);
+                }
+                $savedCvFile = $resTreatCvFile->getResult()['treat-file'];
+
+//                $savedCvFile = $this->treatFile($_FILES['file-cv'], 'cv');
                 $userOwner->setCvFile($savedCvFile);
                 $userOwner->setCvFileId($savedCvFile->getId());
             }
 
             // Owner photo file : treatment
             if ($_FILES['file-photo']['error'] === 0) {
-                $savedPhotoFile = $this->treatFile($_FILES['file-photo'], 'photo');
+                $resTreatPhotoFile = $this->treatFile($_FILES['file-photo'], 'photo');
+
+                if ($resTreatPhotoFile->isErr() === true) {
+                    $this->res->ko('user-profile', $resTreatPhotoFile->getMsg()['treat-file']);
+                }
+
+                $savedPhotoFile = $resTreatPhotoFile->getResult()['treat-file'];
+
+//                $savedPhotoFile = $this->treatFile($_FILES['file-photo'], 'photo');
                 $userOwner->setPhotoFile($savedPhotoFile);
                 $userOwner->setPhotoFileId($savedPhotoFile->getId());
             }

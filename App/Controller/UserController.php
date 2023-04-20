@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Controller\Form\FormLogInOutReg;
+use App\Controller\Form\FormUserLog;
 use App\Controller\Form\FormUserChangePass;
 use App\Controller\Form\FormUserProfile;
 use App\Controller\Form\FormUserResetPass;
@@ -54,7 +54,7 @@ class UserController extends MainController
         if ($userAction === 'inscription') {
             // Form Register
             if (isset($_POST["submit-register"]) === true) {
-                $this->twigData['result'] = (new FormLogInOutReg())->register(
+                $this->twigData['result'] = (new FormUserLog())->register(
                     $_POST['pseudo'],
                     $_POST['email'],
                     $_POST['pass'],
@@ -153,7 +153,7 @@ class UserController extends MainController
 
             // Form Logout
             if ($userAction === 'deconnexion') {
-                $this->twigData['result'] = (new FormLogInOutReg())->logout();
+                $this->twigData['result'] = (new FormUserLog())->logout();
                 $this->refresh(0);
             }
 
@@ -179,7 +179,7 @@ class UserController extends MainController
                 $this->twigData['result'] = $this->res;
                 return;
             }
-            $this->twigData['result'] = (new FormLogInOutReg())->login($_POST['email'], $_POST['pass']);
+            $this->twigData['result'] = (new FormUserLog())->login($_POST['email'], $_POST['pass']);
             $this->refresh(2);
         } else {
             $this->res->ko('login', 'email-or-pass-incorrect', null);
