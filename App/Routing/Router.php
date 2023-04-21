@@ -5,9 +5,9 @@ namespace App\Routing;
 use App\Controller\HomeController;
 use App\Controller\ErrorPageController;
 use App\Controller\MainController;
+use App\Controller\Owner\OwnerController;
 use App\Controller\OwnerInfoController;
 use App\Controller\PostController;
-//use App\Controller\ProfileController;
 use App\Controller\UserController;
 use App\Entity\Res;
 use Exception;
@@ -55,14 +55,12 @@ class Router
             $this->pageActionParam =    (array_key_exists(2, $this->urlParts)) ? $this->urlParts[2] : '';
 
             // Owner info
-            if (
-                (isset($_SESSION['ownerinfo']) === false) ||
-                (empty($_SESSION['ownerinfo']) === true) ||
-                ($_SESSION['ownerinfo'] == null)
-            ) {
+            $sessionOwnerInfo = $this->superGlobals->getSes('ownerinfo');
+
+            if ((empty($sessionOwnerInfo) === true) || ($sessionOwnerInfo == null)) {
                 $this->ownerInfoController = new OwnerInfoController();
                 $ownerInfo = $this->ownerInfoController->getOwnerInfo();
-                $_SESSION['ownerinfo'] = $ownerInfo;
+                $this->superGlobals->setSes('ownerinfo', $ownerInfo);
             }
 
             // Route
@@ -84,6 +82,11 @@ class Router
 
                 case ('user'):
                     $controller = new UserController();
+                    $controller->index($this->pageAction, $this->pageActionParam);
+                    break;
+
+                case ('owner'):
+                    $controller = new OwnerController();
                     $controller->index($this->pageAction, $this->pageActionParam);
                     break;
 

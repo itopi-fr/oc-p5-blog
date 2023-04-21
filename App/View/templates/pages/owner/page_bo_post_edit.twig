@@ -1,0 +1,13 @@
+{% extends "layout.twig" %}
+{% use "blocks/owner/block_bo_owner_menu.twig" %}
+{% use "forms/owner/form_post_edit.twig" %}
+
+{% block title %}
+    {{ title }}
+{% endblock %}
+
+{% block content %}
+    <h1>{{ title }}</h1>
+    {{ block('bo_owner_menu') }}
+    {{ block('form_post_edit') }}
+{% endblock %}

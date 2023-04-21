@@ -30,10 +30,6 @@ label {
   padding: 10px;
 }
 
-.form-group:not(:last-child) {
-  border-bottom: 1px solid #e9ecef;
-}
-
 /* Vardump */
 .vardump {
   position: absolute;
@@ -88,6 +84,36 @@ label {
 /* Post Single */
 .post-single-feat-img {
   width: 100%;
+  height: auto;
+}
+
+/* Owner Manage */
+.owner-menu {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  background-color: #f3f3f3;
+}
+
+.manage-posts {
+  margin-top: 25px;
+}
+
+/* Owner Manage : Edit Post */
+.form-control.post-title,
+.form-control.post-slug {
+  width: 400px;
+}
+
+.form-control.post-content {
+  width: 100%;
+}
+
+.post-image-input {
+  margin-top: 25px;
+}
+
+.img-post-edit {
+  width: 50%;
   height: auto;
 }
 

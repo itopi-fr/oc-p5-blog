@@ -44,6 +44,7 @@ class FileController extends MainController
      */
     public function uploadFile(array $user_file): File
     {
+        // TODO : Res system
         try {
             $this->filePosted = $user_file;
 
@@ -53,7 +54,6 @@ class FileController extends MainController
 
             // Upload
             $uploaded = move_uploaded_file($this->filePosted['tmp_name'], $this->filePosted['dest-path']);
-
 
             if ($uploaded) {
                 // Build File object

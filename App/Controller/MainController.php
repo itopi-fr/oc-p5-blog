@@ -18,7 +18,7 @@ class MainController
     protected array $twigData = [];
     private UserOwnerModel $userOwnerModel;
     private OwnerInfoController $ownerInfoController;
-    private SuperGlobals $superGlobals;
+    public SuperGlobals $sGlob;
 
 
     /**
@@ -26,13 +26,13 @@ class MainController
      */
     public function __construct()
     {
+        $this->sGlob = new SuperGlobals();
         $this->initTwig();
-        $this->superGlobals = new SuperGlobals();
     }
 
     public function __destruct()
     {
-        if ($this->superGlobals->getEnv('MODE_DEV') === 'true') {
+        if ($this->sGlob->getEnv('MODE_DEV') === 'true') {
             $this->showDump();
         }
     }
@@ -44,29 +44,45 @@ class MainController
      * @param mixed $value
      * @return bool
      */
-    protected function isSet($value)
+    protected function isSet(mixed $value): bool
     {
         return isset($value) && !empty($value);
     }
+
+
+    /**
+     * Check if a string is alphanumeric and -
+     * @param string $value
+     * @return bool
+     */
+    protected function isAlphaNumDash(string $value): bool
+    {
+        return preg_match("/^[a-zA-Z0-9\-]+$/", $value);
+    }
+
 
     /**
      * Check if a string is alphanumeric, - and _
      * @param string $value
      * @return bool
      */
-    protected function isAlphaNumPlus(string $value)
+    protected function isAlphaNumDashUnderscore(string $value): bool
     {
         return preg_match("/^[a-zA-Z0-9_\-]+$/", $value);
     }
+
 
     /**
      * Check if a string is alphanumeric, "-", "_" and spaces
      * @param string $value
      * @return bool
      */
-    protected function isAlphaNumSpacesPonct(string $value)
+    protected function isAlphaNumSpacesPunct(string $value): bool
     {
-        return preg_match("/^[\w\d,!(). \-]*$/", $value);
+        // \pL = Unicode letter (including accents)
+        // \pP = Unicode punctuation
+        // Cf. https://www.php.net/manual/en/regexp.reference.unicode.php
+        return preg_match("/^[\s\pL\pP+]*$/u", $value);
     }
 
     /**
@@ -76,7 +92,7 @@ class MainController
      * @param int $max
      * @return bool
      */
-    protected function isBetween(string $value, int $min, int $max)
+    protected function isBetween(string $value, int $min, int $max): bool
     {
         return strlen($value) >= $min && strlen($value) <= $max;
     }
@@ -86,7 +102,7 @@ class MainController
      * @param string $value
      * @return bool
      */
-    protected function isEmail(string $value)
+    protected function isEmail(string $value): bool
     {
         return filter_var($value, FILTER_VALIDATE_EMAIL);
     }
@@ -193,15 +209,21 @@ class MainController
             'debug' => true,
         ]);
 
-        if (isset($_SESSION) === true) {
-            (isset($_SESSION['userid']) === true) ?
-                $this->twig->addGlobal('userid', $_SESSION['userid']) :
+        if (empty($this->sGlob->getSesAll() === false)) {
+            // Current user info
+            (empty($this->sGlob->getSes('userid')) === false) ?
+                $this->twig->addGlobal('userid', $this->sGlob->getSes('userid')) :
                 $this->twig->addGlobal('userid', null);
 
-            isset($_SESSION['ownerinfo']) === true ?
-                $this->twig->addGlobal('ownerinfo', $_SESSION['ownerinfo']) :
-                $this->twig->addGlobal('ownerinfo', null);
+            // Current User Object
+            (empty($this->sGlob->getSes('userobj')) === false) ?
+                $this->twig->addGlobal('userobj', $this->sGlob->getSes('userobj')) :
+                $this->twig->addGlobal('userobj', null);
 
+            // Owner info displayed in the header to all visitors
+            empty($this->sGlob->getSes('ownerinfo')) === false ?
+                $this->twig->addGlobal('ownerinfo', $this->sGlob->getSes('ownerinfo')) :
+                $this->twig->addGlobal('ownerinfo', null);
         } else {
             $this->twig->addGlobal('userid', null);
         }

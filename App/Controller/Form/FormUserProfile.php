@@ -35,34 +35,40 @@ class FormUserProfile extends FormController
     {
         // -------------------------------------------------------------------- Checks
         // user-pseudo : checks
-        $this->res = $this->checkPostFieldText('user-profile', 'pseudo', 4, 30);
-        $this->res = $this->checkIfUnique('user-profile', 'pseudo', $user->getId());
+        $this->res = $this->checkPostedText('user-profile', 'pseudo', 4, 30);
+        $this->res = $this->isUnique('user-profile', 'pseudo', $user->getId());
 
         // user-email : checks
-        $this->res = $this->checkPostFieldTextEmail('user-profile', 'email', 6, 254);
-        $this->res = $this->checkIfUnique('user-profile', 'email', $user->getId());
+        $this->res = $this->checkPostedEmail('user-profile', 'email', 6, 254);
+        $this->res = $this->isUnique('user-profile', 'email', $user->getId());
 
         // file-avatar : checks
-        $this->res = $this->checkPostFileImg(
+        $this->res = $this->checkPostedFileImg(
             'user-profile',
             'file-avatar',
-            $_FILES['file-avatar'],
+            $this->sGlob->getFiles('file-avatar'),
             $user->getAvatarFile(),
             $this->getAvatarMaxSize()
         );
 
-        // -------------------------------------------------------------------- Treatment
+        // -------------------------------------------------------------------- Treatments
         if ($this->res->isErr() === false) {
             // User avatar file : treatment
-            if ($_FILES['file-avatar']['error'] === 0) {
-                $savedFile = $this->treatFile($_FILES['file-avatar'], 'avatar');
+            if ($this->sGlob->getFiles('file-avatar')['error'] === 0) {
+                $resTreatFile = $this->treatFile($this->sGlob->getFiles('file-avatar'), 'avatar');
+
+                if ($resTreatFile->isErr() === true) {
+                    $this->res->ko('user-profile', $resTreatFile->getMsg()['treat-file']);
+                }
+
+                $savedFile = $resTreatFile->getResult()['treat-file'];
                 $user->setAvatarFile($savedFile);
                 $user->setAvatarId($savedFile->getId());
             }
 
             // User simple fields : treatment
-            $user->setPseudo($_POST['pseudo']);
-            $user->setEmail($_POST['email']);
+            $user->setPseudo($this->sGlob->getPost('pseudo'));
+            $user->setEmail($this->sGlob->getPost('email'));
 
             // User update
             if ($this->res->isErr() === false) {
@@ -81,24 +87,24 @@ class FormUserProfile extends FormController
     {
         // -------------------------------------------------------------------- Checks
         // Checks
-        $this->res = $this->checkPostFieldText('owner-profile', 'firstname', 4, 30);
-        $this->res = $this->checkPostFieldText('owner-profile', 'lastname', 4, 30);
-        $this->res = $this->checkPostFieldTextarea('catchphrase', 4, 254);
+        $this->res = $this->checkPostedText('owner-profile', 'firstname', 4, 30);
+        $this->res = $this->checkPostedText('owner-profile', 'lastname', 4, 30);
+        $this->res = $this->checkPostedText('owner-profile', 'catchphrase', 4, 254);
 
         // file-cv : checks
-        $this->res = $this->checkPostFileDoc(
+        $this->res = $this->checkPostedFileDoc(
             'owner-profile',
             'file-cv',
-            $_FILES['file-cv'],
+            $this->sGlob->getFiles('file-cv'),
             $userOwner->getCvFile(),
             $this->getCvMaxSize()
         );
 
         // file-photo : checks
-        $this->res = $this->checkPostFileImg(
+        $this->res = $this->checkPostedFileImg(
             'owner-profile',
             'file-photo',
-            $_FILES['file-photo'],
+            $this->sGlob->getFiles('file-photo'),
             $userOwner->getPhotoFile(),
             $this->getPhotoMaxSize()
         );
@@ -106,20 +112,33 @@ class FormUserProfile extends FormController
         // -------------------------------------------------------------------- Treatment
         if ($this->res->isErr() === false) {
             // Owner simple fields : treatment
-            $userOwner->setFirstName($_POST['firstname']);
-            $userOwner->setLastName($_POST['lastname']);
-            $userOwner->setCatchPhrase($_POST['catchphrase']);
+            $userOwner->setFirstName($this->sGlob->getPost('firstname'));
+            $userOwner->setLastName($this->sGlob->getPost('lastname'));
+            $userOwner->setCatchPhrase($this->sGlob->getPost('catchphrase'));
 
             // Owner CV file : treatment
-            if ($_FILES['file-cv']['error'] === 0) {
-                $savedCvFile = $this->treatFile($_FILES['file-cv'], 'cv');
+            $cvFile = $this->sGlob->getFiles('file-cv');
+            if ($cvFile['error'] === 0) {
+                $resTreatCvFile = $this->treatFile($cvFile, 'cv');
+
+                if ($resTreatCvFile->isErr() === true) {
+                    $this->res->ko('user-profile', $resTreatCvFile->getMsg()['treat-file']);
+                }
+                $savedCvFile = $resTreatCvFile->getResult()['treat-file'];
                 $userOwner->setCvFile($savedCvFile);
                 $userOwner->setCvFileId($savedCvFile->getId());
             }
 
             // Owner photo file : treatment
-            if ($_FILES['file-photo']['error'] === 0) {
-                $savedPhotoFile = $this->treatFile($_FILES['file-photo'], 'photo');
+            $photoFile = $this->sGlob->getFiles('file-photo');
+            if ($photoFile['error'] === 0) {
+                $resTreatPhotoFile = $this->treatFile($photoFile, 'photo');
+
+                if ($resTreatPhotoFile->isErr() === true) {
+                    $this->res->ko('user-profile', $resTreatPhotoFile->getMsg()['treat-file']);
+                }
+
+                $savedPhotoFile = $resTreatPhotoFile->getResult()['treat-file'];
                 $userOwner->setPhotoFile($savedPhotoFile);
                 $userOwner->setPhotoFileId($savedPhotoFile->getId());
             }

@@ -8,7 +8,7 @@ use App\Entity\Res;
 use App\Entity\User;
 use App\Model\UserModel;
 
-class FormLogInOutReg extends FormController
+class FormUserLog extends FormController
 {
     protected Res $res;
     protected User $user;
@@ -92,11 +92,11 @@ class FormLogInOutReg extends FormController
             $this->user = $this->userModel->getUserByEmail($email);
 
             // start session
-            $_SESSION['userid'] = $this->user->getId();
+            $this->sGlob->setSes('userid', $this->user->getId());
 
-            $this->res->ok('connect', 'Connexion réussie', null);
+            $this->res->ok('user-login', 'user-login-ok-success', null);
         } else {
-            $this->res->ko('connect', 'Aucune correspondance email/pass', null);
+            $this->res->ko('user-login', 'user-login-ko-no-user-pass-match');
         }
         return $this->res;
     }
