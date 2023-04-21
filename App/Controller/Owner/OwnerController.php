@@ -73,18 +73,20 @@ class OwnerController extends MainController
      */
     public function isOwner(): bool
     {
-        if (isset($_SESSION['userobj']) === false) {
+        $sessUserObj = $this->sGlob->getSes('userobj');
+
+        if (empty($sessUserObj) === true) {
             return false;
         }
-        if (is_null($_SESSION['userobj']) === true) {
+        if (is_null($sessUserObj) === true) {
             return false;
         }
         // Verify that the user exists
-        if ($this->userModel->userExistsByEmailPassword($_SESSION['userobj']->getEmail(), $_SESSION['userobj']->getPass()) === false) {
+        if ($this->userModel->userExistsByEmailPassword($sessUserObj->getEmail(), $sessUserObj->getPass()) === false) {
             return false;
         } else {
             // Verify that the user is an owner
-            $user = $this->userModel->getUserByEmail($_SESSION['userobj']->getEmail());
+            $user = $this->userModel->getUserByEmail($sessUserObj->getEmail());
             if ($user->getRole() === 'owner') {
                 return true;
             } else {

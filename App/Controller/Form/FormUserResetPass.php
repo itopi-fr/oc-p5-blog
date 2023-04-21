@@ -41,7 +41,7 @@ class FormUserResetPass extends FormController
     public function treatFormPassAsk(string $email): Res
     {
         // Check email
-        $resCheckEmail = $this->checkPostFieldTextEmail('user-reset-pass', 'email', 6, 254);
+        $resCheckEmail = $this->checkPostedEmail('user-reset-pass', 'email', 6, 254);
         if ($resCheckEmail->isErr() === true) {
             $this->res->ko('user-reset-pass', 'user-reset-pass-ko-email');
             return $this->res;
@@ -83,11 +83,9 @@ class FormUserResetPass extends FormController
      * Treat the form to change the password after clicking on the link of the reset password email.
      * Check if the token is valid, if a user related exists, then change the password and delete the token.
      * @param string $tokenContent
-     * @param string $postPassNewA
-     * @param string $postPassNewB
      * @return Res
      */
-    public function treatFormPassChange(string $tokenContent, string $postPassNewA, string $postPassNewB): Res
+    public function treatFormPassChange(string $tokenContent): Res
     {
         // Get token
         $resToken = $this->tokenController->getToken($tokenContent);
@@ -116,8 +114,8 @@ class FormUserResetPass extends FormController
         $resChangePass = (new FormUserChangePass())->treatFormChangePass(
             $this->user,
             '',
-            $_POST["pass-new-a"],
-            $_POST["pass-new-b"],
+            $this->sGlob->getPost('pass-new-a'),
+            $this->sGlob->getPost('pass-new-b'),
             true
         );
 

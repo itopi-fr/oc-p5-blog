@@ -72,6 +72,12 @@ class Res
             case "general":
                 return "Général";
                 break;
+            case "user-login":
+                return "Connexion";
+                break;
+            case "register":
+                return "Inscription";
+                break;
             case "user-profile":
                 return "Profil utilisateur";
                 break;
@@ -83,6 +89,12 @@ class Res
                 break;
             case "user-reset-pass":
                 return "Réinitialisation du mot de passe";
+                break;
+            case "post-edit":
+                return "Édition d'un article";
+                break;
+            case "post-create":
+                return "Nouvel article";
                 break;
             default:
                 return $type;
@@ -98,8 +110,24 @@ class Res
     public function showMsg(string $msg): string
     {
         switch ($msg) {
+            // -------------------------------------------------------------------- user-login
+            case "user-login-ok-success":
+                return "Connexion réussie, redirection vers votre profil";
+                break;
+            case "user-login-ko-no-user-pass-match":
+            case "user-by-email-not-found":
+                return "Échec de la connexion : aucun utilisateur ne correspond à ces identifiants";
+                break;
+            case "user-login-ko-account-token-not-validated":
+                return "Échec de la connexion : 
+                        veuillez valider votre compte en cliquant sur le lien contenu dans l'email de confirmation";
+                break;
+            // -------------------------------------------------------------------- register
+            case "register-success-wait-mail-confirm":
+                return "Demande d'inscription réussie. Un email de confirmation vous a été envoyé.
+                        Veuillez cliquer sur le lien contenu dans cet email pour activer votre compte.";
+                break;
             // -------------------------------------------------------------------- user-profile
-            // General
             case "user-profile-ok-no-change":
                 return "Aucun changement apporté au profil";
                 break;
@@ -219,6 +247,29 @@ class Res
                 break;
             case "user-reset-pass-ko-user-by-token":
                 return "Aucun compte associé à ce token";
+                break;
+            // -------------------------------------------------------------------- post-edit
+            case "post-edit-ok":
+                return "Article mis à jour avec succès";
+                break;
+            case "post-edit-ko-post-slug-empty":
+                return "Veuillez saisir un slug";
+                break;
+            case "post-edit-ko-post-slug-not-alpha-num-dash":
+                return "Slug : doit être composé uniquement de lettres, chiffres et tirets";
+                break;
+            case "post-edit-ko-post-slug-not-between-3-and-64":
+                return "Slug : doit être composé de 3 à 64 caractères";
+                break;
+            case "post-edit-ko-post-slug-not-unique":
+                return "Slug : ce slug est déjà utilisé";
+                break;
+            case "post-edit-ko-post-content-not-alpha-num-punct":
+                return "Contenu : doit être composé de lettres, chiffres, espaces, ponctuation et sauts de ligne";
+                break;
+            // -------------------------------------------------------------------- post-create
+            case "post-create-ok":
+                return "Article créé avec succès";
                 break;
             // -------------------------------------------------------------------- default
             default:

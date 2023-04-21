@@ -12,7 +12,8 @@
         {%  for post in posts |slice(0, 10) %}
             <div class="row">
                     <div class="col-2">
-                        <a href="/owner/post-edit/{{ post.getId() }}"><i class="fa-solid fa-pen-to-square"></i></a>&nbsp; | &nbsp;
+                        <a href="/owner/post-edit/{{ post.getId() }}"><i class="fa-solid fa-pen-to-square"></i></a>
+                        &nbsp; | &nbsp;
                         <a href="javascript:void(0)"
                                 id="{{ post.getId() }}"
                                 data-bs-toggle="modal"
@@ -24,8 +25,8 @@
                                 <i class="fa-solid fa-trash"></i>
 
                         </a>
-{#        TODO : Gérer l'archivage                #}
-{#                        &nbsp; | &nbsp;<a href="/owner/post-archive/{{ post.getId() }}"><i class="fa-solid fa-box-archive"></i></a>#}
+                        &nbsp; | &nbsp;
+                        <a href="/owner/post-archive/{{ post.getId() }}"><i class="fa-solid fa-box-archive"></i></a>
                     </div>
                     <div class="col-5">{{ post.getTitle() }}</div>
                     <div class="col-1">{{ post.getStatus() }}</div>

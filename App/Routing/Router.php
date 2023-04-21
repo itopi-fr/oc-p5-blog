@@ -55,14 +55,12 @@ class Router
             $this->pageActionParam =    (array_key_exists(2, $this->urlParts)) ? $this->urlParts[2] : '';
 
             // Owner info
-            if (
-                (isset($_SESSION['ownerinfo']) === false) ||
-                (empty($_SESSION['ownerinfo']) === true) ||
-                ($_SESSION['ownerinfo'] == null)
-            ) {
+            $sessionOwnerInfo = $this->superGlobals->getSes('ownerinfo');
+
+            if ((empty($sessionOwnerInfo) === true) || ($sessionOwnerInfo == null)) {
                 $this->ownerInfoController = new OwnerInfoController();
                 $ownerInfo = $this->ownerInfoController->getOwnerInfo();
-                $_SESSION['ownerinfo'] = $ownerInfo;
+                $this->superGlobals->setSes('ownerinfo', $ownerInfo);
             }
 
             // Route

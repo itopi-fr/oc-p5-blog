@@ -31,6 +31,7 @@ class UserModel extends Connection
     public function isUnique(string $value, string $field, int $id): bool
     {
         $sql = "SELECT * FROM user WHERE $field = ? AND id != ?";
+        // Todo: replace by exists()
         $result = $this->getSingleAsClass($sql, [$value, $id], 'App\Entity\User');
         return $result === null;
     }
@@ -59,7 +60,7 @@ class UserModel extends Connection
     /**
      * Returns a user object based on its email.
      * @param string $userEmail
-     * @return User|Exception
+     * @return null|User
      */
     public function getUserByEmail(string $userEmail): null|User
     {
@@ -80,7 +81,7 @@ class UserModel extends Connection
             }
             return $this->user;
         } catch (Exception $e) {
-            return $e;
+            return null;
         }
     }
 

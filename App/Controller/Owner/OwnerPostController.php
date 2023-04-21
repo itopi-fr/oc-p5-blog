@@ -3,6 +3,7 @@
 namespace App\Controller\Owner;
 
 use App\Controller\CommentController;
+use App\Controller\Form\FormPostArchive;
 use App\Controller\Form\FormPostCreate;
 use App\Controller\Form\FormPostDelete;
 use App\Controller\Form\FormPostEdit;
@@ -10,17 +11,17 @@ use App\Controller\PostController;
 use App\Entity\Post;
 use App\Entity\Res;
 use App\Model\PostModel;
-use Twig\Error\LoaderError;
-use Twig\Error\RuntimeError;
-use Twig\Error\SyntaxError;
+use App\Sys\SuperGlobals;
 
 class OwnerPostController extends OwnerController
 {
+    protected SuperGlobals $sg;
     protected array $posts;
     protected PostController $postController;
     protected FormPostCreate $formPostCreate;
     protected FormPostEdit $formPostEdit;
     protected FormPostDelete $formPostDelete;
+    protected FormPostArchive $formPostArchive;
     protected PostModel $postModel;
     protected Post $postSingle;
     protected Res $res;
@@ -32,12 +33,14 @@ class OwnerPostController extends OwnerController
     public function __construct()
     {
         parent::__construct();
+        $this->sg = new SuperGlobals();
         $this->postController = new PostController();
         $this->postModel = new PostModel();
         $this->postSingle = new Post();
         $this->formPostCreate = new FormPostCreate();
         $this->formPostEdit = new FormPostEdit();
         $this->formPostDelete = new FormPostDelete();
+        $this->formPostArchive = new FormPostArchive();
         $this->res = new Res();
     }
 
@@ -70,7 +73,7 @@ class OwnerPostController extends OwnerController
         $this->twigData['title'] = "Création d'un article";
 
         // Form Post Create sent => Treat it
-        if (isset($_POST["submit-post-create"]) === true) {
+        if (empty($this->sg->getPost("submit-post-create")) === false) {
             $this->twigData['result'] = $this->formPostCreate->treatForm();
         }
 
@@ -96,7 +99,7 @@ class OwnerPostController extends OwnerController
         }
 
         // Form Post Edit sent => Treat it
-        if (isset($_POST["submit-post-edit"]) === true) {
+        if (empty($this->sg->getPost("submit-post-edit")) === false) {
             $this->twigData['result'] = $this->formPostEdit->treatFormPost($resPost->getResult()['post-get']);
         }
 
@@ -122,6 +125,29 @@ class OwnerPostController extends OwnerController
 
         // Delete Post
         $this->twigData['result'] = $this->formPostDelete->treatDeletePost($resPost->getResult()['post-get']->getId());
+
+        // Display
+        $this->managePosts();
+    }
+
+
+    public function archivePost(int $postId): void
+    {
+        // Check that the post exists
+        if ($this->postModel->postExistsById($postId) === false) {
+            $this->res->ko('post-archive', 'post-archive-ko-not-exists');
+            $this->twigData['result'] = $this->res;
+        }
+
+        // Get the post
+        $resPost = $this->getPostById($postId);
+        if ($resPost->isErr() === true) {
+            $this->res->ko('post-archive', $resPost->getMsg()['post-get']);
+            $this->twigData['result'] = $this->res;
+        }
+
+        // Archive Post
+        $this->twigData['result'] = $this->formPostArchive->treatForm($resPost->getResult()['post-get']->getId());
 
         // Display
         $this->managePosts();

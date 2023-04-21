@@ -18,7 +18,7 @@ class MainController
     protected array $twigData = [];
     private UserOwnerModel $userOwnerModel;
     private OwnerInfoController $ownerInfoController;
-    private SuperGlobals $superGlobals;
+    public SuperGlobals $sGlob;
 
 
     /**
@@ -26,13 +26,13 @@ class MainController
      */
     public function __construct()
     {
+        $this->sGlob = new SuperGlobals();
         $this->initTwig();
-        $this->superGlobals = new SuperGlobals();
     }
 
     public function __destruct()
     {
-        if ($this->superGlobals->getEnv('MODE_DEV') === 'true') {
+        if ($this->sGlob->getEnv('MODE_DEV') === 'true') {
             $this->showDump();
         }
     }
@@ -44,7 +44,7 @@ class MainController
      * @param mixed $value
      * @return bool
      */
-    protected function isSet($value): bool
+    protected function isSet(mixed $value): bool
     {
         return isset($value) && !empty($value);
     }
@@ -209,20 +209,20 @@ class MainController
             'debug' => true,
         ]);
 
-        if (isset($_SESSION) === true) {
+        if (empty($this->sGlob->getSesAll() === false)) {
             // Current user info
-            (isset($_SESSION['userid']) === true) ?
-                $this->twig->addGlobal('userid', $_SESSION['userid']) :
+            (empty($this->sGlob->getSes('userid')) === false) ?
+                $this->twig->addGlobal('userid', $this->sGlob->getSes('userid')) :
                 $this->twig->addGlobal('userid', null);
 
             // Current User Object
-            (isset($_SESSION['userobj']) === true) ?
-                $this->twig->addGlobal('userobj', $_SESSION['userobj']) :
+            (empty($this->sGlob->getSes('userobj')) === false) ?
+                $this->twig->addGlobal('userobj', $this->sGlob->getSes('userobj')) :
                 $this->twig->addGlobal('userobj', null);
 
             // Owner info displayed in the header to all visitors
-            isset($_SESSION['ownerinfo']) === true ?
-                $this->twig->addGlobal('ownerinfo', $_SESSION['ownerinfo']) :
+            empty($this->sGlob->getSes('ownerinfo')) === false ?
+                $this->twig->addGlobal('ownerinfo', $this->sGlob->getSes('ownerinfo')) :
                 $this->twig->addGlobal('ownerinfo', null);
         } else {
             $this->twig->addGlobal('userid', null);

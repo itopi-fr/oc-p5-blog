@@ -33,13 +33,13 @@ class FormPostEdit extends FormController
     {
         // -------------------------------------------------------------------- Checks
         // post-title : checks
-        $resCheckPostFieldText = $this->checkPostFieldText('post-edit', 'post-title', 3, 64);
+        $resCheckPostFieldText = $this->checkPostedText('post-edit', 'post-title', 3, 64);
         if ($resCheckPostFieldText->isErr() === true) {
             return $this->res->ko('post-edit', $resCheckPostFieldText->getMsg()['post-edit']);
         }
 
         // post-slug : checks
-        $resCheckPostFieldTextSlug = $this->checkPostFieldTextSlug('post-edit', 'post-slug', $post->getId());
+        $resCheckPostFieldTextSlug = $this->checkPostedSlug('post-edit', 'post-slug', $post->getId());
         if ($resCheckPostFieldTextSlug->isErr() === true) {
             return $this->res->ko('post-edit', $resCheckPostFieldTextSlug->getMsg()['post-edit']);
         }
@@ -48,7 +48,7 @@ class FormPostEdit extends FormController
         $resCheckPostedFileImg = $this->checkPostedFileImg(
             'post-edit',
             'post-image',
-            $_FILES['post-image'],
+            $this->sGlob->getFiles('post-image'),
             $post->getFeatImgFile(),
             $this->getPostImgMaxSize()
         );
@@ -57,15 +57,15 @@ class FormPostEdit extends FormController
         }
 
         // post-content : checks
-        $resCheckPostFieldTextarea = $this->checkPostFieldText('post-edit', 'post-content', 3, 10000);
+        $resCheckPostFieldTextarea = $this->checkPostedText('post-edit', 'post-content', 3, 10000);
         if ($resCheckPostFieldTextarea->isErr() === true) {
             return $this->res->ko('post-edit', $resCheckPostFieldTextarea->getMsg()['post-edit']);
         }
 
         // -------------------------------------------------------------------- Treatment
         // Post Feat Image file : treatment
-        if ($_FILES['post-image']['error'] === 0) {
-            $resTreatFile = $this->treatFile($_FILES['post-image'], 'post-image');
+        if ($this->sGlob->getFiles('post-image')['error'] === 0) {
+            $resTreatFile = $this->treatFile($this->sGlob->getFiles('post-image'), 'post-image');
 
             if ($resTreatFile->isErr() === true) {
                 $this->res->ko('post-image', $resTreatFile->getMsg()['treat-file']);
@@ -77,10 +77,10 @@ class FormPostEdit extends FormController
         }
 
         // Post simple fields : treatment
-        $post->setTitle($_POST['post-title']);
-        $post->setSlug($_POST['post-slug']);
-        $post->setContent($_POST['post-content']);
-        $post->setStatus($_POST['post-status']);
+        $post->setTitle($this->sGlob->getPost('post-title'));
+        $post->setSlug($this->sGlob->getPost('post-slug'));
+        $post->setContent($this->sGlob->getPost('post-content'));
+        $post->setStatus($this->sGlob->getPost('post-status'));
         $post->setLastUpdate(new DateTime());
 
         // Post update

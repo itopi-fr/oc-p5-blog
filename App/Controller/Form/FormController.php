@@ -106,15 +106,16 @@ class FormController extends MainController
 
     /**
      * Check if a value is unique in database
+     * @param string $formName
      * @param string $field
      * @param int $id
      * @return Res $res
      */
-    protected function isUserUnique(string $formName, string $field, int $id): Res
+    protected function isUnique(string $formName, string $field, int $id): Res
     {
-
+        $data = $this->sGlob->getPost($field);
         $userModel = new UserModel();
-        if (!$userModel->isUnique($_POST[$field], $field, $id)) {
+        if (!$userModel->isUnique($data, $field, $id)) {
             $this->res->ko($formName, $formName . '-ko-' . $field . '-not-unique');
         }
         return $this->res;
@@ -122,18 +123,20 @@ class FormController extends MainController
 
     /**
      * Check if a POST field is sent, is alphanumeric (allowing _ and -) and is between 2 lengths
+     * @param string $formName
      * @param string $field
      * @param int $min
      * @param int $max
      * @return Res
      */
-    protected function checkPostFieldText(string $formName, string $field, int $min, int $max): Res
+    protected function checkPostedText(string $formName, string $field, int $min, int $max): Res
     {
-        if ($this->isSet($_POST[$field]) === false) {
+        $data = $this->sGlob->getPost($field);
+        if ($this->isSet($data) === false) {
             $this->res->ko($formName, $formName . '-ko-' . $field . '-empty');
-        } elseif ($this->isAlphaNumSpacesPunct($_POST[$field]) === false) {
+        } elseif ($this->isAlphaNumSpacesPunct($data) === false) {
             $this->res->ko($formName, $formName . '-ko-' . $field . '-not-alpha-num-punct');
-        } elseif ($this->isBetween($_POST[$field], $min, $max) === false) {
+        } elseif ($this->isBetween($data, $min, $max) === false) {
             $this->res->ko($formName, $formName . '-ko-' . $field . '-not-between- ' . $min . '-and-' . $max);
         }
         return $this->res;
@@ -142,18 +145,17 @@ class FormController extends MainController
 
     /**
      * Check if a POST radio is sent, is alphanumeric and "-" and is valid
+     * @param string $formName
      * @param string $field
-     * @param int $min
-     * @param int $max
+     * @param array $allowed_values
      * @return Res
      */
-    protected function checkPostRadio(string $formName, string $field, array $allowed_values): Res
+    protected function checkPostedRadio(string $formName, string $field, array $allowed_values): Res
     {
-        if ($this->isSet($_POST[$field]) === false) {
+        $data = $this->sGlob->getPost($field);
+        if ($this->isSet($data) === false) {
             $this->res->ko($formName, $formName . '-ko-' . $field . '-empty');
-        } elseif ($this->isAlphaNumDash($_POST[$field]) === false) {
-            $this->res->ko($formName, $formName . '-ko-' . $field . '-not-alpha-num-punct');
-        } elseif (in_array($_POST[$field], $allowed_values) === false) {
+        } elseif (in_array($data, $allowed_values) === false) {
             $this->res->ko($formName, $formName . '-ko-' . $field . '-value-not-allowed');
         }
         return $this->res;
@@ -168,13 +170,14 @@ class FormController extends MainController
      * @param int $max
      * @return Res
      */
-    protected function checkPostFieldTextEmail(string $formName, string $field, int $min, int $max): Res
+    protected function checkPostedEmail(string $formName, string $field, int $min, int $max): Res
     {
-        if ($this->isSet($_POST[$field]) === false) {
+        $data = $this->sGlob->getPost($field);
+        if ($this->isSet($data) === false) {
             $this->res->ko($formName, $formName . '-ko-' . $field . '-empty');
-        } elseif ($this->isEmail($_POST[$field]) === false) {
+        } elseif ($this->isEmail($data) === false) {
             $this->res->ko($formName, $formName . '-ko-' . $field . '-not-email-format');
-        } elseif ($this->isBetween($_POST[$field], $min, $max) === false) {
+        } elseif ($this->isBetween($data, $min, $max) === false) {
             $this->res->ko($formName, $formName . '-ko-' . $field . '-not-between-' . $min . '-and-' . $max);
         }
         return $this->res;
@@ -185,18 +188,20 @@ class FormController extends MainController
      * Check if a POST field is sent, is a valid slug (alphanum and "-") and is between 4 and 128 chars
      * @param string $formName
      * @param string $field
+     * @param int $postId
      * @return Res
      */
-    public function checkPostFieldTextSlug(string $formName, string $field, int $postId): Res
+    public function checkPostedSlug(string $formName, string $field, int $postId): Res
     {
         $postModel = new PostModel();
-        if ($this->isSet($_POST[$field]) === false) {
+        $data = $this->sGlob->getPost($field);
+        if ($this->isSet($data) === false) {
             $this->res->ko($formName, $formName . '-ko-' . $field . '-empty');
-        } elseif ($this->isAlphaNumDash($_POST[$field]) === false) {
+        } elseif ($this->isAlphaNumDash($data) === false) {
             $this->res->ko($formName, $formName . '-ko-' . $field . '-not-alpha-num-dash');
-        } elseif ($this->isBetween($_POST[$field], 4, 128) === false) {
+        } elseif ($this->isBetween($data, 4, 128) === false) {
             $this->res->ko($formName, $formName . '-ko-' . $field . '-not-between-3-and-64');
-        } elseif ($postModel->postSlugAlreadyExists($_POST[$field], $postId) === true) {
+        } elseif ($postModel->postSlugAlreadyExists($data, $postId) === true) {
             $this->res->ko($formName, $formName . '-ko-' . $field . '-not-unique');
         }
         return $this->res;
@@ -211,6 +216,7 @@ class FormController extends MainController
      * @param string $formName
      * @param string $type
      * @param array $postedFile
+     * @param File $userFileObject
      * @param int $maxSize
      * @return Res
      */
@@ -242,6 +248,7 @@ class FormController extends MainController
      * @param string $formName
      * @param string $type
      * @param array $postedFile
+     * @param File $userFileObject
      * @param int $maxSize
      * @return Res
      */

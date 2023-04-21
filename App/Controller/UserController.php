@@ -14,6 +14,9 @@ use App\Model\UserOwnerModel;
 use App\Entity\User;
 use App\Model\UserModel;
 use Exception;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 class UserController extends MainController
 {
@@ -37,28 +40,38 @@ class UserController extends MainController
     }
 
 
+    /**
+     * Used as a sub-router for user actions
+     * @param $userAction
+     * @param $userActionData
+     * @return void
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
     public function index($userAction, $userActionData = null)
     {
         // TODO: clean all this mess
         //  Distribute actions to separate methods : connect(), disconnect(), register(), etc.
         // ---------------------------------------------------------------------------------------------- session / User
-        isset($_SESSION['userid']) === true ? $userId = $_SESSION['userid'] : $userId = null;
+        $sessUserId = $this->sGlob->getSes('userid');
+        empty($sessUserId) === false ? $userId = $sessUserId : $userId = null;
 
         if (is_null($userId) === false) {
-            $_SESSION['userobj'] = $this->userModel->getUserById($_SESSION['userid']);
+            $this->sGlob->setSes('userobj', $this->userModel->getUserById($sessUserId));
         } else {
-            $_SESSION['userobj'] = null;
+            $this->sGlob->setSes('userobj', null);
         }
 
         // -------------------------------------------------------------------------------------------- user/inscription
         if ($userAction === 'inscription') {
             // Form Register
-            if (isset($_POST["submit-register"]) === true) {
+            if (empty($this->sGlob->getPost('submit-register')) === false) {
                 $this->twigData['result'] = (new FormUserLog())->register(
-                    $_POST['pseudo'],
-                    $_POST['email'],
-                    $_POST['pass'],
-                    $_POST['pass-confirm']
+                    $this->sGlob->getPost('pseudo'),
+                    $this->sGlob->getPost('email'),
+                    $this->sGlob->getPost('pass'),
+                    $this->sGlob->getPost('pass-confirm')
                 );
             }
 
@@ -79,9 +92,9 @@ class UserController extends MainController
 
         // ----------------------------------------------------------------------------------------- user/reset-pass-ask
         if ($userAction === 'reset-pass-ask') {
-            if (isset($_POST["submit-reset-pass-ask"]) === true) {
+            if (empty($this->sGlob->getPost('submit-reset-pass-ask')) === false) {
                 // Form Reset sent : treat form
-                $this->twigData['result'] = (new FormUserResetPass())->treatFormPassAsk($_POST['email']);
+                $this->twigData['result'] = (new FormUserResetPass())->treatFormPassAsk($this->sGlob->getPost('email'));
             } else {
                 // Form Reset not sent : display form
                 $this->twigData['display_form_reset_ask'] = 'display';
@@ -94,11 +107,9 @@ class UserController extends MainController
         // -------------------------------------------------------------------------------------- user/reset-pass-change
         if ($userAction === 'reset-pass-change') {
             // Form Reset Change sent : treat form
-            if (isset($userActionData) === true && isset($_POST["submit-reset-pass-change"]) === true) {
+            if (isset($userActionData) === true && empty($this->sGlob->getPost('submit-reset-pass-change')) === false) {
                 $this->twigData['result'] = (new FormUserResetPass())->treatFormPassChange(
-                    $userActionData,
-                    $_POST['pass-new-a'],
-                    $_POST['pass-new-b']
+                    $userActionData
                 );
             } else {
                 // Display Form Change Password
@@ -110,7 +121,7 @@ class UserController extends MainController
         }
 
         // ---------------------------------------------------------------------------------------------- user/connexion
-        if ($userAction == 'connexion' && isset($_POST["submit-connect"]) === true) {
+        if ($userAction == 'connexion' && empty($this->sGlob->getPost('submit-connect')) === false) {
             $this->userLogin();
         }
 
@@ -122,9 +133,9 @@ class UserController extends MainController
             if ($this->user->getRole() == 'owner') {
                 $this->userOwner = (new UserOwnerModel())->getUserOwnerById($this->user->getId());
 
-                if ($userAction == 'profil' && isset($_POST["submit-owner-profile"]) === true) {
+                if ($userAction == 'profil' && empty($this->sGlob->getPost('submit-owner-profile')) === false) {
                     $this->twigData['result'] = (new FormUserProfile())->treatFormUserOwner($this->userOwner);
-                    $_SESSION['ownerinfo'] = (new OwnerInfoController())->getOwnerInfo();
+                    $this->sGlob->setSes('ownerinfo', (new OwnerInfoController())->getOwnerInfo());
 
                     // Refresh page if no error
                     if ($this->twigData['result']->isErr() === false) {
@@ -136,17 +147,17 @@ class UserController extends MainController
             }
 
             // User Profile
-            if ($userAction == 'profil' && isset($_POST["submit-user-profile"]) === true) {
+            if ($userAction == 'profil' && empty($this->sGlob->getPost('submit-user-profile')) === false) {
                 $this->twigData['result'] = (new FormUserProfile())->treatFormUser($this->user);
             }
 
             // Form User Change Password
-            if ($userAction == 'profil' && isset($_POST["submit-user-pass"]) === true) {
+            if ($userAction == 'profil' && empty($this->sGlob->getPost('submit-user-pass')) === false) {
                 $this->twigData['result'] = (new FormUserChangePass())->treatFormChangePass(
                     $this->user,
-                    $_POST["pass-old"],
-                    $_POST["pass-new-a"],
-                    $_POST["pass-new-b"],
+                    $this->sGlob->getPost('pass-old'),
+                    $this->sGlob->getPost('pass-new-a'),
+                    $this->sGlob->getPost('pass-new-b'),
                     false
                 );
             }
@@ -167,24 +178,30 @@ class UserController extends MainController
 
 
     /**
+     * Login a user
      * @return void
      */
-    public function userLogin()
+    public function userLogin(): void
     {
-        $user = $this->getUserByEmail($_POST['email']);
-
-        if ($user != null) {
-            if ($user->getRole() == 'user-validation') {
-                $this->res->ko('login', 'account-token-not-validated', null);
-                $this->twigData['result'] = $this->res;
-                return;
-            }
-            $this->twigData['result'] = (new FormUserLog())->login($_POST['email'], $_POST['pass']);
-            $this->refresh(2);
-        } else {
-            $this->res->ko('login', 'email-or-pass-incorrect', null);
+        $resUserByEmail = $this->getUserByEmail($this->sGlob->getPost('email'));
+        if ($resUserByEmail->isErr()) {
+            $this->res->ko('user-login', 'user-login-ko-no-user-pass-match');
             $this->twigData['result'] = $this->res;
+            return;
         }
+
+        $user = $resUserByEmail->getResult()['user-by-email'];
+
+        if ($user->getRole() == 'user-validation') {
+            $this->res->ko('user-login', 'user-login-ko-account-token-not-validated');
+            $this->twigData['result'] = $this->res;
+            return;
+        }
+        $this->twigData['result'] = (new FormUserLog())->login(
+            $this->sGlob->getPost('email'),
+            $this->sGlob->getPost('pass')
+        );
+        $this->refresh(2);
     }
 
 
@@ -254,9 +271,14 @@ class UserController extends MainController
      * @param string $email
      * @return User
      */
-    public function getUserByEmail(string $email): User
+    public function getUserByEmail(string $email): Res
     {
-        return $this->userModel->getUserByEmail($email);
+        if ($this->userModel->userExistsByEmail($email) === false) {
+            $this->res->ko('user-by-email', 'user-by-email-not-found');
+            return $this->res;
+        }
+
+        return $this->res->ok('user-by-email', 'user-by-email-found', $this->userModel->getUserByEmail($email));
     }
 
 

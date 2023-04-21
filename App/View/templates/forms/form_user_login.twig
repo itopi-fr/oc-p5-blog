@@ -1,4 +1,21 @@
 {% block form_user_login %}
+    {% use "blocks/block_res_message.twig" %}
+    {% set getType = "" %}
+    {% set getMess = "" %}
+    {% set targetType = "user-login" %}
+
+    {{ block('res_message') }}
+
+    {# Messages #}
+{#    <div class="col-12 text-center">#}
+{#        {% if (result) %}#}
+{#            <div class="alert alert-{{ (result.isErr()) ? 'warning' : 'success' }}" role="alert">#}
+{#                {% for type, msg in result.getMsg() %}#}
+{#                    {{ result.showMsg(msg) }}#}
+{#                {% endfor %}#}
+{#            </div>#}
+{#        {% endif %}#}
+{#    </div>#}
 
     {# Form Login #}
     <div class="col-md-8">
@@ -16,16 +33,7 @@
                 <input type="submit" name="submit-connect"/>
             </div>
 
-            {# Messages #}
-            <div class="col-12 text-center">
-                {% if (result) %}
-                    <div class="alert alert-{{ (result.isErr()) ? 'warning' : 'success' }}" role="alert">
-                        {% for type, msg in result.getMsg() %}
-                            {{ result.showMsg(msg) }}
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            </div>
+
         </form>
     </div>
 

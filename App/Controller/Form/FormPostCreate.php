@@ -27,17 +27,27 @@ class FormPostCreate extends FormController
     }
 
 
+    /**
+     * Used to create a new post
+     * @return Res
+     */
     public function treatForm(): Res
     {
         // -------------------------------------------------------------------- Checks
         // post-title : checks
-        $resCheckPostFieldText = $this->checkPostFieldText('post-create', 'post-title', 3, 64);
+//        $resCheckPostFieldText = $this->checkPostedText('post-create', 'post-title', 3, 64);
+        $resCheckPostFieldText = $this->checkPostedText(
+            'post-create',
+            'post-title',
+            3,
+            64
+        );
         if ($resCheckPostFieldText->isErr() === true) {
             return $this->res->ko('post-create', $resCheckPostFieldText->getMsg()['post-create']);
         }
 
         // post-slug : checks
-        $resCheckPostFieldTextSlug = $this->checkPostFieldTextSlug('post-create', 'post-slug', -1);
+        $resCheckPostFieldTextSlug = $this->checkPostedSlug('post-create', 'post-slug', -1);
         if ($resCheckPostFieldTextSlug->isErr() === true) {
             return $this->res->ko('post-create', $resCheckPostFieldTextSlug->getMsg()['post-create']);
         }
@@ -46,7 +56,7 @@ class FormPostCreate extends FormController
         $resCheckPostedFileImg = $this->checkPostedFileImg(
             'post-create',
             'post-image',
-            $_FILES['post-image'],
+            $this->sGlob->getFiles('post-image'),
             new File(),
             $this->getPostImgMaxSize()
         );
@@ -55,13 +65,14 @@ class FormPostCreate extends FormController
         }
 
         // post-content : checks
-        $resCheckPostFieldText = $this->checkPostFieldText('post-create', 'post-content', 3, 10000);
+//        $resCheckPostFieldText = $this->checkPostedText('post-create', 'post-content', 3, 10000);
+        $resCheckPostFieldText = $this->checkPostedText('post-create', 'post-content', 3, 10000);
         if ($resCheckPostFieldText->isErr() === true) {
             return $this->res->ko('post-create', $resCheckPostFieldText->getMsg()['post-create']);
         }
 
         // post-status : checks
-        $resCheckStatusPostFieldText = $this->checkPostRadio(
+        $resCheckStatusPostFieldText = $this->checkPostedRadio(
             'post-create',
             'post-status',
             ['draft', 'pub', 'arch']
@@ -71,18 +82,18 @@ class FormPostCreate extends FormController
         }
 
         // -------------------------------------------------------------------- Treatments
-        $this->post->setAuthorId($_SESSION['userid']);
-        $this->post->setTitle($_POST['post-title']);
-        $this->post->setSlug($_POST['post-slug']);
-        $this->post->setContent($_POST['post-content']);
-        $this->post->setExcerpt(substr($_POST['post-content'], 0, 80) . '...');
-        $this->post->setStatus($_POST['post-status']);
+        $this->post->setAuthorId($this->sGlob->getSes('userid'));
+        $this->post->setTitle($this->sGlob->getPost('post-title'));
+        $this->post->setSlug($this->sGlob->getPost('post-slug'));
+        $this->post->setContent($this->sGlob->getPost('post-content'));
+        $this->post->setExcerpt(substr($this->sGlob->getPost('post-content'), 0, 80) . '...');
+        $this->post->setStatus($this->sGlob->getPost('post-status'));
         $this->post->setCreationDate(new DateTime());
         $this->post->setLastUpdate(new DateTime());
 
         // Upload and save the image
-        if ($_FILES['post-image']['error'] === 0) {
-            $resTreatFile = $this->treatFile($_FILES['post-image'], 'post-image');
+        if ($this->sGlob->getFiles('post-image')['error'] === 0) {
+            $resTreatFile = $this->treatFile($this->sGlob->getFiles('post-image'), 'post-image');
 
             if ($resTreatFile->isErr() === true) {
                 $this->res->ko('post-create', $resTreatFile->getMsg()['treat-file']);
