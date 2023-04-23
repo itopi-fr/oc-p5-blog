@@ -60,7 +60,7 @@ class OwnerController extends MainController
             return;
         } else {
             $this->twigData['title'] = 'Administration - Accueil';
-            echo  $this->twig->render("pages/owner/page_bo_owner.twig", $this->twigData);
+            $this->twig->display("pages/owner/page_bo_owner.twig", $this->twigData);
             return;
         }
     }

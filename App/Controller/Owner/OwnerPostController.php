@@ -60,7 +60,7 @@ class OwnerPostController extends OwnerController
         $this->twigData['posts'] = $posts;
 
         // Display
-        echo  $this->twig->render("pages/owner/page_bo_posts_manage.twig", $this->twigData);
+        $this->twig->display("pages/owner/page_bo_posts_manage.twig", $this->twigData);
     }
 
 
@@ -78,7 +78,7 @@ class OwnerPostController extends OwnerController
         }
 
         // Display
-        echo  $this->twig->render("pages/owner/page_bo_post_create.twig", $this->twigData);
+        $this->twig->display("pages/owner/page_bo_post_create.twig", $this->twigData);
     }
 
 
@@ -105,7 +105,7 @@ class OwnerPostController extends OwnerController
 
         // Display
         $this->twigData['post'] = $resPost->getResult()['post-get'];
-        echo  $this->twig->render("pages/owner/page_bo_post_edit.twig", $this->twigData);
+        $this->twig->display("pages/owner/page_bo_post_edit.twig", $this->twigData);
     }
 
 

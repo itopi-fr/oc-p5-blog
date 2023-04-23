@@ -19,6 +19,6 @@ class ErrorPageController extends MainController
     {
         $this->twigData['result'] = $res;
 //        var_dump($res);
-        echo  $this->twig->render("pages/page_fo_error.twig", $this->twigData);
+        $this->twig->display("pages/page_fo_error.twig", $this->twigData);
     }
 }

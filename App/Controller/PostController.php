@@ -44,7 +44,7 @@ class PostController extends MainController
 
         if ($resPosts === null) {
             $this->twigData['posts'] = null;
-            echo  $this->twig->render("pages/page_fo_posts.twig", $this->twigData);
+            $this->twig->display("pages/page_fo_posts.twig", $this->twigData);
             return;
         } else {
             $this->posts = $resPosts;
@@ -57,7 +57,7 @@ class PostController extends MainController
 
         // Display
         $this->twigData['posts'] = $this->posts;
-        echo  $this->twig->render("pages/page_fo_posts.twig", $this->twigData);
+        $this->twig->display("pages/page_fo_posts.twig", $this->twigData);
     }
 
 
@@ -116,7 +116,7 @@ class PostController extends MainController
         // Check if the post exists
         if ($this->postModel->postExistsBySlug($postSlug) === false) {
             $this->res->ko('post-single', "post-single-ko-not-exists");
-            echo  $this->twig->render("pages/page_fo_error.twig", $this->twigData);
+            $this->twig->display("pages/page_fo_error.twig", $this->twigData);
             return;
         }
 
@@ -126,7 +126,7 @@ class PostController extends MainController
 
         // Display
         $this->twigData['post'] = $this->postSingle;
-        echo  $this->twig->render("pages/page_fo_post_single.twig", $this->twigData);
+        $this->twig->display("pages/page_fo_post_single.twig", $this->twigData);
     }
 
 
