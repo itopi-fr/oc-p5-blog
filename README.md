@@ -13,15 +13,14 @@ The available main functions are :
 
 ### Back Office
 
--  Create, edit, publish posts
--  Validate or refuse comments
+- create, edit, publish posts
+- validate or refuse comments
 
 ### Front Office
-
--  Register / Login / Logout
--  Display a list of posts
--  Display a single post
--  Comment a post
+- register / Login / Logout
+- display a list of posts
+- display a single post
+- comment a post
 
 
 
