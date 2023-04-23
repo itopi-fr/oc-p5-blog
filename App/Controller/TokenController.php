@@ -55,14 +55,14 @@ class TokenController extends MainController
     {
         if (is_int($data) === true) {
             $tokenObj = $this->tokenModel->getTokenById($data);
-            if (is_null($tokenObj) === true) {
+            if ($tokenObj === null) {
                 $this->res->ko('token', 'token-id-not-found');
             } else {
                 $this->res->ok('token', 'token-found', $this->buildToken($tokenObj));
             }
         } elseif (is_string($data) === true) {
             $tokenObj = $this->tokenModel->getTokenByContent($data);
-            if (is_null($tokenObj) === true) {
+            if ($tokenObj === null) {
                 $this->res->ko('token', 'token-content-not-found');
             } else {
                 $this->res->ok('token', 'token-found', $this->buildToken($tokenObj));
@@ -81,7 +81,7 @@ class TokenController extends MainController
     public function getUserTokens(int $userId, string $tokenType): array|null
     {
         $result = $this->tokenModel->getUserTokens($userId, $tokenType);
-        return (!is_null($result)) ? $result : null;
+        return ($result !== null) ? $result : null;
     }
 
 
@@ -94,7 +94,7 @@ class TokenController extends MainController
     {
         $tokens = $this->getUserTokens($userId, $tokenType);
 
-        if (is_null($tokens) === true) {
+        if ($tokens === null) {
             return null;
         }
 
@@ -123,7 +123,7 @@ class TokenController extends MainController
         $this->deleteExpiredTokens($userId, $tokenType);
 
         // If a valid token already exists, do nothing.
-        if (is_null($this->getLastValidTokenByUserId($userId, $tokenType)) === false) {
+        if ($this->getLastValidTokenByUserId($userId, $tokenType) !== null) {
             $this->res->ok('token', $this->res->showMsg('valid-token-exists'), null);
             return $this->res;
         }
@@ -154,9 +154,14 @@ class TokenController extends MainController
         $tokens = $this->getUserTokens($userId, $tokenType);
         $user = $this->userModel->getUserById($userId);
 
-        if (is_null($tokens) === false) {
+        if ($tokens !== null) {
             foreach ($tokens as $token) {
-                if ($this->verifyToken($token->content, $user->getEmail())->getResult()['verify-token'] !== "verify-token-ok") {
+                if (
+                    $this->verifyToken(
+                        $token->content,
+                        $user->getEmail()
+                    )->getResult()['verify-token'] !== "verify-token-ok"
+                ) {
                     $this->tokenModel->deleteTokenById($token->id);
                 }
             }
@@ -186,7 +191,7 @@ class TokenController extends MainController
         // Get Token.
         $getToken = $this->tokenModel->getTokenByContent($tokenContent);
 
-        if (is_null($getToken) === true) {
+        if ($getToken === null) {
             $this->res->ko('verify-token', 'verify-token-content-not-found');
             return $this->res;
         }

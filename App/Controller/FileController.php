@@ -99,7 +99,7 @@ class FileController extends MainController
 
             // Delete file from the database.
             $result_db = (new FileModel())->deleteFileById($fileId);
-            if (is_null($result_db) === false) {
+            if ($result_db !== null) {
                 $return['err'] = true;
                 $return['msg'] = 'Fichier non supprimé de la base de données';
                 return $return;
@@ -114,8 +114,7 @@ class FileController extends MainController
                 $return['msg'] = 'Fichier non supprimé du système de fichiers';
             }
             return $return;
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             throw $e;
         }
     }

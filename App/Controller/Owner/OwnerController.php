@@ -78,7 +78,7 @@ class OwnerController extends MainController
         if (empty($sessUserObj) === true) {
             return false;
         }
-        if (is_null($sessUserObj) === true) {
+        if ($sessUserObj === null) {
             return false;
         }
         // Verify that the user exists.

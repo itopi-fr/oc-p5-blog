@@ -49,7 +49,7 @@ class UserModel extends Connection
 
         $fileModel = new FileModel();
 
-        if (is_null($this->user->getAvatarId()) === false) {
+        if ($this->user->getAvatarId() !== null) {
             $this->user->setAvatarFile($fileModel->getFileById($this->user->getAvatarId()));
         } else {
             $this->user->setAvatarFile(new File());
@@ -74,7 +74,7 @@ class UserModel extends Connection
 
             $fileModel = new FileModel();
 
-            if (is_null($this->user->getAvatarId()) === false) {
+            if ($this->user->getAvatarId() !== null) {
                 $this->user->setAvatarFile($fileModel->getFileById($this->user->getAvatarId()));
             } else {
                 $this->user->setAvatarFile(new File());

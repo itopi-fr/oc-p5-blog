@@ -65,7 +65,7 @@ class FileModel extends Connection
                 'size' => $file->getSize()
             ];
             $result = $this->insert($sql, $params);
-            return (is_null($result) === false) ? $result : null;
+            return ($result !== null) ? $result : null;
         } catch (Exception $e) {
             $this->mc->dump($e);
             return null;

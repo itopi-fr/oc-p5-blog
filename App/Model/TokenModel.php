@@ -75,7 +75,7 @@ class TokenModel extends Connection
         );
         $result = $this->insert($req, $params);
 
-        return (is_null($result) === false) ? $result : null;
+        return ($result !== null) ? $result : null;
     }
 
     /**

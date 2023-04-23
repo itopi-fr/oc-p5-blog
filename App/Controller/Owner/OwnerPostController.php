@@ -196,7 +196,7 @@ class OwnerPostController extends OwnerController
 
         // Build the post.
         $postObject = $this->postModel->getPostById($postId);
-        if (is_null($postObject) === true) {
+        if ($postObject === null) {
             $this->res->ko('post-get', 'post-get-ko-not-exists');
             return $this->res;
         }

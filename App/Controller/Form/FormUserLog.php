@@ -68,7 +68,7 @@ class FormUserLog extends FormController
         // If ok, create user.
         $createdUser = $this->userController->regCreateUser($pseudo, $email, $password)->getResult()['reg-create-user'];
 
-        if (is_null($createdUser) === true) {
+        if ($createdUser === null) {
             $this->res->ko('register', 'register-fail');
             return $this->res;
         }

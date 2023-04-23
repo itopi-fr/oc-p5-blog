@@ -341,14 +341,14 @@ class UserController extends MainController
 
         // Create user.
         $userCreatedId = $this->userModel->createUser($this->user);
-        if (is_null($userCreatedId) === true) {
+        if ($userCreatedId === null) {
             $this->res->ko('reg-create-user', 'reg-create-user-ko');
             return $this->res;
         }
 
         // Get user.
         $getUser = $this->userModel->getUserById($userCreatedId);
-        if (is_null($getUser) === true) {
+        if ($getUser === null) {
             $this->res->ko('reg-create-user', 'reg-create-user-ko');
             return $this->res;
         }

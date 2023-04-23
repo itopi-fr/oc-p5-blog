@@ -104,7 +104,7 @@ class FormPostCreate extends FormController
             $this->post->setFeatImgId($savedFile->getId());
         }
 
-        if (is_null($this->postModel->createPost($this->post)) === false) {
+        if ($this->postModel->createPost($this->post) !== null) {
             $this->res->ok('post-create', 'post-create-ok', null);
         } else {
             $this->res->ko('post-create', 'post-create-ko');

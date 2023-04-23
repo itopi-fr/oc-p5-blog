@@ -29,21 +29,21 @@ class UserOwnerModel extends UserModel
         $this->owner = $this->getSingleAsClass($sqlOwner, [$userOwnerId], 'App\Entity\UserOwner');
 
         $AvatarModel = new FileModel();
-        if (is_null($this->owner->getAvatarId()) === false) {
+        if ($this->owner->getAvatarId() !== null) {
             $this->owner->setAvatarFile($AvatarModel->getFileById($this->owner->getAvatarId()));
         } else {
             $this->owner->setAvatarFile(new File());
         }
 
         $CvModel = new FileModel();
-        if (is_null($this->owner->getCvFileId()) === false) {
+        if ($this->owner->getCvFileId() !== null) {
             $this->owner->setCvFile($CvModel->getFileById($this->owner->getCvFileId()));
         } else {
             $this->owner->setCvFile(new File());
         }
 
         $PhotoModel = new FileModel();
-        if (is_null($this->owner->getPhotoFileId()) === false) {
+        if ($this->owner->getPhotoFileId() !== null) {
             $this->owner->setPhotoFile($PhotoModel->getFileById($this->owner->getPhotoFileId()));
         } else {
             $this->owner->setPhotoFile(new File());
