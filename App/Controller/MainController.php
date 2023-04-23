@@ -79,9 +79,9 @@ class MainController
      */
     protected function isAlphaNumSpacesPunct(string $value): bool
     {
-        // \pL = Unicode letter (including accents)
-        // \pP = Unicode punctuation
-        // Cf. https://www.php.net/manual/en/regexp.reference.unicode.php
+        // \pL = Unicode letter (including accents).
+        // \pP = Unicode punctuation.
+        // Cf. https://www.php.net/manual/en/regexp.reference.unicode.php.
         return preg_match("/^[\s\pL\pP+]*$/u", $value);
     }
 
@@ -210,17 +210,17 @@ class MainController
         ]);
 
         if (empty($this->sGlob->getSesAll() === false)) {
-            // Current user info
+            // Current user info.
             (empty($this->sGlob->getSes('userid')) === false) ?
                 $this->twig->addGlobal('userid', $this->sGlob->getSes('userid')) :
                 $this->twig->addGlobal('userid', null);
 
-            // Current User Object
+            // Current User Object.
             (empty($this->sGlob->getSes('userobj')) === false) ?
                 $this->twig->addGlobal('userobj', $this->sGlob->getSes('userobj')) :
                 $this->twig->addGlobal('userobj', null);
 
-            // Owner info displayed in the header to all visitors
+            // Owner info displayed in the header to all visitors.
             empty($this->sGlob->getSes('ownerinfo')) === false ?
                 $this->twig->addGlobal('ownerinfo', $this->sGlob->getSes('ownerinfo')) :
                 $this->twig->addGlobal('ownerinfo', null);

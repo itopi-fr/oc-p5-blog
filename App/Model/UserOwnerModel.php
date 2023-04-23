@@ -65,7 +65,7 @@ class UserOwnerModel extends UserModel
             throw new Exception('Profil inconnu');
         }
 
-        // TODO : Si l'user change de photo ou de CV, supprimer les anciens (fichiers + BDD)
+        // TODO : Si l'user change de photo ou de CV, supprimer les anciens (fichiers + BDD).
 
         $sql = 'UPDATE user_owner_infos SET 
                             photo_file_id=?, 

@@ -51,7 +51,7 @@ class OwnerPostController extends OwnerController
      */
     public function managePosts(): void
     {
-        // TODO: Pagination
+        // TODO: Pagination.
         $this->twigData['title'] = 'Administration des articles';
         $posts = $this->postModel->getLastPosts(100);
         foreach ($posts as $key => $post) {
@@ -59,7 +59,7 @@ class OwnerPostController extends OwnerController
         }
         $this->twigData['posts'] = $posts;
 
-        // Display
+        // Display.
         $this->twig->display("pages/owner/page_bo_posts_manage.twig", $this->twigData);
     }
 
@@ -72,12 +72,12 @@ class OwnerPostController extends OwnerController
     {
         $this->twigData['title'] = "Création d'un article";
 
-        // Form Post Create sent => Treat it
+        // Form Post Create sent => Treat it.
         if (empty($this->sg->getPost("submit-post-create")) === false) {
             $this->twigData['result'] = $this->formPostCreate->treatForm();
         }
 
-        // Display
+        // Display.
         $this->twig->display("pages/owner/page_bo_post_create.twig", $this->twigData);
     }
 
@@ -91,19 +91,19 @@ class OwnerPostController extends OwnerController
     {
         $this->twigData['title'] = "Édition d'un article";
 
-        // Get Post
+        // Get Post.
         $resPost = $this->getPostById($postId);
         if ($resPost->isErr() === true) {
             $this->res->ko('post-edit', $resPost->getMsg()['post-get']);
             $this->twigData['result'] = $this->res;
         }
 
-        // Form Post Edit sent => Treat it
+        // Form Post Edit sent => Treat it.
         if (empty($this->sg->getPost("submit-post-edit")) === false) {
             $this->twigData['result'] = $this->formPostEdit->treatFormPost($resPost->getResult()['post-get']);
         }
 
-        // Display
+        // Display.
         $this->twigData['post'] = $resPost->getResult()['post-get'];
         $this->twig->display("pages/owner/page_bo_post_edit.twig", $this->twigData);
     }
@@ -116,40 +116,40 @@ class OwnerPostController extends OwnerController
      */
     public function deletePost(int $postId): void
     {
-        // Get Post
+        // Get Post.
         $resPost = $this->getPostById($postId);
         if ($resPost->isErr() === true) {
             $this->res->ko('post-delete', $resPost->getMsg()['post-get']);
             $this->twigData['result'] = $this->res;
         }
 
-        // Delete Post
+        // Delete Post.
         $this->twigData['result'] = $this->formPostDelete->treatDeletePost($resPost->getResult()['post-get']->getId());
 
-        // Display
+        // Display.
         $this->managePosts();
     }
 
 
     public function archivePost(int $postId): void
     {
-        // Check that the post exists
+        // Check that the post exists.
         if ($this->postModel->postExistsById($postId) === false) {
             $this->res->ko('post-archive', 'post-archive-ko-not-exists');
             $this->twigData['result'] = $this->res;
         }
 
-        // Get the post
+        // Get the post.
         $resPost = $this->getPostById($postId);
         if ($resPost->isErr() === true) {
             $this->res->ko('post-archive', $resPost->getMsg()['post-get']);
             $this->twigData['result'] = $this->res;
         }
 
-        // Archive Post
+        // Archive Post.
         $this->twigData['result'] = $this->formPostArchive->treatForm($resPost->getResult()['post-get']->getId());
 
-        // Display
+        // Display.
         $this->managePosts();
     }
 
@@ -161,17 +161,17 @@ class OwnerPostController extends OwnerController
      */
     public function getPostBySlug($postSlug): Res
     {
-        // Check that the post exists
+        // Check that the post exists.
         if ($this->postModel->postExistsBySlug($postSlug) === false) {
             $this->res->ko('post-get', 'post-get-ko-not-exists');
             return $this->res;
         }
 
-        // Build the post
+        // Build the post.
         $postObject = $this->postModel->getPostBySlug($postSlug);
         $post = $this->postController->hydratePostObject($postObject);
 
-        // Return the post
+        // Return the post.
         if ($post->getId() > 0) {
             $this->res->ok('post-get', 'post-get-ok-get-post', $post);
         } else {
@@ -188,13 +188,13 @@ class OwnerPostController extends OwnerController
      */
     public function getPostById($postId): Res
     {
-        // Check that the post exists
+        // Check that the post exists.
         if ($this->postModel->postExistsById($postId) === false) {
             $this->res->ko('post-get', 'post-get-ko-not-exists');
             return $this->res;
         }
 
-        // Build the post
+        // Build the post.
         $postObject = $this->postModel->getPostById($postId);
         if (is_null($postObject) === true) {
             $this->res->ko('post-get', 'post-get-ko-not-exists');
@@ -202,7 +202,7 @@ class OwnerPostController extends OwnerController
         }
         $post = $this->postController->hydratePostObject($postObject);
 
-        // Return the post
+        // Return the post.
         $this->res->ok('post-get', 'post-get-ok-get-post', $post);
 
         return $this->res;

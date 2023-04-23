@@ -31,7 +31,7 @@ class UserModel extends Connection
     public function isUnique(string $value, string $field, int $id): bool
     {
         $sql = "SELECT * FROM user WHERE $field = ? AND id != ?";
-        // Todo: replace by exists()
+        // TODO: replace by exists().
         $result = $this->getSingleAsClass($sql, [$value, $id], 'App\Entity\User');
         return $result === null;
     }
@@ -68,7 +68,7 @@ class UserModel extends Connection
             $sql = 'SELECT * FROM user WHERE email =?';
             $result = $this->getSingleAsClass($sql, [$userEmail], 'App\Entity\User');
             if ($result === null) {
-                return null; // Return null when no result is found
+                return null; // Return null when no result is found.
             }
             $this->user = $result;
 

@@ -117,16 +117,16 @@ class UserController extends MainController
 
         // ------------------------------------------------------------------------------------- user/reset-pass-change.
         if ($userAction === 'reset-pass-change') {
-            // Form Reset Change sent : treat form
+            // Form Reset Change sent : treat form.
             if (isset($userActionData) === true && empty($this->sGlob->getPost('submit-reset-pass-change')) === false) {
                 $this->twigData['result'] = (new FormUserResetPass())->treatFormPassChange(
                     $userActionData
                 );
             } else {
-                // Display Form Change Password
+                // Display Form Change Password.
                 $this->twigData['display_form_reset_change'] = 'display';
             }
-            // Display page
+            // Display page.
             $this->twig->display("pages/page_bo_reset_pass.twig", $this->twigData);
             return;
         }
@@ -242,23 +242,23 @@ class UserController extends MainController
         }
         $this->user = $resUserByToken->getResult()['user-by-token'];
 
-        // Verify token
+        // Verify token.
         $resVerifyToken = $this->tokenController->verifyToken($token->getContent(), $this->user->getEmail());
         if ($resVerifyToken->getMsg()['verify-token'] !== 'verify-token-ok') {
             $this->res->ko('user-activate', 'user-activate-ko-verify-token');
             return $this->res;
         }
 
-        // Update User Role
+        // Update User Role.
         $this->user->setRole('user');
 
-        // Update User
+        // Update User.
         if ($this->userModel->updateUser($this->user) === null) {
             $this->res->ko('user-activate', 'user-activate-ko-failed');
             return $this->res;
         }
 
-        // Delete Token
+        // Delete Token.
         $this->tokenController->deleteTokenById($token->getId());
         $this->res->ok('user-activate', 'user-activate-account-activated', null);
         $this->redirectTo('/user/connexion', 5);
@@ -280,7 +280,7 @@ class UserController extends MainController
     /**
      * Get a user by its email
      * @param string $email
-     * @return User
+     * @return Res
      */
     public function getUserByEmail(string $email): Res
     {
@@ -300,7 +300,7 @@ class UserController extends MainController
      */
     public function getUserByToken(int|string $tokenData): Res
     {
-        // Get Token
+        // Get Token.
         $token = new Token();
         $resToken = $this->tokenController->getToken($tokenData);
         if ($resToken->isErr() === true) {
@@ -309,13 +309,13 @@ class UserController extends MainController
         }
         $token = $resToken->getResult()['token'];
 
-        // Get User
+        // Get User.
         if ($this->userModel->userExistsById($token->getUserId()) === false) {
             $this->res->ko('user-by-token', 'user-by-token-assoc-user-not-found');
             return $this->res;
         }
 
-        // If everything is ok, return the user
+        // If everything is ok, return the user.
         $this->res->ok('user-by-token', 'user-by-token-ok', $this->userModel->getUserById($token->getUserId()));
         return $this->res;
     }
@@ -335,18 +335,18 @@ class UserController extends MainController
         $this->user->setPseudo($pseudo);
         $this->user->setEmail($email);
         $this->user->setPass($password);
-        $this->user->setAvatarId(1); // default avatar
+        $this->user->setAvatarId(1); // default avatar.
         $this->user->setRole('user-validation');
         $resToken = new Res();
 
-        // Create user
+        // Create user.
         $userCreatedId = $this->userModel->createUser($this->user);
         if (is_null($userCreatedId) === true) {
             $this->res->ko('reg-create-user', 'reg-create-user-ko');
             return $this->res;
         }
 
-        // Get user
+        // Get user.
         $getUser = $this->userModel->getUserById($userCreatedId);
         if (is_null($getUser) === true) {
             $this->res->ko('reg-create-user', 'reg-create-user-ko');
@@ -360,9 +360,9 @@ class UserController extends MainController
             return $this->res;
         }
 
-        // TODO : Create mail templates with twig
+        // TODO : Create mail templates with twig.
 
-        // Build mail content
+        // Build mail content.
         $token = $resToken->getResult()['token'];
         $mailTo = $this->user->getEmail();
         $mailToName = $this->user->getPseudo();
@@ -373,8 +373,9 @@ class UserController extends MainController
         $mailContent .= 'Cordialement,<br />';
         $mailContent .= 'L\'équipe de p5blog';
 
-        // TODO : Check result of sendMail before returning ok
-        // Send mail
+        // TODO : Check result of sendMail before returning ok.
+
+        // Send mail.
         $tokenValidateEmail = new MailController();
         $tokenValidateEmail->sendEmail($mailTo, $mailToName, $mailSubject, $mailContent);
 
@@ -427,6 +428,7 @@ class UserController extends MainController
         return $this->res;
     }
 
+    /*
     public function getOwnerInfo()
     {
         $this->userOwnerModel = new UserOwnerModel();
@@ -437,9 +439,8 @@ class UserController extends MainController
 
     public function logout()
     {
-        // Vérifier tokens et supprimer les anciens
+        // Vérifier tokens et supprimer les anciens.
     }
-
 
 
     public function register()
@@ -448,6 +449,7 @@ class UserController extends MainController
 
     public function resetPassword()
     {
-        // Vérifier tokens, s'il y en a un de valide, le renvoyer
+        // Vérifier tokens, s'il y en a un de valide, le renvoyer.
     }
+    */
 }

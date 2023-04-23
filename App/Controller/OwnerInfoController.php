@@ -44,24 +44,24 @@ class OwnerInfoController
         $photoFileCtrl = new FileController();
         $cvFileCtrl = new FileController();
 
-        // Owner id
+        // Owner id.
         $ownerInfo->setOwnerId($ownerInfoObject->owner_id);
 
-        // First name
+        // First name.
         if ($ownerInfoObject->first_name === null) {
             $ownerInfo->setFirstName('');
         } else {
             $ownerInfo->setFirstName($ownerInfoObject->first_name);
         }
 
-        // Last name
+        // Last name.
         if ($ownerInfoObject->last_name == null) {
             $ownerInfo->setLastName('');
         } else {
             $ownerInfo->setLastName($ownerInfoObject->last_name);
         }
 
-        // Photo file
+        // Photo file.
         if ($ownerInfoObject->photo_file_id == null) {
             $ownerInfo->setPhotoFileId(0);
             $ownerInfo->setPhotoFile(new File());
@@ -70,7 +70,7 @@ class OwnerInfoController
             $ownerInfo->setPhotoFile($photoFileCtrl->getFileById($ownerInfoObject->photo_file_id));
         }
 
-        // CV file
+        // CV file.
         if ($ownerInfoObject->cv_file_id == null) {
             $ownerInfo->setCvFileId(0);
             $ownerInfo->setCvFile(new File());
@@ -79,7 +79,7 @@ class OwnerInfoController
             $ownerInfo->setCvFile($cvFileCtrl->getFileById($ownerInfoObject->cv_file_id));
         }
 
-        // Catch phrase
+        // Catch phrase.
         if ($ownerInfoObject->catch_phrase == null) {
             $ownerInfo->setCatchPhrase('');
         } else {

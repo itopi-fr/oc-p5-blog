@@ -39,7 +39,7 @@ class FormUserLog extends FormController
      */
     public function register(string $pseudo, string $email, string $password, string $password2): Res
     {
-        //Checks
+        //Checks.
         if ($password !== $password2) {
             $this->res->ko('register', 'pass-not-match');
             return $this->res;
@@ -60,12 +60,12 @@ class FormUserLog extends FormController
             return $this->res;
         }
 
-        // TODO : Check email and pseudo format
+        // TODO : Check email and pseudo format.
 
-        // hash
+        // hash.
         $password = $this->hashPassword($password);
 
-        // If ok, create user
+        // If ok, create user.
         $createdUser = $this->userController->regCreateUser($pseudo, $email, $password)->getResult()['reg-create-user'];
 
         if (is_null($createdUser) === true) {
@@ -85,13 +85,13 @@ class FormUserLog extends FormController
      */
     public function login(string $email, string $password): Res
     {
-        // hash
+        // hash.
         $password = $this->hashPassword($password);
 
         if ($this->userModel->userExistsByEmailPassword($email, $password)) {
             $this->user = $this->userModel->getUserByEmail($email);
 
-            // start session
+            // start session.
             $this->sGlob->setSes('userid', $this->user->getId());
 
             $this->res->ok('user-login', 'user-login-ok-success', null);
@@ -107,7 +107,7 @@ class FormUserLog extends FormController
      */
     public function logout(): Res
     {
-        // destroy session
+        // destroy session.
         session_destroy();
         $this->res->ok('disconnect', 'Déconnexion réussie', null);
         return $this->res;

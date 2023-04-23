@@ -48,21 +48,21 @@ class MailController extends MainController
         $this->mailMessageHtml = $messageHtml;
         $this->mailMessageRaw = $this->generateRawMessage($messageHtml);
 
-        // Check mailTo
+        // Check mailTo.
         if ($this->isSet($this->mailTo) === false) {
             return $this->res->ko("send-email", 'missing-mail-to');
         } elseif (!$this->isEmail($this->mailTo)) {
             return $this->res->ko("send-email", 'invalid-format-mail-to');
         }
 
-        // Check mailToName
+        // Check mailToName.
         if ($this->isSet($this->mailToName) === false) {
             return $this->res->ko("send-email", 'missing-mail-to-name');
         } elseif (!$this->isAlphaNumDashUnderscore($this->mailToName)) {
             return $this->res->ko("send-email", 'invalid-format-mail-to-name');
         }
 
-        // Check mailSubject
+        // Check mailSubject.
         if ($this->isSet($this->mailSubject) === false) {
             return $this->res->ko("send-email", 'missing-mail-subject');
         }

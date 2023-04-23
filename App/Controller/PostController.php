@@ -50,12 +50,12 @@ class PostController extends MainController
             $this->posts = $resPosts;
         }
 
-        // Build each post object
+        // Build each post object.
         foreach ($this->posts as $key => $post) {
             $this->posts[$key] = $this->hydratePostObject($post);
         }
 
-        // Display
+        // Display.
         $this->twigData['posts'] = $this->posts;
         $this->twig->display("pages/page_fo_posts.twig", $this->twigData);
     }
@@ -113,18 +113,18 @@ class PostController extends MainController
      */
     public function single($postSlug): void
     {
-        // Check if the post exists
+        // Check if the post exists.
         if ($this->postModel->postExistsBySlug($postSlug) === false) {
             $this->res->ko('post-single', "post-single-ko-not-exists");
             $this->twig->display("pages/page_fo_error.twig", $this->twigData);
             return;
         }
 
-        // Build the Post object
+        // Build the Post object.
         $postObject = $this->postModel->getPostBySlug($postSlug);
         $this->postSingle = $this->hydratePostObject($postObject);
 
-        // Display
+        // Display.
         $this->twigData['post'] = $this->postSingle;
         $this->twig->display("pages/page_fo_post_single.twig", $this->twigData);
     }

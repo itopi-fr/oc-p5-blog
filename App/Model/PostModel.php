@@ -143,7 +143,7 @@ class PostModel extends Connection
             return null;
         }
 
-        // TODO: add dates
+        // TODO: add dates.
         $sql = 'UPDATE post SET title = ?, slug = ?, content = ?, last_update = ?, status = ? WHERE id = ?';
         return $this->update(
             $sql,

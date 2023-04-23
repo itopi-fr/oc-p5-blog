@@ -44,7 +44,7 @@ class FileController extends MainController
      */
     public function uploadFile(array $user_file): File
     {
-        // TODO : Res system
+        // TODO : Res system.
         try {
             $this->filePosted = $user_file;
 
@@ -52,11 +52,11 @@ class FileController extends MainController
                 throw new Exception('Erreur du fichier posté');
             }
 
-            // Upload
+            // Upload.
             $uploaded = move_uploaded_file($this->filePosted['tmp_name'], $this->filePosted['dest-path']);
 
             if ($uploaded) {
-                // Build File object
+                // Build File object.
                 $this->file = $this->buildFileObjectFromPostedFile($this->filePosted);
                 return $this->file;
             } else {
@@ -87,17 +87,17 @@ class FileController extends MainController
         try {
             $return = [];
 
-            // Check that this file exists in the database
+            // Check that this file exists in the database.
             if (!(new FileModel())->fileExistsById($fileId)) {
                 $return['err'] = true;
                 $return['msg'] = 'Fichier non trouvé dans la base de données';
                 return $return;
             }
 
-            // Get file from the database
+            // Get file from the database.
             $file = $this->getFileById($fileId);
 
-            // Delete file from the database
+            // Delete file from the database.
             $result_db = (new FileModel())->deleteFileById($fileId);
             if (is_null($result_db) === false) {
                 $return['err'] = true;
@@ -105,7 +105,7 @@ class FileController extends MainController
                 return $return;
             }
 
-            // Delete file from the file system
+            // Delete file from the file system.
             $result_fs = unlink($_SERVER['DOCUMENT_ROOT'] . $file->getUrl());
             if ($result_fs) {
                 $return['msg'] = 'Fichier supprimé de la base de données et du système de fichiers';

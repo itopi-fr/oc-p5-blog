@@ -46,15 +46,15 @@ class Router
     {
 
         try {
-            // TODO: Revoir ce système de routing (.htaccess)
+            // TODO: Revoir ce système de routing (.htaccess).
 
-            // Extract URL parts
+            // Extract URL parts.
             $this->urlParts =           explode('/', $_GET['p']);
             $this->pageBase =           (array_key_exists(0, $this->urlParts)) ? $this->urlParts[0] : 'home';
             $this->pageAction =         (array_key_exists(1, $this->urlParts)) ? $this->urlParts[1] : '';
             $this->pageActionParam =    (array_key_exists(2, $this->urlParts)) ? $this->urlParts[2] : '';
 
-            // Owner info
+            // Owner info.
             $sessionOwnerInfo = $this->superGlobals->getSes('ownerinfo');
 
             if ((empty($sessionOwnerInfo) === true) || ($sessionOwnerInfo == null)) {
@@ -63,7 +63,7 @@ class Router
                 $this->superGlobals->setSes('ownerinfo', $ownerInfo);
             }
 
-            // Route
+            // Route.
             switch ($this->pageBase) {
                 case (''):
                     $controller = new HomeController();

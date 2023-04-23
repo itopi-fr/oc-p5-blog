@@ -25,7 +25,7 @@ class OwnerController extends MainController
      */
     public function index(string $pageAction, string $pageActionParam): void
     {
-        // Check if the user is an owner, if not, redirect to the error page
+        // Check if the user is an owner, if not, redirect to the error page.
         if ($this->isOwner() === false) {
             $this->res->ko('general', "La page demandée n'existe pas");
             $controller = new ErrorPageController();
@@ -33,7 +33,7 @@ class OwnerController extends MainController
             return;
         }
 
-        // TODO : add a check to $pageActionParam
+        // TODO : add a check to $pageActionParam.
 
         if ($pageAction === 'posts') {
             $controller = new OwnerPostController();
@@ -81,11 +81,11 @@ class OwnerController extends MainController
         if (is_null($sessUserObj) === true) {
             return false;
         }
-        // Verify that the user exists
+        // Verify that the user exists.
         if ($this->userModel->userExistsByEmailPassword($sessUserObj->getEmail(), $sessUserObj->getPass()) === false) {
             return false;
         } else {
-            // Verify that the user is an owner
+            // Verify that the user is an owner.
             $user = $this->userModel->getUserByEmail($sessUserObj->getEmail());
             if ($user->getRole() === 'owner') {
                 return true;

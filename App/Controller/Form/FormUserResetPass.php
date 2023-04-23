@@ -40,24 +40,24 @@ class FormUserResetPass extends FormController
      */
     public function treatFormPassAsk(string $email): Res
     {
-        // Check email
+        // Check email.
         $resCheckEmail = $this->checkPostedEmail('user-reset-pass', 'email', 6, 254);
         if ($resCheckEmail->isErr() === true) {
             $this->res->ko('user-reset-pass', 'user-reset-pass-ko-email');
             return $this->res;
         }
 
-        // Check if a user with this email exists
+        // Check if a user with this email exists.
         $user = $this->userModel->getUserByEmail($email);
         if ($user === null) {
             $this->res->ko('user-reset-pass', 'user-reset-pass-ko-email-not-found');
             return $this->res;
         }
 
-        // Create a new token
+        // Create a new token.
         $token = $this->tokenController->createUserToken($user->getId(), 'reset-pass')->getResult()['token'];
 
-        // Build mail content
+        // Build mail content.
         $mailTo = $user->getEmail();
         $mailToName = $user->getPseudo();
         $mailSubject = 'Réinitialisation de votre mot de passe';
@@ -69,8 +69,8 @@ class FormUserResetPass extends FormController
         $mailContent .= '<br />Cordialement,<br />';
         $mailContent .= 'L\'équipe de p5blog';
 
-        // TODO : Check result of sendMail before returning ok
-        // Send mail
+        // TODO : Check result of sendMail before returning ok.
+        // Send mail.
         $tokenValidateEmail = new MailController();
         $tokenValidateEmail->sendEmail($mailTo, $mailToName, $mailSubject, $mailContent);
 
@@ -87,7 +87,7 @@ class FormUserResetPass extends FormController
      */
     public function treatFormPassChange(string $tokenContent): Res
     {
-        // Get token
+        // Get token.
         $resToken = $this->tokenController->getToken($tokenContent);
         if ($resToken->isErr() === true) {
             $this->res->ko('user-reset-pass', 'user-reset-pass-ko-token-not-found');
@@ -95,7 +95,7 @@ class FormUserResetPass extends FormController
         }
         $token = $resToken->getResult()['token'];
 
-        // Get User by Token Content
+        // Get User by Token Content.
         $resUserByToken = $this->userController->getUserByToken($token->getContent());
         if ($resUserByToken->isErr() === true) {
             $this->res->ko('user-reset-pass', 'user-reset-pass-ko-user-by-token');
@@ -103,14 +103,14 @@ class FormUserResetPass extends FormController
         }
         $this->user = $resUserByToken->getResult()['user-by-token'];
 
-        // Verify token
+        // Verify token.
         $resVerifyToken = $this->tokenController->verifyToken($token->getContent(), $this->user->getEmail());
         if ($resVerifyToken->getMsg()['verify-token'] !== 'verify-token-ok') {
             $this->res->ko('user-reset-pass', 'user-reset-pass-ko-verify-token');
             return $this->res;
         }
 
-        // Change password
+        // Change password.
         $resChangePass = (new FormUserChangePass())->treatFormChangePass(
             $this->user,
             '',
@@ -124,7 +124,7 @@ class FormUserResetPass extends FormController
             return $this->res;
         }
 
-        // Delete Token
+        // Delete Token.
         $this->tokenController->deleteTokenById($token->getId());
         $this->res->ok('user-reset-pass', 'user-reset-pass-ok-updated', null);
         $this->redirectTo('/user/connexion', 5);

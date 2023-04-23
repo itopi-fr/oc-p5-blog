@@ -119,16 +119,16 @@ class TokenController extends MainController
      */
     public function createUserToken(int $userId, string $tokenType): Res
     {
-        // Delete expired tokens
+        // Delete expired tokens.
         $this->deleteExpiredTokens($userId, $tokenType);
 
-        // If a valid token already exists, do nothing
+        // If a valid token already exists, do nothing.
         if (is_null($this->getLastValidTokenByUserId($userId, $tokenType)) === false) {
             $this->res->ok('token', $this->res->showMsg('valid-token-exists'), null);
             return $this->res;
         }
 
-        // Create a new token
+        // Create a new token.
         $this->token->setUserId($userId);
         $this->token->setContent($this->generateKey(32));
         $this->token->setExpirationDate(new DateTime('now + 15 minutes'));
@@ -183,7 +183,7 @@ class TokenController extends MainController
      */
     public function verifyToken(string $tokenContent, string $email): Res
     {
-        // Get Token
+        // Get Token.
         $getToken = $this->tokenModel->getTokenByContent($tokenContent);
 
         if (is_null($getToken) === true) {
@@ -191,30 +191,30 @@ class TokenController extends MainController
             return $this->res;
         }
 
-        // Build Token
+        // Build Token.
         $this->token = $this->buildToken($getToken);
 
-        // Get User
+        // Get User.
         $user = $this->userModel->getUserByEmail($email);
         if ($user === null) {
             $this->res->ko('verify-token', 'verify-token-user-by-mail-not-found');
             return $this->res;
         }
 
-        // Check that User ids match
+        // Check that User ids match.
         if ($this->token->getUserId() !== $user->getId()) {
             $this->res->ko('verify-token', 'verify-token-user-id-not-match');
             return $this->res;
         }
 
-        // Check that Token is not expired
+        // Check that Token is not expired.
         if ($this->token->getExpirationDate() < new DateTime()) {
             $this->res->ko('verify-token', 'verify-token-expired');
             $this->deleteTokenById($this->token->getId());
             return $this->res;
         }
 
-        // if everything is ok
+        // if everything is ok.
         $this->res->ok('verify-token', 'verify-token-ok', $this->token);
         return $this->res;
     }

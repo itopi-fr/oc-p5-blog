@@ -33,16 +33,16 @@ class FormUserProfile extends FormController
      */
     public function treatFormUser(User $user): Res
     {
-        // -------------------------------------------------------------------- Checks
-        // user-pseudo : checks
+        // -------------------------------------------------------------------- Checks.
+        // user-pseudo : checks.
         $this->res = $this->checkPostedText('user-profile', 'pseudo', 4, 30);
         $this->res = $this->isUnique('user-profile', 'pseudo', $user->getId());
 
-        // user-email : checks
+        // user-email : checks.
         $this->res = $this->checkPostedEmail('user-profile', 'email', 6, 254);
         $this->res = $this->isUnique('user-profile', 'email', $user->getId());
 
-        // file-avatar : checks
+        // file-avatar : checks.
         $this->res = $this->checkPostedFileImg(
             'user-profile',
             'file-avatar',
@@ -51,9 +51,9 @@ class FormUserProfile extends FormController
             $this->getAvatarMaxSize()
         );
 
-        // -------------------------------------------------------------------- Treatments
+        // -------------------------------------------------------------------- Treatments.
         if ($this->res->isErr() === false) {
-            // User avatar file : treatment
+            // User avatar file : treatment.
             if ($this->sGlob->getFiles('file-avatar')['error'] === 0) {
                 $resTreatFile = $this->treatFile($this->sGlob->getFiles('file-avatar'), 'avatar');
 
@@ -66,11 +66,11 @@ class FormUserProfile extends FormController
                 $user->setAvatarId($savedFile->getId());
             }
 
-            // User simple fields : treatment
+            // User simple fields : treatment.
             $user->setPseudo($this->sGlob->getPost('pseudo'));
             $user->setEmail($this->sGlob->getPost('email'));
 
-            // User update
+            // User update.
             if ($this->res->isErr() === false) {
                 $this->res = $this->userController->updateUser($user);
             }
@@ -85,13 +85,13 @@ class FormUserProfile extends FormController
      */
     public function treatFormUserOwner(UserOwner $userOwner): Res
     {
-        // -------------------------------------------------------------------- Checks
-        // Checks
+        // -------------------------------------------------------------------- Checks.
+        // Checks.
         $this->res = $this->checkPostedText('owner-profile', 'firstname', 4, 30);
         $this->res = $this->checkPostedText('owner-profile', 'lastname', 4, 30);
         $this->res = $this->checkPostedText('owner-profile', 'catchphrase', 4, 254);
 
-        // file-cv : checks
+        // file-cv : checks.
         $this->res = $this->checkPostedFileDoc(
             'owner-profile',
             'file-cv',
@@ -100,7 +100,7 @@ class FormUserProfile extends FormController
             $this->getCvMaxSize()
         );
 
-        // file-photo : checks
+        // file-photo : checks.
         $this->res = $this->checkPostedFileImg(
             'owner-profile',
             'file-photo',
@@ -109,14 +109,14 @@ class FormUserProfile extends FormController
             $this->getPhotoMaxSize()
         );
 
-        // -------------------------------------------------------------------- Treatment
+        // -------------------------------------------------------------------- Treatment.
         if ($this->res->isErr() === false) {
-            // Owner simple fields : treatment
+            // Owner simple fields : treatment.
             $userOwner->setFirstName($this->sGlob->getPost('firstname'));
             $userOwner->setLastName($this->sGlob->getPost('lastname'));
             $userOwner->setCatchPhrase($this->sGlob->getPost('catchphrase'));
 
-            // Owner CV file : treatment
+            // Owner CV file : treatment.
             $cvFile = $this->sGlob->getFiles('file-cv');
             if ($cvFile['error'] === 0) {
                 $resTreatCvFile = $this->treatFile($cvFile, 'cv');
@@ -129,7 +129,7 @@ class FormUserProfile extends FormController
                 $userOwner->setCvFileId($savedCvFile->getId());
             }
 
-            // Owner photo file : treatment
+            // Owner photo file : treatment.
             $photoFile = $this->sGlob->getFiles('file-photo');
             if ($photoFile['error'] === 0) {
                 $resTreatPhotoFile = $this->treatFile($photoFile, 'photo');
@@ -143,7 +143,7 @@ class FormUserProfile extends FormController
                 $userOwner->setPhotoFileId($savedPhotoFile->getId());
             }
 
-            // Owner update
+            // Owner update.
             if ($this->res->isErr() === false) {
                 $this->res = $this->userController->updateUserOwner($userOwner);
             }
