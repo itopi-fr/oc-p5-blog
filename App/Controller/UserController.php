@@ -56,23 +56,27 @@ class UserController extends MainController
      */
     public function index($userAction, $userActionData = null)
     {
-        /* TODO: clean all this mess
-            Distribute actions to separate methods : connect(), disconnect(), register(), etc.
+        /*
+         * TODO: clean all this mess
+         *  Distribute actions to separate methods : connect(), disconnect(), register(), etc.
         */
 
-        // ---------------------------------------------------------------------------------------------- session / User
+        // --------------------------------------------------------------------------------------------- session / User.
         $sessUserId = $this->sGlob->getSes('userid');
-        empty($sessUserId) === false ? $userId = $sessUserId : $userId = null;
+        $userId = null;
+        if (empty($sessUserId) === false) {
+            $userId = $sessUserId;
+        }
+//        empty($sessUserId) === false ? $userId = $sessUserId : $userId = null;
 
-        if (is_null($userId) === false) {
+        $this->sGlob->setSes('userobj', null);
+        if ($userId === null) {
             $this->sGlob->setSes('userobj', $this->userModel->getUserById($sessUserId));
-        } else {
-            $this->sGlob->setSes('userobj', null);
         }
 
-        // -------------------------------------------------------------------------------------------- user/inscription
+        // ------------------------------------------------------------------------------------------- user/inscription.
         if ($userAction === 'inscription') {
-            // Form Register
+            // Form Register.
             if (empty($this->sGlob->getPost('submit-register')) === false) {
                 $this->twigData['result'] = (new FormUserLog())->register(
                     $this->sGlob->getPost('pseudo'),
@@ -82,36 +86,36 @@ class UserController extends MainController
                 );
             }
 
-            // Display page
+            // Display page.
             $this->twig->display("pages/page_bo_register.twig", $this->twigData);
             return;
         }
 
-        // ----------------------------------------------------------------------------------------- user/activation/123
+        // ---------------------------------------------------------------------------------------- user/activation/123.
         if ($userAction === 'activation') {
             if (isset($userActionData) === true) {
                 $this->twigData['result'] = $this->userActivate($userActionData);
             }
-            // Display page
+            // Display page.
             $this->twig->display("pages/page_bo_activate.twig", $this->twigData);
             return;
         }
 
-        // ----------------------------------------------------------------------------------------- user/reset-pass-ask
+        // ---------------------------------------------------------------------------------------- user/reset-pass-ask.
         if ($userAction === 'reset-pass-ask') {
             if (empty($this->sGlob->getPost('submit-reset-pass-ask')) === false) {
-                // Form Reset sent : treat form
+                // Form Reset sent : treat form.
                 $this->twigData['result'] = (new FormUserResetPass())->treatFormPassAsk($this->sGlob->getPost('email'));
             } else {
-                // Form Reset not sent : display form
+                // Form Reset not sent : display form.
                 $this->twigData['display_form_reset_ask'] = 'display';
             }
-            // Display page
+            // Display page.
             $this->twig->display("pages/page_bo_reset_pass.twig", $this->twigData);
             return;
         }
 
-        // -------------------------------------------------------------------------------------- user/reset-pass-change
+        // ------------------------------------------------------------------------------------- user/reset-pass-change.
         if ($userAction === 'reset-pass-change') {
             // Form Reset Change sent : treat form
             if (isset($userActionData) === true && empty($this->sGlob->getPost('submit-reset-pass-change')) === false) {
@@ -127,16 +131,16 @@ class UserController extends MainController
             return;
         }
 
-        // ---------------------------------------------------------------------------------------------- user/connexion
+        // --------------------------------------------------------------------------------------------- user/connexion.
         if ($userAction === 'connexion' && empty($this->sGlob->getPost('submit-connect')) === false) {
             $this->userLogin();
         }
 
-        // ------------------------------------------------------------------------------------------------- user/profil
+        // ------------------------------------------------------------------------------------------------ user/profil.
         if ($userId !== null) {
             $this->user = $this->userModel->getUserById($userId);
 
-            // Owner Profile
+            // Owner Profile.
             if ($this->user->getRole() == 'owner') {
                 $this->userOwner = (new UserOwnerModel())->getUserOwnerById($this->user->getId());
 
@@ -144,7 +148,7 @@ class UserController extends MainController
                     $this->twigData['result'] = (new FormUserProfile())->treatFormUserOwner($this->userOwner);
                     $this->sGlob->setSes('ownerinfo', (new OwnerInfoController())->getOwnerInfo());
 
-                    // Refresh page if no error
+                    // Refresh page if no error.
                     if ($this->twigData['result']->isErr() === false) {
                         $this->refresh();
                     }
@@ -153,12 +157,12 @@ class UserController extends MainController
                 $this->twigData['owner'] = $this->userOwner;
             }
 
-            // User Profile
+            // User Profile.
             if ($userAction == 'profil' && empty($this->sGlob->getPost('submit-user-profile')) === false) {
                 $this->twigData['result'] = (new FormUserProfile())->treatFormUser($this->user);
             }
 
-            // Form User Change Password
+            // Form User Change Password.
             if ($userAction == 'profil' && empty($this->sGlob->getPost('submit-user-pass')) === false) {
                 $this->twigData['result'] = (new FormUserChangePass())->treatFormChangePass(
                     $this->user,
@@ -169,17 +173,17 @@ class UserController extends MainController
                 );
             }
 
-            // Form Logout
+            // Form Logout.
             if ($userAction === 'deconnexion') {
                 $this->twigData['result'] = (new FormUserLog())->logout();
                 $this->refresh(0);
             }
 
-            // User
+            // User.
             $this->twigData['user'] = $this->user;
         }
 
-        // Display page
+        // Display page.
         $this->twig->display("pages/page_bo_user.twig", $this->twigData);
     }
 
@@ -221,7 +225,7 @@ class UserController extends MainController
      */
     public function userActivate(string $tokenContent): Res
     {
-        // Get token
+        // Get token.
         $token = new Token();
         $resToken = $this->tokenController->getToken($tokenContent);
         if ($resToken->isErr() === true) {
@@ -230,7 +234,7 @@ class UserController extends MainController
         }
         $token = $resToken->getResult()['token'];
 
-        // Get User by Token Content
+        // Get User by Token Content.
         $resUserByToken = $this->getUserByToken($token->getContent());
         if ($resUserByToken->isErr() === true) {
             $this->res->ko('user-activate', 'user-activate-ko-user-by-token');
@@ -249,7 +253,7 @@ class UserController extends MainController
         $this->user->setRole('user');
 
         // Update User
-        if (is_null($this->userModel->updateUser($this->user)) === true) {
+        if ($this->userModel->updateUser($this->user) === null) {
             $this->res->ko('user-activate', 'user-activate-ko-failed');
             return $this->res;
         }
