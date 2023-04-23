@@ -13,15 +13,15 @@ The available main functions are :
 
 ### Back Office
 
-  - Create, edit, publish posts
-  - Validate or refuse comments
+-  Create, edit, publish posts
+-  Validate or refuse comments
 
 ### Front Office
 
-  - Register / Login / Logout
-  - Display a list of posts
-  - Display a single post
-  - Comment a post
+-  Register / Login / Logout
+-  Display a list of posts
+-  Display a single post
+-  Comment a post
 
 
 
@@ -40,10 +40,10 @@ This project requires Composer 2.0 or higher.
 This project uses the following services and extensions :
 
 ### Composer extensions
-  - [twig/twig](https://packagist.org/packages/twig/twig)
-  - ext-pdo
-  - [vlucas/phpdotenv](https://packagist.org/packages/vlucas/phpdotenv)
-  - [phpmailer/phpmailer](https://packagist.org/packages/phpmailer/phpmailer)
+-  [twig/twig](https://packagist.org/packages/twig/twig)
+-  ext-pdo
+-  [vlucas/phpdotenv](https://packagist.org/packages/vlucas/phpdotenv)
+-  [phpmailer/phpmailer](https://packagist.org/packages/phpmailer/phpmailer)
 
 ### Libraries
 - [Bootstrap  v5.3.0-alpha1](https://getbootstrap.com/)
