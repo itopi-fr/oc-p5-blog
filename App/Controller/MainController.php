@@ -133,27 +133,27 @@ class MainController
      * Should be called using parent::showDump() in the child class
      * in order to have all the dumped variables displayed in the same block.
      * @return void
-     *
-     * TODO : Faire plus propre
      */
     protected function showDump(): void
     {
         if ($this->sGlob->getEnv('MODE_DEV') === 'true') {
             if (empty($this->toDump) === false) {
-                echo "<pre class='vardump abs-center'>";
-                echo "<h1>Debug</h1>";
-                echo "<div class='vardump-close' onclick='this.parentElement.remove()'>
+                $html = "<pre class='vardump abs-center'>";
+                $html .= "<h1>Debug</h1>";
+                $html .= "<div class='vardump-close' onclick='this.parentElement.remove()'>
                     <i class='fa fa-window-close' aria-hidden='true'></i>
                   </div>";
 
                 foreach ($this->toDump as $dumpLine) {
-                    echo "<p<strong>Dumped from : {$dumpLine['caller_file']}</strong></p>";
-                    var_dump($dumpLine['data']);
+                    $html .= "<p><strong>Dumped from : {$dumpLine['caller_file']}</strong></p>";
+                    $html .= var_export($dumpLine['data'], true);
                 }
-                echo "</pre>";
+                $html .= "</pre>";
+                $this->twig->display('blocks/block_fo_debug.twig', ['html' => $html]);
             }
         }
     }
+
 
     /**
      * Redirects to the given route

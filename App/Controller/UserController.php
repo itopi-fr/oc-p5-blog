@@ -73,8 +73,6 @@ class UserController extends MainController
             $this->sGlob->setSes('userobj', $this->userModel->getUserById($sessUserId));
         }
 
-        $this->dump($this->sGlob->getSes('userobj'));
-
         // ------------------------------------------------------------------------------------------- user/inscription.
         if ($userAction === 'inscription') {
             // Form Register.

@@ -49,7 +49,7 @@ class Router
             // TODO: Revoir ce système de routing (.htaccess).
 
             // Extract URL parts.
-            $this->urlParts =           explode('/', $_GET['p']);
+            $this->urlParts =           explode('/', $this->superGlobals->getGet('p'));
             $this->pageBase =           (array_key_exists(0, $this->urlParts)) ? $this->urlParts[0] : 'home';
             $this->pageAction =         (array_key_exists(1, $this->urlParts)) ? $this->urlParts[1] : '';
             $this->pageActionParam =    (array_key_exists(2, $this->urlParts)) ? $this->urlParts[2] : '';

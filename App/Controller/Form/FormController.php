@@ -81,7 +81,7 @@ class FormController extends MainController
     {
         $posted_file['unique-name'] = pathinfo($posted_file['name'], PATHINFO_FILENAME) . '_' . $this->generateKey(3);
         $posted_file['ext'] = pathinfo($posted_file['name'], PATHINFO_EXTENSION);
-        $base_path = $_SERVER['DOCUMENT_ROOT'] . '/';
+        $base_path = $this->sGlob->getServer('DOCUMENT_ROOT') . '/';
 
         switch ($file_type) {
             case 'photo':

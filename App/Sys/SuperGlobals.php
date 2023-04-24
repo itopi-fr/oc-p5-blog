@@ -6,6 +6,7 @@ class SuperGlobals
 {
     private array $sgEnv;
     private array $sgSes;
+    private array $sgGet;
     private array $sgPost;
     private array $sgFiles;
     private array $sgServer;
@@ -71,6 +72,27 @@ class SuperGlobals
     public function setSes(string $varName, mixed $varValue): void
     {
         $_SESSION[$varName] = $varValue;
+    }
+
+
+    /**
+     * Get all $_GET variables
+     * @return array|null
+     */
+    public function getGetAll(): array|null
+    {
+        return $this->sgGet;
+    }
+
+
+    /**
+     * Get a specific $_GET variable
+     * @param string $varName
+     * @return string|null
+     */
+    public function getGet(string $varName): string|null
+    {
+        return $this->sgGet[$varName] ?? null;
     }
 
 
@@ -147,6 +169,7 @@ class SuperGlobals
     {
         $this->sgEnv = (isset($_ENV)) ? $_ENV : null;
         $this->sgSes = (isset($_SESSION)) ? $_SESSION : null;
+        $this->sgGet = (isset($_GET)) ? $_GET : null;
         $this->sgPost = (isset($_POST)) ? $_POST : null;
         $this->sgFiles = (isset($_FILES)) ? $_FILES : null;
         $this->sgServer = (isset($_SERVER)) ? $_SERVER : null;
