@@ -32,9 +32,7 @@ class MainController
 
     public function __destruct()
     {
-        if ($this->sGlob->getEnv('MODE_DEV') === 'true') {
-            $this->showDump();
-        }
+        $this->showDump();
     }
 
     /** -------------------------------------------------- Methods -------------------------------------------------  */
@@ -140,18 +138,20 @@ class MainController
      */
     protected function showDump(): void
     {
-        if (empty($this->toDump) === false) {
-            echo "<pre class='vardump abs-center'>";
-            echo "<h1>Debug</h1>";
-            echo "<div class='vardump-close' onclick='this.parentElement.remove()'>
+        if ($this->sGlob->getEnv('MODE_DEV') === 'true') {
+            if (empty($this->toDump) === false) {
+                echo "<pre class='vardump abs-center'>";
+                echo "<h1>Debug</h1>";
+                echo "<div class='vardump-close' onclick='this.parentElement.remove()'>
                     <i class='fa fa-window-close' aria-hidden='true'></i>
                   </div>";
 
-            foreach ($this->toDump as $dumpLine) {
-                echo "<p<strong>Dumped from : {$dumpLine['caller_file']}</strong></p>";
-                var_dump($dumpLine['data']);
+                foreach ($this->toDump as $dumpLine) {
+                    echo "<p<strong>Dumped from : {$dumpLine['caller_file']}</strong></p>";
+                    var_dump($dumpLine['data']);
+                }
+                echo "</pre>";
             }
-            echo "</pre>";
         }
     }
 
@@ -210,17 +210,17 @@ class MainController
         ]);
 
         if (empty($this->sGlob->getSesAll() === false)) {
-            // Current user info.
+            // Current user info
             (empty($this->sGlob->getSes('userid')) === false) ?
                 $this->twig->addGlobal('userid', $this->sGlob->getSes('userid')) :
                 $this->twig->addGlobal('userid', null);
 
-            // Current User Object.
+            // Current User Object
             (empty($this->sGlob->getSes('userobj')) === false) ?
                 $this->twig->addGlobal('userobj', $this->sGlob->getSes('userobj')) :
                 $this->twig->addGlobal('userobj', null);
 
-            // Owner info displayed in the header to all visitors.
+            // Owner info displayed in the header to all visitors
             empty($this->sGlob->getSes('ownerinfo')) === false ?
                 $this->twig->addGlobal('ownerinfo', $this->sGlob->getSes('ownerinfo')) :
                 $this->twig->addGlobal('ownerinfo', null);

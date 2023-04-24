@@ -74,8 +74,10 @@ class FileModel extends Connection
 
     /**
      * Delete a file from the database based on its id
+     * @param int $fileId
+     * @return bool|null
      */
-    public function deleteFileById(int $fileId)
+    public function deleteFileById(int $fileId): bool|null
     {
         $sql = "DELETE FROM file WHERE id = ?";
         return $this->delete($sql, [$fileId]);

@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Exception;
+
 /**
  * Represents a response object.
  * Used to return a response with a status (true if error, false if success), a message and a result (if success).
@@ -51,7 +53,7 @@ class Res
      * @param string $msg
      * @return $this
      */
-    public function ko(string $type, string $msg): self
+    public function ko(string $type, string $msg, Exception $exception = null): self
     {
         $this->err = true;
         $this->msg[$type] = $msg;
@@ -66,7 +68,7 @@ class Res
      * @param mixed $result
      * @return self
      */
-    public function ok(string $type, string $msg, mixed $result): self
+    public function ok(string $type, string $msg, mixed $result = null): self
     {
         $this->msg[$type] = $msg;
         $this->result[$type] = $result;

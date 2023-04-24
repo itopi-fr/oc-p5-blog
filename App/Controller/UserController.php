@@ -67,12 +67,13 @@ class UserController extends MainController
         if (empty($sessUserId) === false) {
             $userId = $sessUserId;
         }
-//        empty($sessUserId) === false ? $userId = $sessUserId : $userId = null;
 
         $this->sGlob->setSes('userobj', null);
-        if ($userId === null) {
+        if ($userId !== null) {
             $this->sGlob->setSes('userobj', $this->userModel->getUserById($sessUserId));
         }
+
+        $this->dump($this->sGlob->getSes('userobj'));
 
         // ------------------------------------------------------------------------------------------- user/inscription.
         if ($userAction === 'inscription') {

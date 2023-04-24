@@ -8,6 +8,7 @@ class SuperGlobals
     private array $sgSes;
     private array $sgPost;
     private array $sgFiles;
+    private array $sgServer;
 
 
     /**
@@ -116,6 +117,26 @@ class SuperGlobals
 
 
     /**
+     * Get all $_SERVER variables
+     * @return array|null
+     */
+    public function getServerAll(): array|null
+    {
+        return $this->sgServer;
+    }
+
+
+    /**
+     * Get a specific $_SERVER variable
+     * @param string $varName
+     * @return string|null
+     */
+    public function getServer(string $varName): string|null
+    {
+        return $this->sgServer[$varName] ?? null;
+    }
+
+    /**
      * Function to define superglobals for use locally.
      * We do not automatically unset the superglobals after
      * defining them, since they might be used by other code.
@@ -128,6 +149,7 @@ class SuperGlobals
         $this->sgSes = (isset($_SESSION)) ? $_SESSION : null;
         $this->sgPost = (isset($_POST)) ? $_POST : null;
         $this->sgFiles = (isset($_FILES)) ? $_FILES : null;
+        $this->sgServer = (isset($_SERVER)) ? $_SERVER : null;
     }
 
 

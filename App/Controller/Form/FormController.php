@@ -274,8 +274,7 @@ class FormController extends MainController
 
 
     /**
-     * Treats a file and returns a File object
-     * TODO : A check, le retour array
+     * Treats a file and returns a Res containing a File object
      * @param $posted_file
      * @param $file_type
      * @return Res
@@ -285,11 +284,11 @@ class FormController extends MainController
         try {
             $posted_file = $this->buildFileDestPath($posted_file, $file_type);
             $fileCtrl = new FileController();
-            $uploadedFile = $fileCtrl->uploadFile($posted_file);
+            $uploadedFile = $fileCtrl->uploadFile($posted_file)->getResult()['upload-file'];
             $insertedFileId = $fileCtrl->insertFile($uploadedFile);
             $this->res->ok('treat-file', 'treat-file-ok-upl-and-ins', $fileCtrl->getFileById($insertedFileId));
         } catch (Exception $e) {
-            $this->res->ko('treat-file', $e->getMessage());
+            $this->res->ko('treat-file', 'treat-file-ko', $e);
         }
         return $this->res;
     }

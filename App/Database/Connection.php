@@ -171,7 +171,7 @@ class Connection
      * @return bool|null
      * @throws PDOException
      */
-    protected function delete(string $statement, array $data): bool | null
+    protected function delete(string $statement, array $data): bool|null
     {
         try {
             $req = $this->connect()->prepare($statement);

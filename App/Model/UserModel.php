@@ -41,8 +41,11 @@ class UserModel extends Connection
      * @param int $userId
      * @return User|null
      */
-    public function getUserById(int $userId): User|null
+    public function getUserById(int|null $userId): User|null
     {
+        if ($userId === null) {
+            return null;
+        }
 
         $sqlUser = "SELECT * FROM user WHERE id =?";
         $this->user = $this->getSingleAsClass($sqlUser, [$userId], 'App\Entity\User');
