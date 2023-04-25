@@ -10,7 +10,7 @@ class OwnerInfoController
 {
     protected OwnerInfoModel $ownerInfoModel;
     protected OwnerInfo $ownerInfo;
-    protected MainController $mc;
+    protected MainController $mainCtr;
 
 
     /**

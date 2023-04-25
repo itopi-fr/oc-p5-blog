@@ -2,7 +2,6 @@
 
 namespace App\Controller\Form;
 
-
 use App\Entity\Res;
 use App\Model\PostModel;
 
@@ -35,7 +34,6 @@ class FormPostArchive extends FormController
         if ($resArchivePost === null) {
             return $this->res->ko('post-archive', 'post-archive-ko');
         }
-        return $this->res->ok('post-archive', 'post-archive-ok', null);
+        return $this->res->ok('post-archive', 'post-archive-ok');
     }
-
 }

@@ -35,15 +35,15 @@ class FormPostCreate extends FormController
     {
         // -------------------------------------------------------------------- Checks.
         // post-title : checks.
-//        $resCheckPostFieldText = $this->checkPostedText('post-create', 'post-title', 3, 64);
-        $resCheckPostFieldText = $this->checkPostedText(
+//        $resCheckTitle = $this->checkPostedText('post-create', 'post-title', 3, 64);
+        $resCheckTitle = $this->checkPostedText(
             'post-create',
             'post-title',
             3,
             64
         );
-        if ($resCheckPostFieldText->isErr() === true) {
-            return $this->res->ko('post-create', $resCheckPostFieldText->getMsg()['post-create']);
+        if ($resCheckTitle->isErr() === true) {
+            return $this->res->ko('post-create', $resCheckTitle->getMsg()['post-create']);
         }
 
         // post-slug : checks.
@@ -65,10 +65,10 @@ class FormPostCreate extends FormController
         }
 
         // post-content : checks.
-//        $resCheckPostFieldText = $this->checkPostedText('post-create', 'post-content', 3, 10000);
-        $resCheckPostFieldText = $this->checkPostedText('post-create', 'post-content', 3, 10000);
-        if ($resCheckPostFieldText->isErr() === true) {
-            return $this->res->ko('post-create', $resCheckPostFieldText->getMsg()['post-create']);
+//        $resCheckTitle = $this->checkPostedText('post-create', 'post-content', 3, 10000);
+        $resCheckTitle = $this->checkPostedText('post-create', 'post-content', 3, 10000);
+        if ($resCheckTitle->isErr() === true) {
+            return $this->res->ko('post-create', $resCheckTitle->getMsg()['post-create']);
         }
 
         // post-status : checks.
@@ -82,7 +82,7 @@ class FormPostCreate extends FormController
         }
 
         // -------------------------------------------------------------------- Treatments.
-        $this->post->setAuthorId($this->sGlob->getSes('userid'));
+        $this->post->setAuthorId($this->sGlob->getSes('usrid'));
         $this->post->setTitle($this->sGlob->getPost('post-title'));
         $this->post->setSlug($this->sGlob->getPost('post-slug'));
         $this->post->setContent($this->sGlob->getPost('post-content'));
@@ -101,11 +101,11 @@ class FormPostCreate extends FormController
 
             $savedFile = $resTreatFile->getResult()['treat-file'];
             $this->post->setFeatImgFile($savedFile);
-            $this->post->setFeatImgId($savedFile->getId());
+            $this->post->setFeatImgId($savedFile->getFileId());
         }
 
         if ($this->postModel->createPost($this->post) !== null) {
-            $this->res->ok('post-create', 'post-create-ok', null);
+            $this->res->ok('post-create', 'post-create-ok');
         } else {
             $this->res->ko('post-create', 'post-create-ko');
         }

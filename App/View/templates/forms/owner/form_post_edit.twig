@@ -10,7 +10,7 @@
     {% if post %}
 
         {# Form #}
-        <form action="/owner/post-edit/{{ post.getId() }}" method="POST" enctype="multipart/form-data" class="row form-general">
+        <form action="/owner/post-edit/{{ post.getPostId() }}" method="POST" enctype="multipart/form-data" class="row form-general">
 
             <div class="col-md-6">
                 <div class="form-group">
@@ -47,7 +47,9 @@
                     <input type="radio" id="post-status-pub" name="post-status" value="pub" {% if post.getStatus() == 'pub' %}checked{% endif %}>
                     <label for="post-status-pub">Publié</label><br />
                     <input type="radio" id="post-status-draft" name="post-status" value="draft" {% if post.getStatus() == 'draft' %}checked{% endif %}>
-                    <label for="post-status-draft">Brouillon</label>
+                    <label for="post-status-draft">Brouillon</label><br />
+                    <input type="radio" id="post-status-arch" name="post-status" value="arch" {% if post.getStatus() == 'arch' %}checked{% endif %}>
+                    <label for="post-status-draft">Archivé</label>
                 </div>
 
 

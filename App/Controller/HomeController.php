@@ -23,6 +23,4 @@ class HomeController extends MainController
         $this->twigData['lastposts'] = $this->postModel->getLastPubPosts(2);
         $this->twig->display("pages/page_fo_home.twig", $this->twigData);
     }
-
-
 }

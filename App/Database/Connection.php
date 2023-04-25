@@ -219,6 +219,11 @@ class Connection
         }
     }
 
+    /**
+     * @param string $statement
+     * @param array $data
+     * @return int
+     */
     protected function getMaxId(string $statement, array $data): int
     {
         try {

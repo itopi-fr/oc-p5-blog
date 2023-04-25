@@ -3,11 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Res;
-use Exception;
 
 class ErrorPageController extends MainController
 {
-
     /**
      * Constructor
      */

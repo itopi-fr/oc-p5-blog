@@ -6,12 +6,12 @@ use DateTime;
 
 class Comment
 {
-    private int $id;
-    private int $post_id;
-    private int $author_id;
+    private int $comId;
+    private int $postId;
+    private int $authorId;
     private string $content;
-    private DateTime $created_date;
-    private DateTime $last_update;
+    private DateTime $createdDate;
+    private DateTime $lastUpdate;
 
 
     /**
@@ -21,18 +21,18 @@ class Comment
     /**
      * @return int
      */
-    public function getId(): int
+    public function getComId(): int
     {
-        return $this->id;
+        return $this->comId;
     }
 
     /**
-     * @param int $id
+     * @param int $comId
      * @return void
      */
-    public function setId(int $id): void
+    public function setComId(int $comId): void
     {
-        $this->id = $id;
+        $this->comId = $comId;
     }
 
     /**
@@ -40,16 +40,16 @@ class Comment
      */
     public function getPostId(): int
     {
-        return $this->post_id;
+        return $this->postId;
     }
 
     /**
-     * @param int $post_id
+     * @param int $postId
      * @return void
      */
-    public function setPostId(int $post_id): void
+    public function setPostId(int $postId): void
     {
-        $this->post_id = $post_id;
+        $this->postId = $postId;
     }
 
     /**
@@ -57,16 +57,16 @@ class Comment
      */
     public function getAuthorId(): int
     {
-        return $this->author_id;
+        return $this->authorId;
     }
 
     /**
-     * @param int $author_id
+     * @param int $authorId
      * @return void
      */
-    public function setAuthorId(int $author_id): void
+    public function setAuthorId(int $authorId): void
     {
-        $this->author_id = $author_id;
+        $this->authorId = $authorId;
     }
 
     /**
@@ -91,16 +91,16 @@ class Comment
      */
     public function getCreatedDate(): DateTime
     {
-        return $this->created_date;
+        return $this->createdDate;
     }
 
     /**
-     * @param DateTime $created_date
+     * @param DateTime $createdDate
      * @return void
      */
-    public function setCreatedDate(DateTime $created_date): void
+    public function setCreatedDate(DateTime $createdDate): void
     {
-        $this->created_date = $created_date;
+        $this->createdDate = $createdDate;
     }
 
     /**
@@ -108,15 +108,15 @@ class Comment
      */
     public function getLastUpdate(): DateTime
     {
-        return $this->last_update;
+        return $this->lastUpdate;
     }
 
     /**
-     * @param DateTime $last_update
+     * @param DateTime $lastUpdate
      * @return void
      */
-    public function setLastUpdate(DateTime $last_update): void
+    public function setLastUpdate(DateTime $lastUpdate): void
     {
-        $this->last_update = $last_update;
+        $this->lastUpdate = $lastUpdate;
     }
 }

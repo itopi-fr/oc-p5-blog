@@ -5,8 +5,6 @@ namespace App\Controller\Form;
 use App\Controller\MailController;
 use App\Controller\UserController;
 use App\Entity\Res;
-use App\Entity\Token;
-use App\Entity\User;
 use App\Model\UserModel;
 use App\Controller\TokenController;
 
@@ -17,7 +15,6 @@ class FormUserResetPass extends FormController
     protected UserController $userController;
 //    protected FormUserChangePass $formUserChangePass;
     private Res $res;
-    private User $user;
 
 
     /**
@@ -55,26 +52,27 @@ class FormUserResetPass extends FormController
         }
 
         // Create a new token.
-        $token = $this->tokenController->createUserToken($user->getId(), 'reset-pass')->getResult()['token'];
+        $token = $this->tokenController->createUserToken($user->getUserId(), 'reset-pass')->getResult()['token'];
 
         // Build mail content.
         $mailTo = $user->getEmail();
         $mailToName = $user->getPseudo();
-        $mailSubject = 'Réinitialisation de votre mot de passe';
-        $mailContent = 'Bonjour ' . $user->getPseudo() . ',<br><br>';
-        $mailContent .= 'Une demande de réinitialisation de mot de passe a été demandée pour votre compte.<br />';
-        $mailContent .= 'Si vous n\'en êtes pas à l\'origine, vous pouvez ignorer cet email.<br />';
-        $mailContent .= 'Sinon, veuillez cliquer sur le lien ci-dessous pour mettre à jour votre mot de passe :<br />';
-        $mailContent .= '<a href="http://ocp5blog/user/reset-pass-change/' . $token . '">Changer mon mot de passe</a><br />';
-        $mailContent .= '<br />Cordialement,<br />';
-        $mailContent .= 'L\'équipe de p5blog';
+        $mailSubject = "Réinitialisation de votre mot de passe";
+        $mailContent = "Bonjour " . $user->getPseudo() . ",<br><br>";
+        $mailContent .= "Une demande de réinitialisation de mot de passe a été demandée pour votre compte.<br />";
+        $mailContent .= "Si vous n'en êtes pas à l'origine, vous pouvez ignorer cet email.<br />";
+        $mailContent .= "Sinon, veuillez cliquer sur le lien ci-dessous pour mettre à jour votre mot de passe :<br />";
+        $mailContent .= "<a href='http://ocp5blog/user/reset-pass-change/'" .
+                            $token . ">Changer mon mot de passe</a><br />";
+        $mailContent .= "<br />Cordialement,<br />";
+        $mailContent .= "L'équipe de p5blog";
 
         // TODO : Check result of sendMail before returning ok.
         // Send mail.
         $tokenValidateEmail = new MailController();
         $tokenValidateEmail->sendEmail($mailTo, $mailToName, $mailSubject, $mailContent);
 
-        $this->res->ok('user-reset-pass', 'user-reset-pass-success', null);
+        $this->res->ok('user-reset-pass', 'user-reset-pass-success');
         return $this->res;
     }
 
@@ -101,10 +99,10 @@ class FormUserResetPass extends FormController
             $this->res->ko('user-reset-pass', 'user-reset-pass-ko-user-by-token');
             return $this->res;
         }
-        $this->user = $resUserByToken->getResult()['user-by-token'];
+        $user = $resUserByToken->getResult()['user-by-token'];
 
         // Verify token.
-        $resVerifyToken = $this->tokenController->verifyToken($token->getContent(), $this->user->getEmail());
+        $resVerifyToken = $this->tokenController->verifyToken($token->getContent(), $user->getEmail());
         if ($resVerifyToken->getMsg()['verify-token'] !== 'verify-token-ok') {
             $this->res->ko('user-reset-pass', 'user-reset-pass-ko-verify-token');
             return $this->res;
@@ -112,7 +110,7 @@ class FormUserResetPass extends FormController
 
         // Change password.
         $resChangePass = (new FormUserChangePass())->treatFormChangePass(
-            $this->user,
+            $user,
             '',
             $this->sGlob->getPost('pass-new-a'),
             $this->sGlob->getPost('pass-new-b'),
@@ -125,8 +123,8 @@ class FormUserResetPass extends FormController
         }
 
         // Delete Token.
-        $this->tokenController->deleteTokenById($token->getId());
-        $this->res->ok('user-reset-pass', 'user-reset-pass-ok-updated', null);
+        $this->tokenController->deleteTokenById($token->getTokenId());
+        $this->res->ok('user-reset-pass', 'user-reset-pass-ok-updated');
         $this->redirectTo('/user/connexion', 5);
         return $this->res;
     }

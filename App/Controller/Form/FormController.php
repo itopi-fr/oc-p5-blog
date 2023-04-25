@@ -45,7 +45,7 @@ class FormController extends MainController
      * @param int $file_size_max
      * @return bool
      */
-    protected function checkFileSize($posted_file, $file_size_max)
+    protected function checkFileSize(array $posted_file, int $file_size_max): bool
     {
         return $posted_file['size'] <= $file_size_max;
     }
@@ -55,7 +55,7 @@ class FormController extends MainController
      * @param array $posted_file
      * @return bool
      */
-    protected function checkFileIsImage($posted_file)
+    protected function checkFileIsImage(array $posted_file): bool
     {
         $ext = pathinfo($posted_file['name'], PATHINFO_EXTENSION);
         return in_array($ext, $this->imageExtensions) && in_array($posted_file['type'], $this->imageMimeTypes);
@@ -66,7 +66,7 @@ class FormController extends MainController
      * @param array $posted_file
      * @return bool
      */
-    protected function checkFileIsDoc($posted_file)
+    protected function checkFileIsDoc(array $posted_file): bool
     {
         $ext = pathinfo($posted_file['name'], PATHINFO_EXTENSION);
         return in_array($ext, $this->docExtensions) && in_array($posted_file['type'], $this->docMimeTypes);
@@ -76,8 +76,10 @@ class FormController extends MainController
      * Build destination path of the file based on its type
      * @param array $posted_file
      * @param string $file_type
+     * @return array
+     * @throws Exception
      */
-    protected function buildFileDestPath($posted_file, $file_type)
+    protected function buildFileDestPath(array $posted_file, string $file_type): array
     {
         $posted_file['unique-name'] = pathinfo($posted_file['name'], PATHINFO_FILENAME) . '_' . $this->generateKey(3);
         $posted_file['ext'] = pathinfo($posted_file['name'], PATHINFO_EXTENSION);
@@ -85,20 +87,28 @@ class FormController extends MainController
 
         switch ($file_type) {
             case 'photo':
-                $posted_file['dest-path'] = $base_path . $this->photoPath . $posted_file['unique-name'] . '.' . $posted_file['ext'];
+                $posted_file['dest-path'] = $base_path . $this->photoPath .
+                                            $posted_file['unique-name'] . '.' . $posted_file['ext'];
                 $posted_file['url'] = "/" . $this->photoPath . $posted_file['unique-name'] . '.' . $posted_file['ext'];
                 break;
+
             case 'cv':
-                $posted_file['dest-path'] = $base_path . $this->cvPath . $posted_file['unique-name'] . '.' . $posted_file['ext'];
+                $posted_file['dest-path'] = $base_path . $this->cvPath .
+                                            $posted_file['unique-name'] . '.' . $posted_file['ext'];
                 $posted_file['url'] = "/" . $this->cvPath . $posted_file['unique-name'] . '.' . $posted_file['ext'];
                 break;
+
             case 'avatar':
-                $posted_file['dest-path'] = $base_path . $this->avatarPath . $posted_file['unique-name'] . '.' . $posted_file['ext'];
+                $posted_file['dest-path'] = $base_path . $this->avatarPath .
+                                            $posted_file['unique-name'] . '.' . $posted_file['ext'];
                 $posted_file['url'] = "/" . $this->avatarPath . $posted_file['unique-name'] . '.' . $posted_file['ext'];
                 break;
+
             case 'post-image':
-                $posted_file['dest-path'] = $base_path . $this->postImgPath . $posted_file['unique-name'] . '.' . $posted_file['ext'];
-                $posted_file['url'] = "/" . $this->postImgPath . $posted_file['unique-name'] . '.' . $posted_file['ext'];
+                $posted_file['dest-path'] = $base_path . $this->postImgPath .
+                                            $posted_file['unique-name'] . '.' . $posted_file['ext'];
+                $posted_file['url'] = "/" . $this->postImgPath .
+                                            $posted_file['unique-name'] . '.' . $posted_file['ext'];
                 break;
         }
         return $posted_file;
@@ -108,14 +118,14 @@ class FormController extends MainController
      * Check if a value is unique in database
      * @param string $formName
      * @param string $field
-     * @param int $id
+     * @param int $userId
      * @return Res $res
      */
-    protected function isUnique(string $formName, string $field, int $id): Res
+    protected function isUnique(string $formName, string $field, int $userId): Res
     {
         $data = $this->sGlob->getPost($field);
         $userModel = new UserModel();
-        if (!$userModel->isUnique($data, $field, $id)) {
+        if (!$userModel->isUnique($data, $field, $userId)) {
             $this->res->ko($formName, $formName . '-ko-' . $field . '-not-unique');
         }
         return $this->res;
@@ -227,7 +237,7 @@ class FormController extends MainController
         File $userFileObject,
         int $maxSize
     ): Res {
-        if (($postedFile['error'] == 4) && ($userFileObject->getId() == 0)) {
+        if (($postedFile['error'] == 4) && ($userFileObject->getFileId() == 0)) {
             $this->res->ko($formName, $formName . '-' . $type . '-ko-missing');
         } elseif ($postedFile['error'] == 0) {
             if ($this->checkFileIsImage($postedFile) === false) {
@@ -259,7 +269,7 @@ class FormController extends MainController
         File $userFileObject,
         int $maxSize
     ): Res {
-        if (($postedFile['error'] == 4) && ($userFileObject->getId() == 0)) {
+        if (($postedFile['error'] == 4) && ($userFileObject->getFileId() == 0)) {
             $this->res->ko($formName, $formName . '-' . $type . '-ko-missing');
         } elseif ($postedFile['error'] == 0) {
             if ($this->checkFileIsDoc($postedFile) === false) {

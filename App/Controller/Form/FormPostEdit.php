@@ -26,7 +26,7 @@ class FormPostEdit extends FormController
 
     /**
      * Treats the user part of the form
-     * @param int $post
+     * @param Post $post
      * @return Res
      */
     public function treatFormPost(Post $post): Res
@@ -39,7 +39,7 @@ class FormPostEdit extends FormController
         }
 
         // post-slug : checks.
-        $resCheckPostFieldTextSlug = $this->checkPostedSlug('post-edit', 'post-slug', $post->getId());
+        $resCheckPostFieldTextSlug = $this->checkPostedSlug('post-edit', 'post-slug', $post->getPostId());
         if ($resCheckPostFieldTextSlug->isErr() === true) {
             return $this->res->ko('post-edit', $resCheckPostFieldTextSlug->getMsg()['post-edit']);
         }
@@ -73,7 +73,7 @@ class FormPostEdit extends FormController
 
             $savedFile = $resTreatFile->getResult()['treat-file'];
             $post->setFeatImgFile($savedFile);
-            $post->setFeatImgId($savedFile->getId());
+            $post->setFeatImgId($savedFile->getFileId());
         }
 
         // Post simple fields : treatment.
@@ -93,5 +93,4 @@ class FormPostEdit extends FormController
         }
         return $this->res;
     }
-
 }

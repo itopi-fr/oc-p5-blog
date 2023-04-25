@@ -260,6 +260,4 @@ class MailController extends MainController
     {
         $this->mailMessageHtml = $mailMessageHtml;
     }
-
-
 }

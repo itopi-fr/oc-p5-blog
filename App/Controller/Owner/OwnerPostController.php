@@ -2,7 +2,6 @@
 
 namespace App\Controller\Owner;
 
-use App\Controller\CommentController;
 use App\Controller\Form\FormPostArchive;
 use App\Controller\Form\FormPostCreate;
 use App\Controller\Form\FormPostDelete;
@@ -11,12 +10,9 @@ use App\Controller\PostController;
 use App\Entity\Post;
 use App\Entity\Res;
 use App\Model\PostModel;
-use App\Sys\SuperGlobals;
 
 class OwnerPostController extends OwnerController
 {
-    protected SuperGlobals $sg;
-    protected array $posts;
     protected PostController $postController;
     protected FormPostCreate $formPostCreate;
     protected FormPostEdit $formPostEdit;
@@ -33,7 +29,6 @@ class OwnerPostController extends OwnerController
     public function __construct()
     {
         parent::__construct();
-        $this->sg = new SuperGlobals();
         $this->postController = new PostController();
         $this->postModel = new PostModel();
         $this->postSingle = new Post();
@@ -73,7 +68,7 @@ class OwnerPostController extends OwnerController
         $this->twigData['title'] = "Création d'un article";
 
         // Form Post Create sent => Treat it.
-        if (empty($this->sg->getPost("submit-post-create")) === false) {
+        if (empty($this->sGlob->getPost("submit-post-create")) === false) {
             $this->twigData['result'] = $this->formPostCreate->treatForm();
         }
 
@@ -99,7 +94,7 @@ class OwnerPostController extends OwnerController
         }
 
         // Form Post Edit sent => Treat it.
-        if (empty($this->sg->getPost("submit-post-edit")) === false) {
+        if (empty($this->sGlob->getPost("submit-post-edit")) === false) {
             $this->twigData['result'] = $this->formPostEdit->treatFormPost($resPost->getResult()['post-get']);
         }
 
@@ -124,7 +119,9 @@ class OwnerPostController extends OwnerController
         }
 
         // Delete Post.
-        $this->twigData['result'] = $this->formPostDelete->treatDeletePost($resPost->getResult()['post-get']->getId());
+        $this->twigData['result'] = $this->formPostDelete->treatDeletePost(
+            $resPost->getResult()['post-get']->getPostId()
+        );
 
         // Display.
         $this->managePosts();
@@ -147,7 +144,7 @@ class OwnerPostController extends OwnerController
         }
 
         // Archive Post.
-        $this->twigData['result'] = $this->formPostArchive->treatForm($resPost->getResult()['post-get']->getId());
+        $this->twigData['result'] = $this->formPostArchive->treatForm($resPost->getResult()['post-get']->getPostId());
 
         // Display.
         $this->managePosts();
@@ -172,7 +169,7 @@ class OwnerPostController extends OwnerController
         $post = $this->postController->hydratePostObject($postObject);
 
         // Return the post.
-        if ($post->getId() > 0) {
+        if ($post->getPostId() > 0) {
             $this->res->ok('post-get', 'post-get-ok-get-post', $post);
         } else {
             $this->res->ko('post-get', 'post-get-ko-get-post');

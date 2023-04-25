@@ -36,11 +36,11 @@ class FormUserProfile extends FormController
         // -------------------------------------------------------------------- Checks.
         // user-pseudo : checks.
         $this->res = $this->checkPostedText('user-profile', 'pseudo', 4, 30);
-        $this->res = $this->isUnique('user-profile', 'pseudo', $user->getId());
+        $this->res = $this->isUnique('user-profile', 'pseudo', $user->getUserId());
 
         // user-email : checks.
         $this->res = $this->checkPostedEmail('user-profile', 'email', 6, 254);
-        $this->res = $this->isUnique('user-profile', 'email', $user->getId());
+        $this->res = $this->isUnique('user-profile', 'email', $user->getUserId());
 
         // file-avatar : checks.
         $this->res = $this->checkPostedFileImg(
@@ -63,7 +63,7 @@ class FormUserProfile extends FormController
 
                 $savedFile = $resTreatFile->getResult()['treat-file'];
                 $user->setAvatarFile($savedFile);
-                $user->setAvatarId($savedFile->getId());
+                $user->setAvatarId($savedFile->getFileId());
             }
 
             // User simple fields : treatment.
@@ -79,6 +79,7 @@ class FormUserProfile extends FormController
     }
 
     /**
+     * Treats the user owner part of the form
      * @param UserOwner $userOwner
      * @return Res
      * @throws Exception
@@ -126,7 +127,7 @@ class FormUserProfile extends FormController
                 }
                 $savedCvFile = $resTreatCvFile->getResult()['treat-file'];
                 $userOwner->setCvFile($savedCvFile);
-                $userOwner->setCvFileId($savedCvFile->getId());
+                $userOwner->setCvFileId($savedCvFile->getFileId());
             }
 
             // Owner photo file : treatment.
@@ -140,7 +141,7 @@ class FormUserProfile extends FormController
 
                 $savedPhotoFile = $resTreatPhotoFile->getResult()['treat-file'];
                 $userOwner->setPhotoFile($savedPhotoFile);
-                $userOwner->setPhotoFileId($savedPhotoFile->getId());
+                $userOwner->setPhotoFileId($savedPhotoFile->getFileId());
             }
 
             // Owner update.

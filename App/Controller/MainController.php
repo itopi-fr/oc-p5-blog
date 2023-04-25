@@ -2,11 +2,9 @@
 
 namespace App\Controller;
 
-use App\Model\UserOwnerModel;
 use Exception;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
-use App\Controller\OwnerInfoController;
 use App\Sys\SuperGlobals;
 
 class MainController
@@ -16,8 +14,6 @@ class MainController
     protected UserController $userController;
     public array $toDump = [];
     protected array $twigData = [];
-    private UserOwnerModel $userOwnerModel;
-    private OwnerInfoController $ownerInfoController;
     public SuperGlobals $sGlob;
 
 
@@ -211,9 +207,9 @@ class MainController
 
         if (empty($this->sGlob->getSesAll() === false)) {
             // Current user info
-            (empty($this->sGlob->getSes('userid')) === false) ?
-                $this->twig->addGlobal('userid', $this->sGlob->getSes('userid')) :
-                $this->twig->addGlobal('userid', null);
+            (empty($this->sGlob->getSes('usrid')) === false) ?
+                $this->twig->addGlobal('usrid', $this->sGlob->getSes('usrid')) :
+                $this->twig->addGlobal('usrid', null);
 
             // Current User Object
             (empty($this->sGlob->getSes('userobj')) === false) ?
@@ -225,7 +221,7 @@ class MainController
                 $this->twig->addGlobal('ownerinfo', $this->sGlob->getSes('ownerinfo')) :
                 $this->twig->addGlobal('ownerinfo', null);
         } else {
-            $this->twig->addGlobal('userid', null);
+            $this->twig->addGlobal('usrid', null);
         }
     }
 }

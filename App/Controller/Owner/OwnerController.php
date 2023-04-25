@@ -38,7 +38,6 @@ class OwnerController extends MainController
         if ($pageAction === 'posts') {
             $controller = new OwnerPostController();
             $controller->managePosts();
-            return;
         } elseif ($pageAction === 'post-create') {
             $controller = new OwnerPostController();
             $controller->createPost();
@@ -57,18 +56,14 @@ class OwnerController extends MainController
         } elseif ($pageAction === 'users') {
             $controller = new OwnerUserController();
             $controller->manageUsers();
-            return;
         } else {
             $this->twigData['title'] = 'Administration - Accueil';
             $this->twig->display("pages/owner/page_bo_owner.twig", $this->twigData);
-            return;
         }
     }
 
     /**
      * Check if the user is an owner
-     * @param string $ownerEmail
-     * @param string $ownerPassword
      * @return bool
      */
     public function isOwner(): bool

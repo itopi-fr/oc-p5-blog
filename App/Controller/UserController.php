@@ -9,7 +9,6 @@ use App\Controller\Form\FormUserResetPass;
 use App\Entity\Res;
 use App\Entity\Token;
 use App\Entity\UserOwner;
-use App\Model\MailModel;
 use App\Model\UserOwnerModel;
 use App\Entity\User;
 use App\Model\UserModel;
@@ -54,7 +53,7 @@ class UserController extends MainController
      * @throws RuntimeError
      * @throws SyntaxError
      */
-    public function index($userAction, $userActionData = null)
+    public function index($userAction, $userActionData = null): void
     {
         /*
          * TODO: clean all this mess
@@ -62,7 +61,7 @@ class UserController extends MainController
         */
 
         // --------------------------------------------------------------------------------------------- session / User.
-        $sessUserId = $this->sGlob->getSes('userid');
+        $sessUserId = $this->sGlob->getSes('usrid');
         $userId = null;
         if (empty($sessUserId) === false) {
             $userId = $sessUserId;
@@ -133,6 +132,7 @@ class UserController extends MainController
         // --------------------------------------------------------------------------------------------- user/connexion.
         if ($userAction === 'connexion' && empty($this->sGlob->getPost('submit-connect')) === false) {
             $this->userLogin();
+            $this->redirectTo('/user/profile', 2);
         }
 
         // ------------------------------------------------------------------------------------------------ user/profil.
@@ -141,7 +141,7 @@ class UserController extends MainController
 
             // Owner Profile.
             if ($this->user->getRole() == 'owner') {
-                $this->userOwner = (new UserOwnerModel())->getUserOwnerById($this->user->getId());
+                $this->userOwner = (new UserOwnerModel())->getUserOwnerById($this->user->getUserId());
 
                 if ($userAction == 'profil' && empty($this->sGlob->getPost('submit-owner-profile')) === false) {
                     $this->twigData['result'] = (new FormUserProfile())->treatFormUserOwner($this->userOwner);
@@ -151,7 +151,6 @@ class UserController extends MainController
                     if ($this->twigData['result']->isErr() === false) {
                         $this->refresh();
                     }
-
                 }
                 $this->twigData['owner'] = $this->userOwner;
             }
@@ -211,7 +210,7 @@ class UserController extends MainController
             $this->sGlob->getPost('email'),
             $this->sGlob->getPost('pass')
         );
-        $this->refresh(2);
+        $this->sGlob->setSes('userobj', $user);
     }
 
 
@@ -258,8 +257,8 @@ class UserController extends MainController
         }
 
         // Delete Token.
-        $this->tokenController->deleteTokenById($token->getId());
-        $this->res->ok('user-activate', 'user-activate-account-activated', null);
+        $this->tokenController->deleteTokenById($token->getTokenId());
+        $this->res->ok('user-activate', 'user-activate-account-activated');
         $this->redirectTo('/user/connexion', 5);
         return $this->res;
     }
@@ -267,12 +266,12 @@ class UserController extends MainController
 
     /**
      * Get a user by its id
-     * @param int $id
+     * @param int $userId
      * @return User
      */
-    public function getUserById(int $id): User
+    public function getUserById(int $userId): User
     {
-        return $this->userModel->getUserById($id);
+        return $this->userModel->getUserById($userId);
     }
 
 
@@ -352,7 +351,7 @@ class UserController extends MainController
             return $this->res;
         }
         $this->user = $getUser;
-        $resToken = $this->tokenController->createUserToken($this->user->getId(), 'user-validation');
+        $resToken = $this->tokenController->createUserToken($this->user->getUserId(), 'user-validation');
 
         if ($resToken->isErr() === true) {
             $this->res->ko('reg-create-user', 'Erreur lors de la création du token de validation');
@@ -394,9 +393,9 @@ class UserController extends MainController
         try {
             $result = $this->userModel->updateUser($user);
             if ($result === 0) {
-                $this->res->ok('user-profile', 'user-profile-ok-no-change', null);
+                $this->res->ok('user-profile', 'user-profile-ok-no-change');
             } elseif ($result === 1) {
-                $this->res->ok('user-profile', 'user-profile-ok-updated', null);
+                $this->res->ok('user-profile', 'user-profile-ok-updated');
             } else {
                 $this->res->ko('user-profile', 'user-profile-ko-error');
             }
@@ -418,37 +417,12 @@ class UserController extends MainController
         $result = $this->userOwnerModel->updateUserOwner($userOwner);
 
         if ($result === 0) {
-            $this->res->ok('owner-profile', 'owner-profile-ok-no-change', null);
+            $this->res->ok('owner-profile', 'owner-profile-ok-no-change');
         } elseif ($result === 1) {
-            $this->res->ok('owner-profile', 'owner-profile-ok-updated', null);
+            $this->res->ok('owner-profile', 'owner-profile-ok-updated');
         } else {
             $this->res->ko('owner-profile', 'owner-profile-ko-error');
         }
         return $this->res;
     }
-
-    /*
-    public function getOwnerInfo()
-    {
-        $this->userOwnerModel = new UserOwnerModel();
-        $maxId = $this->userOwnerModel->getLastOwnerId();
-        return $this->userOwnerModel->getUserOwnerById($maxId);
-    }
-
-
-    public function logout()
-    {
-        // Vérifier tokens et supprimer les anciens.
-    }
-
-
-    public function register()
-    {
-    }
-
-    public function resetPassword()
-    {
-        // Vérifier tokens, s'il y en a un de valide, le renvoyer.
-    }
-    */
 }

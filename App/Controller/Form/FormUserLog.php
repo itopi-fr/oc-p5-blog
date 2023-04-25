@@ -14,7 +14,7 @@ class FormUserLog extends FormController
     protected User $user;
     protected UserController $userController;
     protected UserModel $userModel;
-    protected MainController $mc;
+    protected MainController $mainCtr;
 
     /**
      * Constructor
@@ -25,7 +25,7 @@ class FormUserLog extends FormController
         $this->res = new Res();
         $this->userController = new UserController();
         $this->userModel = new UserModel();
-        $this->mc = new MainController();
+        $this->mainCtr = new MainController();
     }
 
     /**
@@ -73,7 +73,7 @@ class FormUserLog extends FormController
             return $this->res;
         }
 
-        $this->res->ok('register', 'register-success-wait-mail-confirm', null);
+        $this->res->ok('register', 'register-success-wait-mail-confirm');
         return $this->res;
     }
 
@@ -92,9 +92,9 @@ class FormUserLog extends FormController
             $this->user = $this->userModel->getUserByEmail($email);
 
             // start session.
-            $this->sGlob->setSes('userid', $this->user->getId());
+            $this->sGlob->setSes('usrid', $this->user->getUserId());
 
-            $this->res->ok('user-login', 'user-login-ok-success', null);
+            $this->res->ok('user-login', 'user-login-ok-success');
         } else {
             $this->res->ko('user-login', 'user-login-ko-no-user-pass-match');
         }
@@ -109,9 +109,7 @@ class FormUserLog extends FormController
     {
         // destroy session.
         session_destroy();
-        $this->res->ok('disconnect', 'Déconnexion réussie', null);
+        $this->res->ok('disconnect', 'Déconnexion réussie');
         return $this->res;
     }
-
-
 }

@@ -6,7 +6,7 @@ use DateTime;
 
 class Token
 {
-    private int $id;
+    private int $token_id;
     private int $user_id;
 
     private string $content;
@@ -20,18 +20,18 @@ class Token
     /**
      * @return int
      */
-    public function getId(): int
+    public function getTokenId(): int
     {
-        return $this->id;
+        return $this->token_id;
     }
 
     /**
-     * @param int $id
+     * @param int $token_id
      * @return void
      */
-    public function setId(int $id): void
+    public function setTokenId(int $token_id): void
     {
-        $this->id = $id;
+        $this->token_id = $token_id;
     }
 
     /**
@@ -101,5 +101,4 @@ class Token
     {
         $this->type = $type;
     }
-
 }

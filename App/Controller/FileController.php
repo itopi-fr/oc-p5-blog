@@ -10,8 +10,8 @@ use Exception;
 class FileController extends MainController
 {
     private Res $res;
-    private array $filePosted;
     private File $file;
+
 
     /**
      * Constructor
@@ -21,6 +21,12 @@ class FileController extends MainController
         parent::__construct();
     }
 
+
+    /**
+     * Builds a file object from a posted file.
+     * @param $filePosted
+     * @return File
+     */
     public function buildFileObjectFromPostedFile($filePosted): File
     {
         $this->res = new Res();
@@ -34,10 +40,16 @@ class FileController extends MainController
     }
 
 
+    /**
+     * Returns a file object based on its id.
+     * @param int $fileId
+     * @return File|bool
+     */
     public function getFileById(int $fileId): File|bool
     {
         return (new FileModel())->getFileById($fileId);
     }
+
 
     /**
      * Upload a file to the file system
@@ -47,18 +59,16 @@ class FileController extends MainController
     public function uploadFile(array $user_file): Res
     {
         try {
-            $this->filePosted = $user_file;
-
-            if (empty($this->filePosted) === true) {
+            if (empty($user_file) === true) {
                 return $this->res->ko('upload-file', 'upload-file-ko-no-file');
             }
 
             // Upload.
-            $uploaded = move_uploaded_file($this->filePosted['tmp_name'], $this->filePosted['dest-path']);
+            $uploaded = move_uploaded_file($user_file['tmp_name'], $user_file['dest-path']);
 
             if ($uploaded === true) {
                 // Build File object.
-                $this->file = $this->buildFileObjectFromPostedFile($this->filePosted);
+                $this->file = $this->buildFileObjectFromPostedFile($user_file);
                 return $this->res->ok('upload-file', 'upload-file-ok', $this->file);
             } else {
                 return $this->res->ko('upload-file', 'upload-file-ko');
@@ -86,8 +96,6 @@ class FileController extends MainController
     public function deleteFileById(int $fileId): Res
     {
         try {
-            $return = [];
-
             // Check that this file exists in the database.
             if (!(new FileModel())->fileExistsById($fileId)) {
                 return $this->res->ko('delete-file', 'delete-file-ko-not-found');
@@ -113,5 +121,4 @@ class FileController extends MainController
             return $this->res->ko('delete-file', 'delete-file-ko-not-deleted', $e);
         }
     }
-
 }

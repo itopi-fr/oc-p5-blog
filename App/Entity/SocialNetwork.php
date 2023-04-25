@@ -9,7 +9,7 @@ namespace App\Entity;
  */
 class SocialNetwork
 {
-    private int $id;
+    private int $snId;
     private string $title;
     private string $imgUrl;
     private string $linkUrl;
@@ -22,18 +22,18 @@ class SocialNetwork
     /**
      * @return int
      */
-    public function getId(): int
+    public function getSnId(): int
     {
-        return $this->id;
+        return $this->snId;
     }
 
     /**
-     * @param int $id
+     * @param int $snId
      * @return SocialNetwork
      */
-    public function setId(int $id): SocialNetwork
+    public function setSnId(int $snId): SocialNetwork
     {
-        $this->id = $id;
+        $this->snId = $snId;
         return $this;
     }
 
@@ -108,5 +108,4 @@ class SocialNetwork
         $this->snOrder = $snOrder;
         return $this;
     }
-
 }

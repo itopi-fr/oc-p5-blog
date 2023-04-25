@@ -34,11 +34,13 @@ class TokenController extends MainController
      * Builds a token object from a database object.
      * @param object $tokenObj
      * @return Token
+     * @throws Exception
      */
     private function buildToken(object $tokenObj): Token
     {
+        $this->dump($tokenObj);
         $this->token = new Token();
-        $this->token->setId($tokenObj->id);
+        $this->token->setTokenId($tokenObj->token_id);
         $this->token->setUserId($tokenObj->user_id);
         $this->token->setContent($tokenObj->content);
         $this->token->setExpirationDate(new DateTime($tokenObj->expiration_date));
@@ -50,6 +52,7 @@ class TokenController extends MainController
      * Returns a token object based on its id or its content.
      * @param int|string $data
      * @return Res
+     * @throws Exception
      */
     public function getToken(int | string $data): Res
     {
@@ -76,6 +79,7 @@ class TokenController extends MainController
     /**
      * Returns all tokens from a given type from a user.
      * @param int $userId
+     * @param string $tokenType
      * @return array|null
      */
     public function getUserTokens(int $userId, string $tokenType): array|null
@@ -88,7 +92,9 @@ class TokenController extends MainController
     /**
      * Returns the last valid token from a user.
      * @param int $userId
+     * @param string $tokenType
      * @return null|Token
+     * @throws Exception
      */
     public function getLastValidTokenByUserId(int $userId, string $tokenType): null|Token
     {
@@ -101,7 +107,12 @@ class TokenController extends MainController
         $user = $this->userModel->getUserById($userId);
 
         foreach ($tokens as $key => $token) {
-            if ($this->verifyToken($token->content,$user->getEmail())->getResult()['token-verify'] !== "verify-token-ok") {
+            if (
+                $this->verifyToken(
+                    $token->content,
+                    $user->getEmail()
+                )->getResult()['token-verify'] !== "verify-token-ok"
+            ) {
                 unset($tokens[$key]);
             }
         }
@@ -124,7 +135,7 @@ class TokenController extends MainController
 
         // If a valid token already exists, do nothing.
         if ($this->getLastValidTokenByUserId($userId, $tokenType) !== null) {
-            $this->res->ok('token', $this->res->showMsg('valid-token-exists'), null);
+            $this->res->ok('token', $this->res->showMsg('valid-token-exists'));
             return $this->res;
         }
 
@@ -137,7 +148,7 @@ class TokenController extends MainController
         if ($this->tokenModel->insertUserToken($this->token)) {
             $this->res->ok('token', $this->res->showMsg('token-created'), $this->token->getContent());
         } else {
-            $this->res->ko('token', $this->res->showMsg('token-not-created'), null);
+            $this->res->ko('token', $this->res->showMsg('token-not-created'));
         }
 
         return $this->res;
@@ -147,6 +158,7 @@ class TokenController extends MainController
     /**
      * Deletes expired tokens from the database based on the user_id
      * @param int $userId
+     * @param string $tokenType
      * @return void
      */
     public function deleteExpiredTokens(int $userId, string $tokenType): void
@@ -207,7 +219,7 @@ class TokenController extends MainController
         }
 
         // Check that User ids match.
-        if ($this->token->getUserId() !== $user->getId()) {
+        if ($this->token->getUserId() !== $user->getUserId()) {
             $this->res->ko('verify-token', 'verify-token-user-id-not-match');
             return $this->res;
         }
@@ -215,7 +227,7 @@ class TokenController extends MainController
         // Check that Token is not expired.
         if ($this->token->getExpirationDate() < new DateTime()) {
             $this->res->ko('verify-token', 'verify-token-expired');
-            $this->deleteTokenById($this->token->getId());
+            $this->deleteTokenById($this->token->getTokenId());
             return $this->res;
         }
 
