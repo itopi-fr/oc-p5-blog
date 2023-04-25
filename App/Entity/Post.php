@@ -6,7 +6,7 @@ use DateTime;
 
 class Post
 {
-    protected int $id;
+    protected int $post_id;
     protected int $author_id;
     protected User $author_user;
     protected int $feat_img_id;
@@ -26,18 +26,18 @@ class Post
     /**
      * @return int
      */
-    public function getId(): int
+    public function getPostId(): int
     {
-        return $this->id;
+        return $this->post_id;
     }
 
     /**
-     * @param int $id
+     * @param int $post_id
      * @return void
      */
-    public function setId(int $id): void
+    public function setPostId(int $post_id): void
     {
-        $this->id = $id;
+        $this->post_id = $post_id;
     }
 
     /**

@@ -2,18 +2,15 @@
 
 namespace App\Model;
 
-use App\Controller\MainController;
 use App\Sys\SuperGlobals;
 use App\Entity\Res;
-use Exception;
 use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception as PHPMailerException;
 
 class MailModel
 {
     protected Res $res;
     private SuperGlobals $superGlobals;
-//    protected MainController $mc;
+//    protected MainController $mainCtr;
 
 
     /**
@@ -23,7 +20,7 @@ class MailModel
     {
         $this->res = new Res();
         $this->superGlobals = new SuperGlobals();
-//        $this->mc = new MainController();
+//        $this->mainCtr = new MainController();
     }
 
     public function sendEmailSmtp(
@@ -39,7 +36,7 @@ class MailModel
         $mail->SMTPSecure = 'ssl';
         $mail->CharSet =    'UTF-8';
         $mail->WordWrap   = 50;
-        $mail->IsHTML(true);
+        $mail->IsHTML();
         $mail->Host =       $this->superGlobals->getEnv('MAIL_HOST');
         $mail->Port =       $this->superGlobals->getEnv('MAIL_PORT');
         $mail->Username =   $this->superGlobals->getEnv('MAIL_USER');
@@ -54,7 +51,7 @@ class MailModel
         $mail->smtpConnect();
 
         if ($mail->send()) {
-            return $this->res->ok('send-email', 'send-email-success', null);
+            return $this->res->ok('send-email', 'send-email-success');
         } else {
             return $this->res->ko('send-email', 'send-email-failed');
         }

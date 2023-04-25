@@ -4,7 +4,7 @@ namespace App\Entity;
 
 class File
 {
-    private int $id = 0;
+    private int $file_id = 0;
     private string $title = '';
     private string $url = '';
     private string $ext = '';
@@ -18,18 +18,18 @@ class File
     /**
      * @return int
      */
-    public function getId(): int
+    public function getFileId(): int
     {
-        return $this->id;
+        return $this->file_id;
     }
 
     /**
-     * @param int $id
+     * @param int $fileId
      * @return void
      */
-    public function setId(int $id): void
+    public function setFileId(int $fileId): void
     {
-        $this->id = $id;
+        $this->file_id = $fileId;
     }
 
     /**
@@ -116,5 +116,4 @@ class File
     {
         $this->size = $size;
     }
-
 }

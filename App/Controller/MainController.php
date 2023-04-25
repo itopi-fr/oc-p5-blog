@@ -2,11 +2,9 @@
 
 namespace App\Controller;
 
-use App\Model\UserOwnerModel;
 use Exception;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
-use App\Controller\OwnerInfoController;
 use App\Sys\SuperGlobals;
 
 class MainController
@@ -16,8 +14,6 @@ class MainController
     protected UserController $userController;
     public array $toDump = [];
     protected array $twigData = [];
-    private UserOwnerModel $userOwnerModel;
-    private OwnerInfoController $ownerInfoController;
     public SuperGlobals $sGlob;
 
 
@@ -32,9 +28,7 @@ class MainController
 
     public function __destruct()
     {
-        if ($this->sGlob->getEnv('MODE_DEV') === 'true') {
-            $this->showDump();
-        }
+        $this->showDump();
     }
 
     /** -------------------------------------------------- Methods -------------------------------------------------  */
@@ -79,9 +73,9 @@ class MainController
      */
     protected function isAlphaNumSpacesPunct(string $value): bool
     {
-        // \pL = Unicode letter (including accents)
-        // \pP = Unicode punctuation
-        // Cf. https://www.php.net/manual/en/regexp.reference.unicode.php
+        // \pL = Unicode letter (including accents).
+        // \pP = Unicode punctuation.
+        // Cf. https://www.php.net/manual/en/regexp.reference.unicode.php.
         return preg_match("/^[\s\pL\pP+]*$/u", $value);
     }
 
@@ -135,25 +129,27 @@ class MainController
      * Should be called using parent::showDump() in the child class
      * in order to have all the dumped variables displayed in the same block.
      * @return void
-     *
-     * TODO : Faire plus propre
      */
     protected function showDump(): void
     {
-        if (empty($this->toDump) === false) {
-            echo "<pre class='vardump abs-center'>";
-            echo "<h1>Debug</h1>";
-            echo "<div class='vardump-close' onclick='this.parentElement.remove()'>
+        if ($this->sGlob->getEnv('MODE_DEV') === 'true') {
+            if (empty($this->toDump) === false) {
+                $html = "<pre class='vardump abs-center'>";
+                $html .= "<h1>Debug</h1>";
+                $html .= "<div class='vardump-close' onclick='this.parentElement.remove()'>
                     <i class='fa fa-window-close' aria-hidden='true'></i>
                   </div>";
 
-            foreach ($this->toDump as $dumpLine) {
-                echo "<p<strong>Dumped from : {$dumpLine['caller_file']}</strong></p>";
-                var_dump($dumpLine['data']);
+                foreach ($this->toDump as $dumpLine) {
+                    $html .= "<p><strong>Dumped from : {$dumpLine['caller_file']}</strong></p>";
+                    $html .= var_export($dumpLine['data'], true);
+                }
+                $html .= "</pre>";
+                $this->twig->display('blocks/block_fo_debug.twig', ['html' => $html]);
             }
-            echo "</pre>";
         }
     }
+
 
     /**
      * Redirects to the given route
@@ -211,9 +207,9 @@ class MainController
 
         if (empty($this->sGlob->getSesAll() === false)) {
             // Current user info
-            (empty($this->sGlob->getSes('userid')) === false) ?
-                $this->twig->addGlobal('userid', $this->sGlob->getSes('userid')) :
-                $this->twig->addGlobal('userid', null);
+            (empty($this->sGlob->getSes('usrid')) === false) ?
+                $this->twig->addGlobal('usrid', $this->sGlob->getSes('usrid')) :
+                $this->twig->addGlobal('usrid', null);
 
             // Current User Object
             (empty($this->sGlob->getSes('userobj')) === false) ?
@@ -225,7 +221,7 @@ class MainController
                 $this->twig->addGlobal('ownerinfo', $this->sGlob->getSes('ownerinfo')) :
                 $this->twig->addGlobal('ownerinfo', null);
         } else {
-            $this->twig->addGlobal('userid', null);
+            $this->twig->addGlobal('usrid', null);
         }
     }
 }

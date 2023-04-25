@@ -153,6 +153,4 @@ class UserOwner extends User
     {
         $this->catch_phrase = $catch_phrase;
     }
-
-
 }

@@ -9,7 +9,6 @@ use App\Controller\Form\FormUserResetPass;
 use App\Entity\Res;
 use App\Entity\Token;
 use App\Entity\UserOwner;
-use App\Model\MailModel;
 use App\Model\UserOwnerModel;
 use App\Entity\User;
 use App\Model\UserModel;
@@ -21,10 +20,15 @@ use Twig\Error\SyntaxError;
 class UserController extends MainController
 {
     protected Res $res;
+
     protected UserModel $userModel;
+
     protected User $user;
+
     protected UserOwner $userOwner;
+
     protected TokenController $tokenController;
+
     protected UserOwnerModel $userOwnerModel;
 
 
@@ -49,23 +53,28 @@ class UserController extends MainController
      * @throws RuntimeError
      * @throws SyntaxError
      */
-    public function index($userAction, $userActionData = null)
+    public function index($userAction, $userActionData = null): void
     {
-        // TODO: clean all this mess
-        //  Distribute actions to separate methods : connect(), disconnect(), register(), etc.
-        // ---------------------------------------------------------------------------------------------- session / User
-        $sessUserId = $this->sGlob->getSes('userid');
-        empty($sessUserId) === false ? $userId = $sessUserId : $userId = null;
+        /*
+         * TODO: clean all this mess
+         *  Distribute actions to separate methods : connect(), disconnect(), register(), etc.
+        */
 
-        if (is_null($userId) === false) {
-            $this->sGlob->setSes('userobj', $this->userModel->getUserById($sessUserId));
-        } else {
-            $this->sGlob->setSes('userobj', null);
+        // --------------------------------------------------------------------------------------------- session / User.
+        $sessUserId = $this->sGlob->getSes('usrid');
+        $userId = null;
+        if (empty($sessUserId) === false) {
+            $userId = $sessUserId;
         }
 
-        // -------------------------------------------------------------------------------------------- user/inscription
+        $this->sGlob->setSes('userobj', null);
+        if ($userId !== null) {
+            $this->sGlob->setSes('userobj', $this->userModel->getUserById($sessUserId));
+        }
+
+        // ------------------------------------------------------------------------------------------- user/inscription.
         if ($userAction === 'inscription') {
-            // Form Register
+            // Form Register.
             if (empty($this->sGlob->getPost('submit-register')) === false) {
                 $this->twigData['result'] = (new FormUserLog())->register(
                     $this->sGlob->getPost('pseudo'),
@@ -75,83 +84,83 @@ class UserController extends MainController
                 );
             }
 
-            // Display page
-            echo $this->twig->render("pages/page_bo_register.twig", $this->twigData);
+            // Display page.
+            $this->twig->display("pages/page_bo_register.twig", $this->twigData);
             return;
         }
 
-        // ----------------------------------------------------------------------------------------- user/activation/123
+        // ---------------------------------------------------------------------------------------- user/activation/123.
         if ($userAction === 'activation') {
             if (isset($userActionData) === true) {
                 $this->twigData['result'] = $this->userActivate($userActionData);
             }
-            // Display page
-            echo $this->twig->render("pages/page_bo_activate.twig", $this->twigData);
+            // Display page.
+            $this->twig->display("pages/page_bo_activate.twig", $this->twigData);
             return;
         }
 
-        // ----------------------------------------------------------------------------------------- user/reset-pass-ask
+        // ---------------------------------------------------------------------------------------- user/reset-pass-ask.
         if ($userAction === 'reset-pass-ask') {
             if (empty($this->sGlob->getPost('submit-reset-pass-ask')) === false) {
-                // Form Reset sent : treat form
+                // Form Reset sent : treat form.
                 $this->twigData['result'] = (new FormUserResetPass())->treatFormPassAsk($this->sGlob->getPost('email'));
             } else {
-                // Form Reset not sent : display form
+                // Form Reset not sent : display form.
                 $this->twigData['display_form_reset_ask'] = 'display';
             }
-            // Display page
-            echo $this->twig->render("pages/page_bo_reset_pass.twig", $this->twigData);
+            // Display page.
+            $this->twig->display("pages/page_bo_reset_pass.twig", $this->twigData);
             return;
         }
 
-        // -------------------------------------------------------------------------------------- user/reset-pass-change
+        // ------------------------------------------------------------------------------------- user/reset-pass-change.
         if ($userAction === 'reset-pass-change') {
-            // Form Reset Change sent : treat form
+            // Form Reset Change sent : treat form.
             if (isset($userActionData) === true && empty($this->sGlob->getPost('submit-reset-pass-change')) === false) {
                 $this->twigData['result'] = (new FormUserResetPass())->treatFormPassChange(
                     $userActionData
                 );
             } else {
-                // Display Form Change Password
+                // Display Form Change Password.
                 $this->twigData['display_form_reset_change'] = 'display';
             }
-            // Display page
-            echo $this->twig->render("pages/page_bo_reset_pass.twig", $this->twigData);
+            // Display page.
+            $this->twig->display("pages/page_bo_reset_pass.twig", $this->twigData);
             return;
         }
 
-        // ---------------------------------------------------------------------------------------------- user/connexion
-        if ($userAction == 'connexion' && empty($this->sGlob->getPost('submit-connect')) === false) {
+        // --------------------------------------------------------------------------------------------- user/connexion.
+        if ($userAction === 'connexion' && empty($this->sGlob->getPost('submit-connect')) === false) {
             $this->userLogin();
+            $this->redirectTo('/user/profile', 2);
         }
 
-        // ------------------------------------------------------------------------------------------------- user/profil
-        if (is_null($userId) === false) {
+        // ------------------------------------------------------------------------------------------------ user/profil.
+        if ($userId !== null) {
             $this->user = $this->userModel->getUserById($userId);
 
-            // Owner Profile
+            // Owner Profile.
             if ($this->user->getRole() == 'owner') {
-                $this->userOwner = (new UserOwnerModel())->getUserOwnerById($this->user->getId());
+                $this->userOwner = (new UserOwnerModel())->getUserOwnerById($this->user->getUserId());
 
                 if ($userAction == 'profil' && empty($this->sGlob->getPost('submit-owner-profile')) === false) {
                     $this->twigData['result'] = (new FormUserProfile())->treatFormUserOwner($this->userOwner);
                     $this->sGlob->setSes('ownerinfo', (new OwnerInfoController())->getOwnerInfo());
 
-                    // Refresh page if no error
+                    // Refresh page if no error.
                     if ($this->twigData['result']->isErr() === false) {
                         $this->refresh();
                     }
-
                 }
                 $this->twigData['owner'] = $this->userOwner;
             }
 
-            // User Profile
+            // User Profile.
             if ($userAction == 'profil' && empty($this->sGlob->getPost('submit-user-profile')) === false) {
                 $this->twigData['result'] = (new FormUserProfile())->treatFormUser($this->user);
             }
 
-            // Form User Change Password
+            // Form User Change Password.
             if ($userAction == 'profil' && empty($this->sGlob->getPost('submit-user-pass')) === false) {
                 $this->twigData['result'] = (new FormUserChangePass())->treatFormChangePass(
                     $this->user,
@@ -162,18 +171,18 @@ class UserController extends MainController
                 );
             }
 
-            // Form Logout
+            // Form Logout.
             if ($userAction === 'deconnexion') {
                 $this->twigData['result'] = (new FormUserLog())->logout();
                 $this->refresh(0);
             }
 
-            // User
+            // User.
             $this->twigData['user'] = $this->user;
         }
 
-        // Display page
-        echo $this->twig->render("pages/page_bo_user.twig", $this->twigData);
+        // Display page.
+        $this->twig->display("pages/page_bo_user.twig", $this->twigData);
     }
 
 
@@ -201,7 +210,7 @@ class UserController extends MainController
             $this->sGlob->getPost('email'),
             $this->sGlob->getPost('pass')
         );
-        $this->refresh(2);
+        $this->sGlob->setSes('userobj', $user);
     }
 
 
@@ -214,7 +223,7 @@ class UserController extends MainController
      */
     public function userActivate(string $tokenContent): Res
     {
-        // Get token
+        // Get token.
         $token = new Token();
         $resToken = $this->tokenController->getToken($tokenContent);
         if ($resToken->isErr() === true) {
@@ -223,7 +232,7 @@ class UserController extends MainController
         }
         $token = $resToken->getResult()['token'];
 
-        // Get User by Token Content
+        // Get User by Token Content.
         $resUserByToken = $this->getUserByToken($token->getContent());
         if ($resUserByToken->isErr() === true) {
             $this->res->ko('user-activate', 'user-activate-ko-user-by-token');
@@ -231,25 +240,25 @@ class UserController extends MainController
         }
         $this->user = $resUserByToken->getResult()['user-by-token'];
 
-        // Verify token
+        // Verify token.
         $resVerifyToken = $this->tokenController->verifyToken($token->getContent(), $this->user->getEmail());
         if ($resVerifyToken->getMsg()['verify-token'] !== 'verify-token-ok') {
             $this->res->ko('user-activate', 'user-activate-ko-verify-token');
             return $this->res;
         }
 
-        // Update User Role
+        // Update User Role.
         $this->user->setRole('user');
 
-        // Update User
-        if (is_null($this->userModel->updateUser($this->user)) === true) {
+        // Update User.
+        if ($this->userModel->updateUser($this->user) === null) {
             $this->res->ko('user-activate', 'user-activate-ko-failed');
             return $this->res;
         }
 
-        // Delete Token
-        $this->tokenController->deleteTokenById($token->getId());
-        $this->res->ok('user-activate', 'user-activate-account-activated', null);
+        // Delete Token.
+        $this->tokenController->deleteTokenById($token->getTokenId());
+        $this->res->ok('user-activate', 'user-activate-account-activated');
         $this->redirectTo('/user/connexion', 5);
         return $this->res;
     }
@@ -257,19 +266,19 @@ class UserController extends MainController
 
     /**
      * Get a user by its id
-     * @param int $id
+     * @param int $userId
      * @return User
      */
-    public function getUserById(int $id): User
+    public function getUserById(int $userId): User
     {
-        return $this->userModel->getUserById($id);
+        return $this->userModel->getUserById($userId);
     }
 
 
     /**
      * Get a user by its email
      * @param string $email
-     * @return User
+     * @return Res
      */
     public function getUserByEmail(string $email): Res
     {
@@ -289,7 +298,7 @@ class UserController extends MainController
      */
     public function getUserByToken(int|string $tokenData): Res
     {
-        // Get Token
+        // Get Token.
         $token = new Token();
         $resToken = $this->tokenController->getToken($tokenData);
         if ($resToken->isErr() === true) {
@@ -298,13 +307,13 @@ class UserController extends MainController
         }
         $token = $resToken->getResult()['token'];
 
-        // Get User
+        // Get User.
         if ($this->userModel->userExistsById($token->getUserId()) === false) {
             $this->res->ko('user-by-token', 'user-by-token-assoc-user-not-found');
             return $this->res;
         }
 
-        // If everything is ok, return the user
+        // If everything is ok, return the user.
         $this->res->ok('user-by-token', 'user-by-token-ok', $this->userModel->getUserById($token->getUserId()));
         return $this->res;
     }
@@ -324,34 +333,34 @@ class UserController extends MainController
         $this->user->setPseudo($pseudo);
         $this->user->setEmail($email);
         $this->user->setPass($password);
-        $this->user->setAvatarId(1); // default avatar
+        $this->user->setAvatarId(1); // default avatar.
         $this->user->setRole('user-validation');
         $resToken = new Res();
 
-        // Create user
+        // Create user.
         $userCreatedId = $this->userModel->createUser($this->user);
-        if (is_null($userCreatedId) === true) {
+        if ($userCreatedId === null) {
             $this->res->ko('reg-create-user', 'reg-create-user-ko');
             return $this->res;
         }
 
-        // Get user
+        // Get user.
         $getUser = $this->userModel->getUserById($userCreatedId);
-        if (is_null($getUser) === true) {
+        if ($getUser === null) {
             $this->res->ko('reg-create-user', 'reg-create-user-ko');
             return $this->res;
         }
         $this->user = $getUser;
-        $resToken = $this->tokenController->createUserToken($this->user->getId(), 'user-validation');
+        $resToken = $this->tokenController->createUserToken($this->user->getUserId(), 'user-validation');
 
         if ($resToken->isErr() === true) {
             $this->res->ko('reg-create-user', 'Erreur lors de la création du token de validation');
             return $this->res;
         }
 
-        // TODO : Create mail templates with twig
+        // TODO : Create mail templates with twig.
 
-        // Build mail content
+        // Build mail content.
         $token = $resToken->getResult()['token'];
         $mailTo = $this->user->getEmail();
         $mailToName = $this->user->getPseudo();
@@ -362,8 +371,9 @@ class UserController extends MainController
         $mailContent .= 'Cordialement,<br />';
         $mailContent .= 'L\'équipe de p5blog';
 
-        // TODO : Check result of sendMail before returning ok
-        // Send mail
+        // TODO : Check result of sendMail before returning ok.
+
+        // Send mail.
         $tokenValidateEmail = new MailController();
         $tokenValidateEmail->sendEmail($mailTo, $mailToName, $mailSubject, $mailContent);
 
@@ -383,9 +393,9 @@ class UserController extends MainController
         try {
             $result = $this->userModel->updateUser($user);
             if ($result === 0) {
-                $this->res->ok('user-profile', 'user-profile-ok-no-change', null);
+                $this->res->ok('user-profile', 'user-profile-ok-no-change');
             } elseif ($result === 1) {
-                $this->res->ok('user-profile', 'user-profile-ok-updated', null);
+                $this->res->ok('user-profile', 'user-profile-ok-updated');
             } else {
                 $this->res->ko('user-profile', 'user-profile-ko-error');
             }
@@ -407,36 +417,12 @@ class UserController extends MainController
         $result = $this->userOwnerModel->updateUserOwner($userOwner);
 
         if ($result === 0) {
-            $this->res->ok('owner-profile', 'owner-profile-ok-no-change', null);
+            $this->res->ok('owner-profile', 'owner-profile-ok-no-change');
         } elseif ($result === 1) {
-            $this->res->ok('owner-profile', 'owner-profile-ok-updated', null);
+            $this->res->ok('owner-profile', 'owner-profile-ok-updated');
         } else {
             $this->res->ko('owner-profile', 'owner-profile-ko-error');
         }
         return $this->res;
-    }
-
-    public function getOwnerInfo()
-    {
-        $this->userOwnerModel = new UserOwnerModel();
-        $maxId = $this->userOwnerModel->getLastOwnerId();
-        return $this->userOwnerModel->getUserOwnerById($maxId);
-    }
-
-
-    public function logout()
-    {
-        // Vérifier tokens et supprimer les anciens
-    }
-
-
-
-    public function register()
-    {
-    }
-
-    public function resetPassword()
-    {
-        // Vérifier tokens, s'il y en a un de valide, le renvoyer
     }
 }

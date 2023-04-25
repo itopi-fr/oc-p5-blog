@@ -1,6 +1,7 @@
 {% use "blocks/block_fo_head.twig" %}
 {% use "blocks/block_fo_nav.twig" %}
 {% use "blocks/block_fo_header.twig" %}
+{% use "blocks/block_fo_debug.twig" %}
 {% use "blocks/block_fo_footer.twig" %}
 {% use "blocks/block_fo_scripts.twig" %}
 
@@ -19,7 +20,7 @@
             {% endblock %}
         </div>
     </div>
-
+    {{ block('debug') }}
     {{ block('footer') }}
     {{ block('scripts') }}
 </body>

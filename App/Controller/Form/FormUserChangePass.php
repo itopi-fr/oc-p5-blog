@@ -28,6 +28,7 @@ class FormUserChangePass extends FormController
      * @param string $old
      * @param string $new
      * @param string $new_confirm
+     * @param bool $reset
      * @return Res
      */
     public function treatFormChangePass(
@@ -40,29 +41,29 @@ class FormUserChangePass extends FormController
         $res = new Res();
 
         if ($reset === false) {
-            // Check if old password is correct
+            // Check if old password is correct.
             if ($this->checkOldPass($user, $old) === false) {
-                $res->ko('user-change-pass', 'user-change-pass-ko-old-pass-incorrect', null);
+                $res->ko('user-change-pass', 'user-change-pass-ko-old-pass-incorrect');
                 return $res;
             }
         }
 
-        // Check if new password and new password confirmation match
+        // Check if new password and new password confirmation match.
         if ($this->checkNewPassMatch($new, $new_confirm) === false) {
-            $res->ko('user-change-pass', 'user-change-pass-ko-pass-dont-match', null);
+            $res->ko('user-change-pass', 'user-change-pass-ko-pass-dont-match');
             return $res;
         }
 
-        // Check if new password format is correct
+        // Check if new password format is correct.
         if ($this->checkPasswordFormat($new) === false) {
-            $res->ko('user-change-pass', 'user-change-pass-ko-wrong-format', null);
+            $res->ko('user-change-pass', 'user-change-pass-ko-wrong-format');
             return $res;
         }
 
-        // If all checks are ok, update the user password
+        // If all checks are ok, update the user password.
         $user->setPass($this->hashPassword($new));
         $this->userModel->updateUser($user);
-        $res->ok('user-change-pass', 'user-change-pass-ok-updated', null);
+        $res->ok('user-change-pass', 'user-change-pass-ok-updated');
         return $res;
     }
 

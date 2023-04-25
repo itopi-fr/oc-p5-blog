@@ -4,7 +4,7 @@ namespace App\Entity;
 
 class User
 {
-    protected int $id;
+    protected int $user_id;
     protected ?int $avatar_id;
     protected File $avatar_file;
     protected string $pseudo;
@@ -14,24 +14,34 @@ class User
 
 
     /**
+     * Constructor
+     */
+    public function __construct()
+    {
+//        $this->userId = 0;
+        $this->avatar_file = new File();
+    }
+
+
+    /**
      * ----------------------------------------------------------------------------------------------- Getters & Setters
      */
 
     /**
      * @return int
      */
-    public function getId(): int
+    public function getUserId(): int
     {
-        return $this->id;
+        return $this->user_id;
     }
 
     /**
-     * @param int $id
+     * @param int $user_id
      * @return void
      */
-    public function setId(int $id): void
+    public function setUserId(int $user_id): void
     {
-        $this->id = $id;
+        $this->user_id = $user_id;
     }
 
     /**
@@ -135,5 +145,4 @@ class User
     {
         $this->role = $role;
     }
-
 }

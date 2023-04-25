@@ -4,8 +4,6 @@ namespace App\Model;
 
 use App\Database\Connection;
 use App\Entity\Token;
-use DateTime;
-use PDOException;
 
 class TokenModel extends Connection
 {
@@ -24,6 +22,7 @@ class TokenModel extends Connection
     /**
      * Returns all tokens for a given user as an array of objects.
      * @param int $userId
+     * @param string $tokenType
      * @return array|null
      */
     public function getUserTokens(int $userId, string $tokenType): array|null
@@ -35,12 +34,12 @@ class TokenModel extends Connection
 
     /**
      * Returns a token object based on its id.
-     * @param int $id
+     * @param int $tokenId
      * @return object|null
      */
     public function getTokenById(int $tokenId): object|null
     {
-        $req = 'SELECT * FROM token WHERE id = ?';
+        $req = 'SELECT * FROM token WHERE token_id = ?';
         $result = $this->getSingleAsObject($req, [$tokenId]);
         return $result ? $result : null;
     }
@@ -75,20 +74,17 @@ class TokenModel extends Connection
         );
         $result = $this->insert($req, $params);
 
-        return (is_null($result) === false) ? $result : null;
+        return ($result !== null) ? $result : null;
     }
 
     /**
      * Deletes a token from the database based on its id.
      * @param int $tokenId
-     * @return bool
+     * @return bool|null
      */
-    public function deleteTokenById(int $tokenId)
+    public function deleteTokenById(int $tokenId): bool|null
     {
-        $req = "DELETE FROM token WHERE id =?";
-        $result = $this->delete($req, [$tokenId]);
-        return $result;
+        $req = "DELETE FROM token WHERE token_id =?";
+        return $this->delete($req, [$tokenId]);
     }
-
-
 }

@@ -2,11 +2,8 @@
 
 namespace App\Model;
 
-use App\Database\Connection;
 use App\Entity\File;
-use App\Entity\User;
 use App\Entity\UserOwner;
-use App\Model\UserModel;
 use Exception;
 
 class UserOwnerModel extends UserModel
@@ -23,27 +20,32 @@ class UserOwnerModel extends UserModel
     }
 
 
-    public function getUserOwnerById($userOwnerId)
+    /**
+     * Returns a user owner object based on its id.
+     * @param $userOwnerId
+     * @return UserOwner
+     */
+    public function getUserOwnerById($userOwnerId): UserOwner
     {
-        $sqlOwner = "SELECT * FROM user_owner_infos o INNER JOIN user u ON o.user_id = u.id WHERE u.id =?";
+        $sqlOwner = "SELECT * FROM user_owner_infos o INNER JOIN user u ON o.user_id = u.user_id WHERE u.user_id =?";
         $this->owner = $this->getSingleAsClass($sqlOwner, [$userOwnerId], 'App\Entity\UserOwner');
 
         $AvatarModel = new FileModel();
-        if (is_null($this->owner->getAvatarId()) === false) {
+        if ($this->owner->getAvatarId() !== null) {
             $this->owner->setAvatarFile($AvatarModel->getFileById($this->owner->getAvatarId()));
         } else {
             $this->owner->setAvatarFile(new File());
         }
 
         $CvModel = new FileModel();
-        if (is_null($this->owner->getCvFileId()) === false) {
+        if ($this->owner->getCvFileId() !== null) {
             $this->owner->setCvFile($CvModel->getFileById($this->owner->getCvFileId()));
         } else {
             $this->owner->setCvFile(new File());
         }
 
         $PhotoModel = new FileModel();
-        if (is_null($this->owner->getPhotoFileId()) === false) {
+        if ($this->owner->getPhotoFileId() !== null) {
             $this->owner->setPhotoFile($PhotoModel->getFileById($this->owner->getPhotoFileId()));
         } else {
             $this->owner->setPhotoFile(new File());
@@ -56,16 +58,16 @@ class UserOwnerModel extends UserModel
     /**
      * Updates user_owner_infos in database
      * @param UserOwner $userOwner
-     * @return int | Exception
+     * @return int
      * @throws Exception
      */
-    public function updateUserOwner(UserOwner $userOwner)
+    public function updateUserOwner(UserOwner $userOwner): int
     {
         if (!$this->userOwnerExistsById($userOwner->getOwnerId())) {
             throw new Exception('Profil inconnu');
         }
 
-        // TODO : Si l'user change de photo ou de CV, supprimer les anciens (fichiers + BDD)
+        // TODO : Si l'user change de photo ou de CV, supprimer les anciens (fichiers + BDD).
 
         $sql = 'UPDATE user_owner_infos SET 
                             photo_file_id=?, 
@@ -85,7 +87,12 @@ class UserOwnerModel extends UserModel
         ]);
     }
 
-    public function userOwnerExistsById($userOwnerId)
+    /**
+     * Checks if a user owner exists in database.
+     * @param int $userOwnerId
+     * @return bool
+     */
+    public function userOwnerExistsById(int $userOwnerId): bool
     {
         $sql = "SELECT EXISTS(SELECT * FROM user_owner_infos WHERE owner_id = ?)";
         return $this->exists($sql, [$userOwnerId]);

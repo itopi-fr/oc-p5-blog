@@ -2,7 +2,6 @@
 
 namespace App\Model;
 
-
 use App\Controller\MainController;
 use App\Database\Connection;
 use App\Entity\File;
@@ -10,8 +9,7 @@ use Exception;
 
 class FileModel extends Connection
 {
-
-    private MainController $mc;
+    private MainController $mainCtr;
 
 
     /**
@@ -20,7 +18,7 @@ class FileModel extends Connection
     public function __construct()
     {
         parent::__construct();
-        $this->mc = new MainController();
+        $this->mainCtr = new MainController();
     }
 
     /**
@@ -30,21 +28,19 @@ class FileModel extends Connection
      */
     public function fileExistsById(int $fileId): bool
     {
-        $sql = "SELECT EXISTS(SELECT * FROM file WHERE id = ?)";
-        $res = $this->exists($sql, [$fileId]);
-        return $res;
+        $sql = "SELECT EXISTS(SELECT * FROM file WHERE file_id = ?)";
+        return $this->exists($sql, [$fileId]);
     }
 
     /**
      * Returns a File instance based on its id
      * @param int $fileId
-     * @return File
+     * @return File|null
      */
     public function getFileById(int $fileId): File|null
     {
-        $sql = "SELECT * FROM file WHERE id =?";
-        $result = $this->getSingleAsFile($sql, [$fileId]);
-        return $result;
+        $sql = "SELECT * FROM file WHERE file_id =?";
+        return $this->getSingleAsFile($sql, [$fileId]);
     }
 
     /**
@@ -65,20 +61,21 @@ class FileModel extends Connection
                 'size' => $file->getSize()
             ];
             $result = $this->insert($sql, $params);
-            return (is_null($result) === false) ? $result : null;
+            return ($result !== null) ? $result : null;
         } catch (Exception $e) {
-            $this->mc->dump($e);
+            $this->mainCtr->dump($e);
             return null;
         }
     }
 
     /**
      * Delete a file from the database based on its id
+     * @param int $fileId
+     * @return bool|null
      */
-    public function deleteFileById(int $fileId)
+    public function deleteFileById(int $fileId): bool|null
     {
-        $sql = "DELETE FROM file WHERE id = ?";
+        $sql = "DELETE FROM file WHERE file_id = ?";
         return $this->delete($sql, [$fileId]);
     }
-
 }

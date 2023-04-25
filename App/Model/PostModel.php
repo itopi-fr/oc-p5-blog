@@ -49,7 +49,7 @@ class PostModel extends Connection
      */
     public function postExistsById(int $postId): bool
     {
-        $req = "SELECT * FROM post WHERE id = ?";
+        $req = "SELECT * FROM post WHERE post_id = ?";
         $result = $this->getSingleAsObject($req, [$postId]);
         return (bool)$result;
     }
@@ -62,7 +62,7 @@ class PostModel extends Connection
      */
     public function getPostById(string $postId): object|null
     {
-        $req = "SELECT * FROM post WHERE id = ?";
+        $req = "SELECT * FROM post WHERE post_id = ?";
         $result = $this->getSingleAsObject($req, [$postId]);
         return $result ? $result : null;
     }
@@ -83,11 +83,12 @@ class PostModel extends Connection
     /**
      * Check that a post exists providing its slug
      * @param string $postSlug
+     * @param int $postId
      * @return bool
      */
     public function postSlugAlreadyExists(string $postSlug, int $postId): bool
     {
-        $sql = "SELECT EXISTS(SELECT * FROM post WHERE slug = ? AND id != ?)";
+        $sql = "SELECT EXISTS(SELECT * FROM post WHERE slug = ? AND post_id != ?)";
         return $this->exists($sql, [$postSlug, $postId]);
     }
 
@@ -139,12 +140,12 @@ class PostModel extends Connection
      */
     public function updatePost(Post $post): int|null
     {
-        if ($this->postExistsById($post->getId()) === false) {
+        if ($this->postExistsById($post->getPostId()) === false) {
             return null;
         }
 
-        // TODO: add dates
-        $sql = 'UPDATE post SET title = ?, slug = ?, content = ?, last_update = ?, status = ? WHERE id = ?';
+        // TODO: add dates.
+        $sql = 'UPDATE post SET title = ?, slug = ?, content = ?, last_update = ?, status = ? WHERE post_id = ?';
         return $this->update(
             $sql,
             [
@@ -153,7 +154,7 @@ class PostModel extends Connection
                 $post->getContent(),
                 $post->getLastUpdate()->format('Y-m-d H:i:s'),
                 $post->getStatus(),
-                $post->getId()
+                $post->getPostId()
             ]
         );
     }
@@ -170,7 +171,7 @@ class PostModel extends Connection
             return null;
         }
 
-        $sql = 'DELETE FROM post WHERE id = ?';
+        $sql = 'DELETE FROM post WHERE post_id = ?';
         return $this->delete($sql, [$postId]);
     }
 
@@ -186,7 +187,7 @@ class PostModel extends Connection
             return null;
         }
 
-        $sql = 'UPDATE post SET status = "arch" WHERE id = ?';
+        $sql = 'UPDATE post SET status = "arch" WHERE post_id = ?';
         return $this->update($sql, [$postId]);
     }
 }

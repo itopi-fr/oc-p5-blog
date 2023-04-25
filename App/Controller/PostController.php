@@ -2,11 +2,11 @@
 
 namespace App\Controller;
 
-use App\Entity\File;
 use App\Entity\Post;
 use App\Entity\Res;
 use App\Model\PostModel;
 use DateTime;
+use Exception;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
@@ -17,7 +17,6 @@ class PostController extends MainController
     protected array $posts;
     protected PostModel $postModel;
     protected Post $postSingle;
-    protected FileController $fileController;
 
 
     /**
@@ -37,6 +36,7 @@ class PostController extends MainController
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
+     * @throws Exception
      */
     public function index(): void
     {
@@ -44,20 +44,20 @@ class PostController extends MainController
 
         if ($resPosts === null) {
             $this->twigData['posts'] = null;
-            echo  $this->twig->render("pages/page_fo_posts.twig", $this->twigData);
+            $this->twig->display("pages/page_fo_posts.twig", $this->twigData);
             return;
         } else {
             $this->posts = $resPosts;
         }
 
-        // Build each post object
+        // Build each post object.
         foreach ($this->posts as $key => $post) {
             $this->posts[$key] = $this->hydratePostObject($post);
         }
 
-        // Display
+        // Display.
         $this->twigData['posts'] = $this->posts;
-        echo  $this->twig->render("pages/page_fo_posts.twig", $this->twigData);
+        $this->twig->display("pages/page_fo_posts.twig", $this->twigData);
     }
 
 
@@ -73,7 +73,7 @@ class PostController extends MainController
         if ($resUpdate === null) {
             return $this->res->ko('post-update', 'post-update-ko');
         }
-        return $this->res->ok('post-update', 'post-update-ok', null);
+        return $this->res->ok('post-update', 'post-update-ok');
     }
 
 
@@ -88,7 +88,7 @@ class PostController extends MainController
         if ($resArchivePost === null) {
             return $this->res->ko('post-archive', 'post-archive-ko');
         }
-        return $this->res->ok('post-archive', 'post-archive-ok', null);
+        return $this->res->ok('post-archive', 'post-archive-ok');
     }
 
 
@@ -104,7 +104,7 @@ class PostController extends MainController
         if ($resDeletePost === null) {
             return $this->res->ko('post-delete', 'post-delete-ko');
         }
-        return $this->res->ok('post-delete', 'post-delete-ok', null);
+        return $this->res->ok('post-delete', 'post-delete-ok');
     }
 
     /**
@@ -113,20 +113,20 @@ class PostController extends MainController
      */
     public function single($postSlug): void
     {
-        // Check if the post exists
+        // Check if the post exists.
         if ($this->postModel->postExistsBySlug($postSlug) === false) {
             $this->res->ko('post-single', "post-single-ko-not-exists");
-            echo  $this->twig->render("pages/page_fo_error.twig", $this->twigData);
+            $this->twig->display("pages/page_fo_error.twig", $this->twigData);
             return;
         }
 
-        // Build the Post object
+        // Build the Post object.
         $postObject = $this->postModel->getPostBySlug($postSlug);
         $this->postSingle = $this->hydratePostObject($postObject);
 
-        // Display
+        // Display.
         $this->twigData['post'] = $this->postSingle;
-        echo  $this->twig->render("pages/page_fo_post_single.twig", $this->twigData);
+        $this->twig->display("pages/page_fo_post_single.twig", $this->twigData);
     }
 
 
@@ -134,14 +134,15 @@ class PostController extends MainController
      * Hydrate the Post class object with the data from a post standard object
      *
      * @param object $postObject
-     * @return void
+     * @return Post
+     * @throws Exception
      */
     public function hydratePostObject(object $postObject): Post
     {
         $fileController = new FileController();
         $post = new Post();
 
-        $post->setId($postObject->id);
+        $post->setPostId($postObject->post_id);
         $post->setAuthorId($postObject->author_id);
         $post->setFeatImgId($postObject->feat_img_id);
         $post->setFeatImgFile($fileController->getFileById($postObject->feat_img_id));

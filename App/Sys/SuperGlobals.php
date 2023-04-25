@@ -6,8 +6,10 @@ class SuperGlobals
 {
     private array $sgEnv;
     private array $sgSes;
+    private array $sgGet;
     private array $sgPost;
     private array $sgFiles;
+    private array $sgServer;
 
 
     /**
@@ -74,6 +76,27 @@ class SuperGlobals
 
 
     /**
+     * Get all $_GET variables
+     * @return array|null
+     */
+    public function getGetAll(): array|null
+    {
+        return $this->sgGet;
+    }
+
+
+    /**
+     * Get a specific $_GET variable
+     * @param string $varName
+     * @return string|null
+     */
+    public function getGet(string $varName): string|null
+    {
+        return $this->sgGet[$varName] ?? null;
+    }
+
+
+    /**
      * Get all $_POST variables
      * @return array|null
      */
@@ -116,18 +139,38 @@ class SuperGlobals
 
 
     /**
+     * Get all $_SERVER variables
+     * @return array|null
+     */
+    public function getServerAll(): array|null
+    {
+        return $this->sgServer;
+    }
+
+
+    /**
+     * Get a specific $_SERVER variable
+     * @param string $varName
+     * @return string|null
+     */
+    public function getServer(string $varName): string|null
+    {
+        return $this->sgServer[$varName] ?? null;
+    }
+
+    /**
      * Function to define superglobals for use locally.
-     * We do not automatically unset the superglobals after
-     * defining them, since they might be used by other code.
      *
      * @return void
      */
     private function defineSg(): void
     {
-        $this->sgEnv = (isset($_ENV)) ? $_ENV : null;
-        $this->sgSes = (isset($_SESSION)) ? $_SESSION : null;
-        $this->sgPost = (isset($_POST)) ? $_POST : null;
-        $this->sgFiles = (isset($_FILES)) ? $_FILES : null;
+        $this->sgEnv = (isset($_ENV) === true) ? $_ENV : null;
+        $this->sgSes = (isset($_SESSION) === true) ? $_SESSION : null;
+        $this->sgGet = (isset($_GET) === true) ? $_GET : null;
+        $this->sgPost = (isset($_POST) === true) ? $_POST : null;
+        $this->sgFiles = (isset($_FILES) === true) ? $_FILES : null;
+        $this->sgServer = (isset($_SERVER) === true) ? $_SERVER : null;
     }
 
 

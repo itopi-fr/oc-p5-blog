@@ -21,8 +21,6 @@ class HomeController extends MainController
     public function index()
     {
         $this->twigData['lastposts'] = $this->postModel->getLastPubPosts(2);
-        echo  $this->twig->render("pages/page_fo_home.twig", $this->twigData);
+        $this->twig->display("pages/page_fo_home.twig", $this->twigData);
     }
-
-
 }

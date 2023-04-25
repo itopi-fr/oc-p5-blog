@@ -33,26 +33,26 @@ class FormPostCreate extends FormController
      */
     public function treatForm(): Res
     {
-        // -------------------------------------------------------------------- Checks
-        // post-title : checks
-//        $resCheckPostFieldText = $this->checkPostedText('post-create', 'post-title', 3, 64);
-        $resCheckPostFieldText = $this->checkPostedText(
+        // -------------------------------------------------------------------- Checks.
+        // post-title : checks.
+//        $resCheckTitle = $this->checkPostedText('post-create', 'post-title', 3, 64);
+        $resCheckTitle = $this->checkPostedText(
             'post-create',
             'post-title',
             3,
             64
         );
-        if ($resCheckPostFieldText->isErr() === true) {
-            return $this->res->ko('post-create', $resCheckPostFieldText->getMsg()['post-create']);
+        if ($resCheckTitle->isErr() === true) {
+            return $this->res->ko('post-create', $resCheckTitle->getMsg()['post-create']);
         }
 
-        // post-slug : checks
+        // post-slug : checks.
         $resCheckPostFieldTextSlug = $this->checkPostedSlug('post-create', 'post-slug', -1);
         if ($resCheckPostFieldTextSlug->isErr() === true) {
             return $this->res->ko('post-create', $resCheckPostFieldTextSlug->getMsg()['post-create']);
         }
 
-        // post-image (File) : checks
+        // post-image (File) : checks.
         $resCheckPostedFileImg = $this->checkPostedFileImg(
             'post-create',
             'post-image',
@@ -64,14 +64,14 @@ class FormPostCreate extends FormController
             return $this->res->ko('post-create', $resCheckPostedFileImg->getMsg()['post-create']);
         }
 
-        // post-content : checks
-//        $resCheckPostFieldText = $this->checkPostedText('post-create', 'post-content', 3, 10000);
-        $resCheckPostFieldText = $this->checkPostedText('post-create', 'post-content', 3, 10000);
-        if ($resCheckPostFieldText->isErr() === true) {
-            return $this->res->ko('post-create', $resCheckPostFieldText->getMsg()['post-create']);
+        // post-content : checks.
+//        $resCheckTitle = $this->checkPostedText('post-create', 'post-content', 3, 10000);
+        $resCheckTitle = $this->checkPostedText('post-create', 'post-content', 3, 10000);
+        if ($resCheckTitle->isErr() === true) {
+            return $this->res->ko('post-create', $resCheckTitle->getMsg()['post-create']);
         }
 
-        // post-status : checks
+        // post-status : checks.
         $resCheckStatusPostFieldText = $this->checkPostedRadio(
             'post-create',
             'post-status',
@@ -81,8 +81,8 @@ class FormPostCreate extends FormController
             return $this->res->ko('post-create', $resCheckStatusPostFieldText->getMsg()['post-create']);
         }
 
-        // -------------------------------------------------------------------- Treatments
-        $this->post->setAuthorId($this->sGlob->getSes('userid'));
+        // -------------------------------------------------------------------- Treatments.
+        $this->post->setAuthorId($this->sGlob->getSes('usrid'));
         $this->post->setTitle($this->sGlob->getPost('post-title'));
         $this->post->setSlug($this->sGlob->getPost('post-slug'));
         $this->post->setContent($this->sGlob->getPost('post-content'));
@@ -91,7 +91,7 @@ class FormPostCreate extends FormController
         $this->post->setCreationDate(new DateTime());
         $this->post->setLastUpdate(new DateTime());
 
-        // Upload and save the image
+        // Upload and save the image.
         if ($this->sGlob->getFiles('post-image')['error'] === 0) {
             $resTreatFile = $this->treatFile($this->sGlob->getFiles('post-image'), 'post-image');
 
@@ -101,11 +101,11 @@ class FormPostCreate extends FormController
 
             $savedFile = $resTreatFile->getResult()['treat-file'];
             $this->post->setFeatImgFile($savedFile);
-            $this->post->setFeatImgId($savedFile->getId());
+            $this->post->setFeatImgId($savedFile->getFileId());
         }
 
-        if (is_null($this->postModel->createPost($this->post)) === false) {
-            $this->res->ok('post-create', 'post-create-ok', null);
+        if ($this->postModel->createPost($this->post) !== null) {
+            $this->res->ok('post-create', 'post-create-ok');
         } else {
             $this->res->ko('post-create', 'post-create-ko');
         }

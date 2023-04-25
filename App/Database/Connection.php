@@ -49,7 +49,7 @@ class Connection
                     $this->password
                 );
                 $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                $this->conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false); // mysql bug : int converted to string
+                $this->conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false); // mysql bug : int converted to string.
             }
         } catch (PDOException $e) {
             throw new PDOException($e);
@@ -171,7 +171,7 @@ class Connection
      * @return bool|null
      * @throws PDOException
      */
-    protected function delete(string $statement, array $data): bool | null
+    protected function delete(string $statement, array $data): bool|null
     {
         try {
             $req = $this->connect()->prepare($statement);
@@ -219,6 +219,11 @@ class Connection
         }
     }
 
+    /**
+     * @param string $statement
+     * @param array $data
+     * @return int
+     */
     protected function getMaxId(string $statement, array $data): int
     {
         try {

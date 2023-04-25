@@ -5,7 +5,6 @@ namespace App\Model;
 use App\Database\Connection;
 use App\Entity\User;
 use App\Entity\File;
-use App\Entity\Token;
 use Exception;
 
 class UserModel extends Connection
@@ -25,34 +24,36 @@ class UserModel extends Connection
      * Checks if a value is unique in the user table
      * @param string $value
      * @param string $field
-     * @param int $id
+     * @param int $userId
      * @return bool
      */
-    public function isUnique(string $value, string $field, int $id): bool
+    public function isUnique(string $value, string $field, int $userId): bool
     {
-        $sql = "SELECT * FROM user WHERE $field = ? AND id != ?";
-        // Todo: replace by exists()
-        $result = $this->getSingleAsClass($sql, [$value, $id], 'App\Entity\User');
+        $sql = "SELECT * FROM user WHERE $field = ? AND user_id != ?";
+        // TODO: replace by exists().
+        $result = $this->getSingleAsClass($sql, [$value, $userId], 'App\Entity\User');
         return $result === null;
     }
 
     /**
      * Returns a user object based on its id.
-     * @param int $userId
+     * @param int|null $userId
      * @return User|null
      */
-    public function getUserById(int $userId): User|null
+    public function getUserById(int|null $userId): User|null
     {
+        if ($userId === null) {
+            return null;
+        }
 
-        $sqlUser = "SELECT * FROM user WHERE id =?";
+        $sqlUser = "SELECT * FROM user WHERE user_id =?";
         $this->user = $this->getSingleAsClass($sqlUser, [$userId], 'App\Entity\User');
 
         $fileModel = new FileModel();
+        $this->user->setAvatarFile(new File());
 
-        if (is_null($this->user->getAvatarId()) === false) {
+        if ($this->user->getAvatarId() !== null) {
             $this->user->setAvatarFile($fileModel->getFileById($this->user->getAvatarId()));
-        } else {
-            $this->user->setAvatarFile(new File());
         }
         return $this->user;
     }
@@ -68,19 +69,19 @@ class UserModel extends Connection
             $sql = 'SELECT * FROM user WHERE email =?';
             $result = $this->getSingleAsClass($sql, [$userEmail], 'App\Entity\User');
             if ($result === null) {
-                return null; // Return null when no result is found
+                return null; // Return null when no result is found.
             }
             $this->user = $result;
 
             $fileModel = new FileModel();
 
-            if (is_null($this->user->getAvatarId()) === false) {
+            if ($this->user->getAvatarId() !== null) {
                 $this->user->setAvatarFile($fileModel->getFileById($this->user->getAvatarId()));
             } else {
                 $this->user->setAvatarFile(new File());
             }
             return $this->user;
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
             return null;
         }
     }
@@ -114,11 +115,11 @@ class UserModel extends Connection
      */
     public function updateUser(User $user): int|null
     {
-        if ($this->userExistsById($user->getId()) === false) {
+        if ($this->userExistsById($user->getUserId()) === false) {
             return null;
         }
 
-        $sql = 'UPDATE user SET avatar_id=?, pseudo=?, pass=?, email=?, role=? WHERE id=?';
+        $sql = 'UPDATE user SET avatar_id=?, pseudo=?, pass=?, email=?, role=? WHERE user_id=?';
         return $this->update(
             $sql,
             [
@@ -127,7 +128,7 @@ class UserModel extends Connection
                 $user->getPass(),
                 $user->getEmail(),
                 $user->getRole(),
-                $user->getId()
+                $user->getUserId()
             ]
         );
     }
@@ -139,7 +140,7 @@ class UserModel extends Connection
      */
     public function userExistsById(int $userId): bool
     {
-        $sql = "SELECT EXISTS(SELECT * FROM user WHERE id = ?)";
+        $sql = "SELECT EXISTS(SELECT * FROM user WHERE user_id = ?)";
         return $this->exists($sql, [$userId]);
     }
 

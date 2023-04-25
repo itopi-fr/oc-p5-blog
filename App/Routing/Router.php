@@ -15,7 +15,7 @@ use App\Sys\SuperGlobals;
 
 class Router
 {
-    private MainController $mc;
+    private MainController $mainCtr;
 
 
     /**
@@ -36,7 +36,7 @@ class Router
      */
     public function __construct()
     {
-        $this->mc = new MainController();
+        $this->mainCtr = new MainController();
         $this->res = new Res();
         $this->superGlobals = new SuperGlobals();
     }
@@ -46,15 +46,15 @@ class Router
     {
 
         try {
-            // TODO: Revoir ce système de routing (.htaccess)
+            // TODO: Revoir ce système de routing (.htaccess).
 
-            // Extract URL parts
-            $this->urlParts =           explode('/', $_GET['p']);
+            // Extract URL parts.
+            $this->urlParts =           explode('/', $this->superGlobals->getGet('p'));
             $this->pageBase =           (array_key_exists(0, $this->urlParts)) ? $this->urlParts[0] : 'home';
             $this->pageAction =         (array_key_exists(1, $this->urlParts)) ? $this->urlParts[1] : '';
             $this->pageActionParam =    (array_key_exists(2, $this->urlParts)) ? $this->urlParts[2] : '';
 
-            // Owner info
+            // Owner info.
             $sessionOwnerInfo = $this->superGlobals->getSes('ownerinfo');
 
             if ((empty($sessionOwnerInfo) === true) || ($sessionOwnerInfo == null)) {
@@ -63,7 +63,7 @@ class Router
                 $this->superGlobals->setSes('ownerinfo', $ownerInfo);
             }
 
-            // Route
+            // Route.
             switch ($this->pageBase) {
                 case (''):
                     $controller = new HomeController();
@@ -91,20 +91,19 @@ class Router
                     break;
 
                 default:
-                    $this->res->ko('general', "La page demandée n'existe pas");
+                    $this->res->ko('general', "general-ko-page-not-found");
                     $controller = new ErrorPageController();
                     $controller->index($this->res);
                     break;
             }
         } catch (Exception $e) {
-            if ($this->superGlobals->getEnv('MODE_DEV') === 'true') {
-                $this->mc->dump($e);
-            } else {
-                $controller = new ErrorPageController();
-                $this->res->ko('general', $e->getMessage());
-                $controller->index($this->res);
-            }
+            $controller = new ErrorPageController();
+            $this->res->ko('general', 'general-ko-unknown', $e);
+            $controller->index($this->res);
 
+            if ($this->superGlobals->getEnv('MODE_DEV') === 'true') {
+                $this->mainCtr->dump($e);
+            }
         }
     }
 }

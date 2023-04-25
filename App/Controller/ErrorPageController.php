@@ -3,11 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Res;
-use Exception;
 
 class ErrorPageController extends MainController
 {
-
     /**
      * Constructor
      */
@@ -18,7 +16,6 @@ class ErrorPageController extends MainController
     public function index(RES $res)
     {
         $this->twigData['result'] = $res;
-//        var_dump($res);
-        echo  $this->twig->render("pages/page_fo_error.twig", $this->twigData);
+        $this->twig->display("pages/page_fo_error.twig", $this->twigData);
     }
 }

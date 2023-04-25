@@ -34,6 +34,6 @@ class FormPostDelete extends FormController
         if ($resDeletePost->isErr() === true) {
             return $this->res->ko('post-delete', $resDeletePost->getMsg()['post-delete']);
         }
-        return $this->res->ok('post-delete', 'post-delete-ok', null);
+        return $this->res->ok('post-delete', 'post-delete-ok');
     }
 }

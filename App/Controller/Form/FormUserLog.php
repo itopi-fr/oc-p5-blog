@@ -14,7 +14,7 @@ class FormUserLog extends FormController
     protected User $user;
     protected UserController $userController;
     protected UserModel $userModel;
-    protected MainController $mc;
+    protected MainController $mainCtr;
 
     /**
      * Constructor
@@ -25,7 +25,7 @@ class FormUserLog extends FormController
         $this->res = new Res();
         $this->userController = new UserController();
         $this->userModel = new UserModel();
-        $this->mc = new MainController();
+        $this->mainCtr = new MainController();
     }
 
     /**
@@ -39,7 +39,7 @@ class FormUserLog extends FormController
      */
     public function register(string $pseudo, string $email, string $password, string $password2): Res
     {
-        //Checks
+        //Checks.
         if ($password !== $password2) {
             $this->res->ko('register', 'pass-not-match');
             return $this->res;
@@ -60,20 +60,20 @@ class FormUserLog extends FormController
             return $this->res;
         }
 
-        // TODO : Check email and pseudo format
+        // TODO : Check email and pseudo format.
 
-        // hash
+        // hash.
         $password = $this->hashPassword($password);
 
-        // If ok, create user
+        // If ok, create user.
         $createdUser = $this->userController->regCreateUser($pseudo, $email, $password)->getResult()['reg-create-user'];
 
-        if (is_null($createdUser) === true) {
+        if ($createdUser === null) {
             $this->res->ko('register', 'register-fail');
             return $this->res;
         }
 
-        $this->res->ok('register', 'register-success-wait-mail-confirm', null);
+        $this->res->ok('register', 'register-success-wait-mail-confirm');
         return $this->res;
     }
 
@@ -85,16 +85,16 @@ class FormUserLog extends FormController
      */
     public function login(string $email, string $password): Res
     {
-        // hash
+        // hash.
         $password = $this->hashPassword($password);
 
         if ($this->userModel->userExistsByEmailPassword($email, $password)) {
             $this->user = $this->userModel->getUserByEmail($email);
 
-            // start session
-            $this->sGlob->setSes('userid', $this->user->getId());
+            // start session.
+            $this->sGlob->setSes('usrid', $this->user->getUserId());
 
-            $this->res->ok('user-login', 'user-login-ok-success', null);
+            $this->res->ok('user-login', 'user-login-ok-success');
         } else {
             $this->res->ko('user-login', 'user-login-ko-no-user-pass-match');
         }
@@ -107,11 +107,9 @@ class FormUserLog extends FormController
      */
     public function logout(): Res
     {
-        // destroy session
+        // destroy session.
         session_destroy();
-        $this->res->ok('disconnect', 'Déconnexion réussie', null);
+        $this->res->ok('disconnect', 'Déconnexion réussie');
         return $this->res;
     }
-
-
 }

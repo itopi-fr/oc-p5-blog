@@ -25,7 +25,7 @@ class OwnerController extends MainController
      */
     public function index(string $pageAction, string $pageActionParam): void
     {
-        // Check if the user is an owner, if not, redirect to the error page
+        // Check if the user is an owner, if not, redirect to the error page.
         if ($this->isOwner() === false) {
             $this->res->ko('general', "La page demandée n'existe pas");
             $controller = new ErrorPageController();
@@ -33,12 +33,11 @@ class OwnerController extends MainController
             return;
         }
 
-        // TODO : add a check to $pageActionParam
+        // TODO : add a check to $pageActionParam.
 
         if ($pageAction === 'posts') {
             $controller = new OwnerPostController();
             $controller->managePosts();
-            return;
         } elseif ($pageAction === 'post-create') {
             $controller = new OwnerPostController();
             $controller->createPost();
@@ -57,18 +56,14 @@ class OwnerController extends MainController
         } elseif ($pageAction === 'users') {
             $controller = new OwnerUserController();
             $controller->manageUsers();
-            return;
         } else {
             $this->twigData['title'] = 'Administration - Accueil';
-            echo  $this->twig->render("pages/owner/page_bo_owner.twig", $this->twigData);
-            return;
+            $this->twig->display("pages/owner/page_bo_owner.twig", $this->twigData);
         }
     }
 
     /**
      * Check if the user is an owner
-     * @param string $ownerEmail
-     * @param string $ownerPassword
      * @return bool
      */
     public function isOwner(): bool
@@ -78,14 +73,14 @@ class OwnerController extends MainController
         if (empty($sessUserObj) === true) {
             return false;
         }
-        if (is_null($sessUserObj) === true) {
+        if ($sessUserObj === null) {
             return false;
         }
-        // Verify that the user exists
+        // Verify that the user exists.
         if ($this->userModel->userExistsByEmailPassword($sessUserObj->getEmail(), $sessUserObj->getPass()) === false) {
             return false;
         } else {
-            // Verify that the user is an owner
+            // Verify that the user is an owner.
             $user = $this->userModel->getUserByEmail($sessUserObj->getEmail());
             if ($user->getRole() === 'owner') {
                 return true;

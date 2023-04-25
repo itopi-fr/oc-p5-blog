@@ -12,13 +12,13 @@
         {%  for post in posts |slice(0, 10) %}
             <div class="row">
                     <div class="col-2">
-                        <a href="/owner/post-edit/{{ post.getId() }}"><i class="fa-solid fa-pen-to-square"></i></a>
+                        <a href="/owner/post-edit/{{ post.getPostId() }}"><i class="fa-solid fa-pen-to-square"></i></a>
                         &nbsp; | &nbsp;
                         <a href="javascript:void(0)"
-                                id="{{ post.getId() }}"
+                                id="{{ post.getPostId() }}"
                                 data-bs-toggle="modal"
                                 data-bs-target="#post-delete-modal"
-                                data-post-id="{{ post.getId() }}"
+                                data-post-id="{{ post.getPostId() }}"
                                 data-post-title="{{ post.getTitle() }}"
                                 onclick=fillModal(this.id)
                             >
@@ -26,7 +26,7 @@
 
                         </a>
                         &nbsp; | &nbsp;
-                        <a href="/owner/post-archive/{{ post.getId() }}"><i class="fa-solid fa-box-archive"></i></a>
+                        <a href="/owner/post-archive/{{ post.getPostId() }}"><i class="fa-solid fa-box-archive"></i></a>
                     </div>
                     <div class="col-5">{{ post.getTitle() }}</div>
                     <div class="col-1">{{ post.getStatus() }}</div>
@@ -55,7 +55,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="alert" data-bs-dismiss="modal">Annuler</button>
-                    <a id="post-href" href="/owner/post-delete/{{ post.getId() }}" class="alert alert-danger"><i class="fa-solid fa-trash"></i>&nbsp;Supprimer</a>
+                    <a id="post-href" href="/owner/post-delete/{{ post.getPostId() }}" class="alert alert-danger"><i class="fa-solid fa-trash"></i>&nbsp;Supprimer</a>
                 </div>
             </div>
         </div>

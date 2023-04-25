@@ -5,8 +5,8 @@
             <div class="row gx-4 gx-lg-5 justify-content-center">
                 <div class="col-md-10 col-lg-8 col-xl-7">
                     <div class="site-heading">
-                        {% if userid > -1 %}
-                            <div>User Id : {{ userid }}</div>
+                        {% if usrid is not null %}
+                            <div>User Id : {{ usrid }}</div>
                         {% endif %}
 
                         {% if ownerinfo is not null %}
@@ -15,6 +15,8 @@
                             Photo : <img src="{{ ownerinfo.getPhotoFile().getUrl() }}" alt="photo" width="25px" height="25px"><br>
                             <a href="{{ ownerinfo.getCvFile().getUrl() }}" target="_blank">Curriculum Vitae</a><br>
                         {% endif %}
+
+                        {{ userobj.getUserId() }}
 
 
                     </div>
