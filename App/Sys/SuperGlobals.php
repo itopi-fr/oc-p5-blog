@@ -160,19 +160,17 @@ class SuperGlobals
 
     /**
      * Function to define superglobals for use locally.
-     * We do not automatically unset the superglobals after
-     * defining them, since they might be used by other code.
      *
      * @return void
      */
     private function defineSg(): void
     {
-        $this->sgEnv = (isset($_ENV)) ? $_ENV : null;
-        $this->sgSes = (isset($_SESSION)) ? $_SESSION : null;
-        $this->sgGet = (isset($_GET)) ? $_GET : null;
-        $this->sgPost = (isset($_POST)) ? $_POST : null;
-        $this->sgFiles = (isset($_FILES)) ? $_FILES : null;
-        $this->sgServer = (isset($_SERVER)) ? $_SERVER : null;
+        $this->sgEnv = (isset($_ENV) === true) ? $_ENV : null;
+        $this->sgSes = (isset($_SESSION) === true) ? $_SESSION : null;
+        $this->sgGet = (isset($_GET) === true) ? $_GET : null;
+        $this->sgPost = (isset($_POST) === true) ? $_POST : null;
+        $this->sgFiles = (isset($_FILES) === true) ? $_FILES : null;
+        $this->sgServer = (isset($_SERVER) === true) ? $_SERVER : null;
     }
 
 

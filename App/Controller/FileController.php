@@ -40,10 +40,9 @@ class FileController extends MainController
     }
 
     /**
-     * Upload file to the file system
+     * Upload a file to the file system
      * @param array $user_file
-     * @return File
-     * @throws Exception
+     * @return Res
      */
     public function uploadFile(array $user_file): Res
     {
@@ -54,20 +53,54 @@ class FileController extends MainController
                 return $this->res->ko('upload-file', 'upload-file-ko-no-file');
             }
 
-            // Upload.
-            $uploaded = move_uploaded_file($this->filePosted['tmp_name'], $this->filePosted['dest-path']);
+//            if (is_uploaded_file($this->filePosted['tmp_name']) === true) {
+//                copy($this->filePosted['tmp_name'], $this->filePosted['dest-path']);
+//                // Build File object.
+//                $this->file = $this->buildFileObjectFromPostedFile($this->filePosted);
+//                return $this->res->ok('upload-file', 'upload-file-ok', $this->file);
+//            } else {
+//                return $this->res->ko('upload-file', 'upload-file-ko-not-uploaded');
+//            }
 
-            if ($uploaded) {
+            if (is_uploaded_file($this->filePosted['tmp_name'])) {
+                copy($this->filePosted['tmp_name'], $this->filePosted['dest-path']);
                 // Build File object.
                 $this->file = $this->buildFileObjectFromPostedFile($this->filePosted);
                 return $this->res->ok('upload-file', 'upload-file-ok', $this->file);
             } else {
-                return $this->res->ko('upload-file', 'upload-file-ko');
+                return $this->res->ko('upload-file', 'upload-file-ko-not-uploaded');
             }
+
         } catch (Exception $e) {
             return $this->res->ko('upload-file', 'upload-file-ko', $e);
         }
     }
+//    public function uploadFile(array $user_file): Res
+//    {
+//        try {
+//            $this->filePosted = $user_file;
+//
+//            if (empty($this->filePosted) === true) {
+//                return $this->res->ko('upload-file', 'upload-file-ko-no-file');
+//            }
+//
+//            // Upload.
+//            $uploaded = move_uploaded_file($this->filePosted['tmp_name'], $this->filePosted['dest-path']);
+//
+//
+//
+//
+//            if ($uploaded) {
+//                // Build File object.
+//                $this->file = $this->buildFileObjectFromPostedFile($this->filePosted);
+//                return $this->res->ok('upload-file', 'upload-file-ok', $this->file);
+//            } else {
+//                return $this->res->ko('upload-file', 'upload-file-ko');
+//            }
+//        } catch (Exception $e) {
+//            return $this->res->ko('upload-file', 'upload-file-ko', $e);
+//        }
+//    }
 
     /**
      * Insert file in the database
