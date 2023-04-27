@@ -10,6 +10,7 @@ use App\Model\UserModel;
 class OwnerController extends MainController
 {
     private Res $res;
+
     private UserModel $userModel;
 
     public function __construct()
@@ -53,6 +54,12 @@ class OwnerController extends MainController
         } elseif ($pageAction === 'comments') {
             $controller = new OwnerCommentController();
             $controller->manageComments();
+        } elseif ($pageAction === 'comment-validate') {
+            $controller = new OwnerCommentController();
+            $controller->validateComment($pageActionParam);
+        } elseif ($pageAction === 'comment-delete') {
+            $controller = new OwnerCommentController();
+            $controller->deleteComment($pageActionParam);
         } elseif ($pageAction === 'users') {
             $controller = new OwnerUserController();
             $controller->manageUsers();

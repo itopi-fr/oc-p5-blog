@@ -5,18 +5,26 @@ namespace App\Entity;
 class OwnerInfo
 {
     protected int $owner_id;
+
     protected string $first_name = '';
+
     protected string $last_name = '';
+
     protected string $catch_phrase = '';
+
     protected int $photo_file_id = 0;
+
     protected File $photo_file;
+
     protected int $cv_file_id = 0;
+
     protected File $cv_file;
 
 
     /**
      * --------------------------------------------------------------------------------------------------------- Getters
      */
+
 
     /**
      * @return int
@@ -26,6 +34,7 @@ class OwnerInfo
         return $this->owner_id;
     }
 
+
     /**
      * @return string
      */
@@ -33,6 +42,7 @@ class OwnerInfo
     {
         return $this->first_name;
     }
+
 
     /**
      * @return string
@@ -42,6 +52,7 @@ class OwnerInfo
         return $this->last_name;
     }
 
+
     /**
      * @return string
      */
@@ -49,6 +60,7 @@ class OwnerInfo
     {
         return $this->catch_phrase;
     }
+
 
     /**
      * @return int
@@ -58,6 +70,7 @@ class OwnerInfo
         return $this->photo_file_id;
     }
 
+
     /**
      * @return File
      */
@@ -65,6 +78,7 @@ class OwnerInfo
     {
         return $this->photo_file;
     }
+
 
     /**
      * @return int
@@ -74,6 +88,7 @@ class OwnerInfo
         return $this->cv_file_id;
     }
 
+
     /**
      * @return File
      */
@@ -82,9 +97,11 @@ class OwnerInfo
         return $this->cv_file;
     }
 
+
     /**
      * --------------------------------------------------------------------------------------------------------- Setters
      */
+
 
     /**
      * @param int $owner_id
@@ -96,6 +113,7 @@ class OwnerInfo
         return $this;
     }
 
+
     /**
      * @param string $first_name
      * @return OwnerInfo
@@ -105,6 +123,7 @@ class OwnerInfo
         $this->first_name = $first_name;
         return $this;
     }
+
 
     /**
      * @param string $last_name
@@ -116,6 +135,7 @@ class OwnerInfo
         return $this;
     }
 
+
     /**
      * @param string $catch_phrase
      * @return OwnerInfo
@@ -125,6 +145,7 @@ class OwnerInfo
         $this->catch_phrase = $catch_phrase;
         return $this;
     }
+
 
     /**
      * @param int $photo_file_id
@@ -136,6 +157,7 @@ class OwnerInfo
         return $this;
     }
 
+
     /**
      * @param File $photo_file
      * @return OwnerInfo
@@ -145,6 +167,7 @@ class OwnerInfo
         $this->photo_file = $photo_file;
         return $this;
     }
+
 
     /**
      * @param int $cv_file_id
@@ -156,6 +179,7 @@ class OwnerInfo
         return $this;
     }
 
+
     /**
      * @param File $cv_file
      * @return OwnerInfo
@@ -165,4 +189,5 @@ class OwnerInfo
         $this->cv_file = $cv_file;
         return $this;
     }
+
 }

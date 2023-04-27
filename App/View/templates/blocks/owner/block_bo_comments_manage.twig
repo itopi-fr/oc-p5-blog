@@ -1,0 +1,26 @@
+{% block bo_comments_manage %}
+    <section class="row gx-4 gx-lg-5 justify-content-center manage-comments">
+        <div class="row">
+            <div class="col-2"><strong>Actions</strong></div>
+            <div class="col-2"><strong>Auteur</strong></div>
+            <div class="col-4"><strong>Contenu</strong></div>
+            <div class="col-2"><strong>Créé le</strong></div>
+            <div class="col-2"><strong>Statut</strong></div>
+        </div>
+
+        {% for comment in comments |slice(0, 100) %}
+            <div class="row status-{{ comment.getStatus() }}">
+                <div class="col-2">
+                    {% if comment.getStatus() != 'valid' %}
+                        <a href="/owner/comment-validate/{{ comment.getComId() }}"><i class="fa-solid fa-thumbs-up"></i></a>&nbsp; | &nbsp;
+                    {% endif %}
+                    <a href="/owner/comment-delete/{{ comment.getComId() }}"><i class="fa-solid fa-trash"></i></a>
+                </div>
+                <div class="col-2">{{ comment.getAuthorUser().getPseudo() }}</div>
+                <div class="col-4">{{ comment.getContent() }}</div>
+                <div class="col-2">{{ comment.getCreatedDate()|date('d/m/Y') }}</div>
+                <div class="col-2">{{ comment.getStatus() }}</div>
+            </div>
+        {% endfor %}
+    </section>
+{% endblock %}

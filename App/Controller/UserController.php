@@ -6,6 +6,7 @@ use App\Controller\Form\FormUserLog;
 use App\Controller\Form\FormUserChangePass;
 use App\Controller\Form\FormUserProfile;
 use App\Controller\Form\FormUserResetPass;
+use App\Entity\File;
 use App\Entity\Res;
 use App\Entity\Token;
 use App\Entity\UserOwner;
@@ -328,12 +329,13 @@ class UserController extends MainController
      */
     public function regCreateUser(string $pseudo, string $email, string $password): Res
     {
+        // TODO: make the default avatar work.
         $this->res = new Res();
         $this->user = new User();
         $this->user->setPseudo($pseudo);
         $this->user->setEmail($email);
         $this->user->setPass($password);
-        $this->user->setAvatarId(1); // default avatar.
+        $this->user->setAvatarId(1);
         $this->user->setRole('user-validation');
         $resToken = new Res();
 

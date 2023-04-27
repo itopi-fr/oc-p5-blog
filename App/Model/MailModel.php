@@ -9,8 +9,8 @@ use PHPMailer\PHPMailer\PHPMailer;
 class MailModel
 {
     protected Res $res;
+
     private SuperGlobals $superGlobals;
-//    protected MainController $mainCtr;
 
 
     /**
@@ -20,7 +20,6 @@ class MailModel
     {
         $this->res = new Res();
         $this->superGlobals = new SuperGlobals();
-//        $this->mainCtr = new MainController();
     }
 
     public function sendEmailSmtp(

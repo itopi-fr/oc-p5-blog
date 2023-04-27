@@ -9,7 +9,9 @@ use App\Entity\File;
 class OwnerInfoController
 {
     protected OwnerInfoModel $ownerInfoModel;
+
     protected OwnerInfo $ownerInfo;
+
     protected MainController $mainCtr;
 
 

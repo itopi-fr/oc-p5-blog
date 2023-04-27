@@ -38,7 +38,7 @@ label {
   max-height: 75%;
   background-color: #000;
   color: #fff;
-  font-size: 18px;
+  font-size: 14px;
   font-family: monospace;
   padding: 10px;
   top: 100px;
@@ -59,7 +59,7 @@ label {
   position: absolute;
   top: 5px;
   right: 5px;
-  font-size: 20px;
+  font-size: 15px;
   cursor: pointer;
 }
 
@@ -98,7 +98,7 @@ label {
   margin-top: 25px;
 }
 
-/* Owner Manage : Edit Post */
+/* Owner Manage : Posts */
 .form-control.post-title,
 .form-control.post-slug {
   width: 400px;
@@ -115,6 +115,15 @@ label {
 .img-post-edit {
   width: 50%;
   height: auto;
+}
+
+/* Owner Manage : Comments */
+.manage-comments .status-valid {
+  background-color: #edffe4;
+}
+
+.manage-comments .status-wait {
+  background-color: #fff092;
 }
 
 /* Surcharge Starter Theme */

@@ -5,15 +5,22 @@ namespace App\Entity;
 class File
 {
     private int $file_id = 0;
+
     private string $title = '';
+
     private string $url = '';
+
     private string $ext = '';
+
     private string $mime = '';
+
     private float $size = 0.0;
+
 
     /**
      * ----------------------------------------------------------------------------------------------- Getters & Setters
      */
+
 
     /**
      * @return int
@@ -22,6 +29,7 @@ class File
     {
         return $this->file_id;
     }
+
 
     /**
      * @param int $fileId
@@ -32,6 +40,7 @@ class File
         $this->file_id = $fileId;
     }
 
+
     /**
      * @return string
      */
@@ -39,6 +48,7 @@ class File
     {
         return $this->title;
     }
+
 
     /**
      * @param string $title
@@ -49,6 +59,7 @@ class File
         $this->title = $title;
     }
 
+
     /**
      * @return string
      */
@@ -56,6 +67,7 @@ class File
     {
         return $this->url;
     }
+
 
     /**
      * @param string $url
@@ -66,6 +78,7 @@ class File
         $this->url = $url;
     }
 
+
     /**
      * @return string
      */
@@ -73,6 +86,7 @@ class File
     {
         return $this->ext;
     }
+
 
     /**
      * @param string $ext
@@ -83,6 +97,7 @@ class File
         $this->ext = $ext;
     }
 
+
     /**
      * @return string
      */
@@ -90,6 +105,7 @@ class File
     {
         return $this->mime;
     }
+
 
     /**
      * @param string $mime
@@ -100,6 +116,7 @@ class File
         $this->mime = $mime;
     }
 
+
     /**
      * @return float
      */
@@ -107,6 +124,7 @@ class File
     {
         return $this->size;
     }
+
 
     /**
      * @param float $size
@@ -116,4 +134,6 @@ class File
     {
         $this->size = $size;
     }
+
+
 }

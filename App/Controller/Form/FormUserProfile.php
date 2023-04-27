@@ -11,6 +11,7 @@ use Exception;
 class FormUserProfile extends FormController
 {
     private Res $res;
+
     protected UserController $userController;
 
 
@@ -34,15 +35,15 @@ class FormUserProfile extends FormController
     public function treatFormUser(User $user): Res
     {
         // -------------------------------------------------------------------- Checks.
-        // user-pseudo : checks.
+        // User-pseudo : checks.
         $this->res = $this->checkPostedText('user-profile', 'pseudo', 4, 30);
         $this->res = $this->isUnique('user-profile', 'pseudo', $user->getUserId());
 
-        // user-email : checks.
+        // User-email : checks.
         $this->res = $this->checkPostedEmail('user-profile', 'email', 6, 254);
         $this->res = $this->isUnique('user-profile', 'email', $user->getUserId());
 
-        // file-avatar : checks.
+        // File-avatar : checks.
         $this->res = $this->checkPostedFileImg(
             'user-profile',
             'file-avatar',
@@ -78,6 +79,7 @@ class FormUserProfile extends FormController
         return $this->res;
     }
 
+
     /**
      * Treats the user owner part of the form
      * @param UserOwner $userOwner
@@ -92,7 +94,7 @@ class FormUserProfile extends FormController
         $this->res = $this->checkPostedText('owner-profile', 'lastname', 4, 30);
         $this->res = $this->checkPostedText('owner-profile', 'catchphrase', 4, 254);
 
-        // file-cv : checks.
+        // File-cv : checks.
         $this->res = $this->checkPostedFileDoc(
             'owner-profile',
             'file-cv',
@@ -101,7 +103,7 @@ class FormUserProfile extends FormController
             $this->getCvMaxSize()
         );
 
-        // file-photo : checks.
+        // File-photo : checks.
         $this->res = $this->checkPostedFileImg(
             'owner-profile',
             'file-photo',
@@ -151,4 +153,6 @@ class FormUserProfile extends FormController
         }
         return $this->res;
     }
+
+
 }

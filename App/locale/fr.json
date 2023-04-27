@@ -66,7 +66,9 @@
     "post-edit-ko-post-slug-not-unique": "Slug : ce slug est déjà utilisé",
     "post-edit-ko-post-content-not-alpha-num-punct": "Contenu : doit être composé de lettres, chiffres, espaces, ponctuation et sauts de ligne",
     "//post_create": " -------------------------------------------------------------------- post-create",
-    "post-create-ok": "Article créé avec succès"
+    "post-create-ok": "Article créé avec succès",
+    "//form-comment-create": " ---------------------------------------------------- form-comment-create",
+    "form-comment-create-ko-user-not-connected": "Vous devez être connecté pour poster un commentaire"
   },
   "show-type": {
     "general": "Général",
@@ -77,7 +79,8 @@
     "user-change-pass": "Mise à jour du mot de passe",
     "user-reset-pass": "Réinitialisation du mot de passe",
     "post-edit": "Édition d'un article",
-    "post-create": "Nouvel article"
+    "post-create": "Nouvel article",
+    "form-comment-create": "Publication d'un commentaire"
   }
 }
 

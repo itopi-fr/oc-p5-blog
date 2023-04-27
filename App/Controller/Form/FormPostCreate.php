@@ -11,7 +11,9 @@ use DateTime;
 class FormPostCreate extends FormController
 {
     protected Res $res;
+
     protected PostModel $postModel;
+
     protected Post $post;
 
 
@@ -34,8 +36,7 @@ class FormPostCreate extends FormController
     public function treatForm(): Res
     {
         // -------------------------------------------------------------------- Checks.
-        // post-title : checks.
-//        $resCheckTitle = $this->checkPostedText('post-create', 'post-title', 3, 64);
+        // Post-title : checks.
         $resCheckTitle = $this->checkPostedText(
             'post-create',
             'post-title',
@@ -46,13 +47,13 @@ class FormPostCreate extends FormController
             return $this->res->ko('post-create', $resCheckTitle->getMsg()['post-create']);
         }
 
-        // post-slug : checks.
+        // Post-slug : checks.
         $resCheckPostFieldTextSlug = $this->checkPostedSlug('post-create', 'post-slug', -1);
         if ($resCheckPostFieldTextSlug->isErr() === true) {
             return $this->res->ko('post-create', $resCheckPostFieldTextSlug->getMsg()['post-create']);
         }
 
-        // post-image (File) : checks.
+        // Post-image (File) : checks.
         $resCheckPostedFileImg = $this->checkPostedFileImg(
             'post-create',
             'post-image',
@@ -64,14 +65,13 @@ class FormPostCreate extends FormController
             return $this->res->ko('post-create', $resCheckPostedFileImg->getMsg()['post-create']);
         }
 
-        // post-content : checks.
-//        $resCheckTitle = $this->checkPostedText('post-create', 'post-content', 3, 10000);
+        // Post-content : checks.
         $resCheckTitle = $this->checkPostedText('post-create', 'post-content', 3, 10000);
         if ($resCheckTitle->isErr() === true) {
             return $this->res->ko('post-create', $resCheckTitle->getMsg()['post-create']);
         }
 
-        // post-status : checks.
+        // Post-status : checks.
         $resCheckStatusPostFieldText = $this->checkPostedRadio(
             'post-create',
             'post-status',
@@ -111,4 +111,6 @@ class FormPostCreate extends FormController
         }
         return $this->res;
     }
+
+
 }

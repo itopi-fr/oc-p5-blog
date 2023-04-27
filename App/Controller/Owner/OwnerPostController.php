@@ -14,12 +14,19 @@ use App\Model\PostModel;
 class OwnerPostController extends OwnerController
 {
     protected PostController $postController;
+
     protected FormPostCreate $formPostCreate;
+
     protected FormPostEdit $formPostEdit;
+
     protected FormPostDelete $formPostDelete;
+
     protected FormPostArchive $formPostArchive;
+
     protected PostModel $postModel;
+
     protected Post $postSingle;
+
     protected Res $res;
 
 

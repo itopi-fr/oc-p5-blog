@@ -14,7 +14,9 @@ class TokenController extends MainController
     private Res $res;
 
     private Token $token;
+
     private TokenModel $tokenModel;
+
     private UserModel $userModel;
 
 
@@ -231,7 +233,7 @@ class TokenController extends MainController
             return $this->res;
         }
 
-        // if everything is ok.
+        // If everything is ok.
         $this->res->ok('verify-token', 'verify-token-ok', $this->token);
         return $this->res;
     }

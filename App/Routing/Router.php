@@ -2,6 +2,7 @@
 
 namespace App\Routing;
 
+use App\Controller\CommentController;
 use App\Controller\HomeController;
 use App\Controller\ErrorPageController;
 use App\Controller\MainController;
@@ -88,6 +89,11 @@ class Router
                 case ('owner'):
                     $controller = new OwnerController();
                     $controller->index($this->pageAction, $this->pageActionParam);
+                    break;
+
+                case ('comment'):
+                    $controller = new CommentController();
+                    $controller->index($this->pageAction);
                     break;
 
                 default:

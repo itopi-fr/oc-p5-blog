@@ -5,11 +5,17 @@ namespace App\Entity;
 class User
 {
     protected int $user_id;
+
     protected ?int $avatar_id;
+
     protected File $avatar_file;
+
     protected string $pseudo;
+
     protected string $email;
+
     protected string $pass;
+
     protected string $role;
 
 

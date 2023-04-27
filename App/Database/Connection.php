@@ -16,10 +16,15 @@ use App\Controller\MainController;
 class Connection
 {
     private string $host;
+
     private string $dbname;
+
     private string $username;
+
     private string $password;
+
     private ?PDO $conn;
+
     private SuperGlobals $superGlobals;
 
 
@@ -49,7 +54,7 @@ class Connection
                     $this->password
                 );
                 $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                $this->conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false); // mysql bug : int converted to string.
+                $this->conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false); // Mysql bug : int converted to string.
             }
         } catch (PDOException $e) {
             throw new PDOException($e);

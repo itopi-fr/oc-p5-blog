@@ -7,10 +7,15 @@ use DateTime;
 class Token
 {
     private int $token_id;
+
     private int $user_id;
 
+
+
     private string $content;
+
     private DateTime $expiration_date;
+
     private string $type;
 
     /**
