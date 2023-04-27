@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : mar. 25 avr. 2023 à 14:33
+-- Généré le : jeu. 27 avr. 2023 à 07:31
 -- Version du serveur : 8.0.31
 -- Version de PHP : 8.0.13
 
@@ -33,12 +33,30 @@ CREATE TABLE IF NOT EXISTS `comment` (
   post_id int NOT NULL,
   author_id int NOT NULL,
   content varchar(10000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  created_date date NOT NULL,
-  last_update date DEFAULT NULL,
+  created_date datetime NOT NULL,
+  last_update datetime DEFAULT NULL,
+  status varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
   PRIMARY KEY (com_id),
-  UNIQUE KEY post_id (post_id),
-  UNIQUE KEY user_id (author_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  KEY post_id (post_id) USING BTREE,
+  KEY user_id (author_id) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table comment
+--
+
+INSERT INTO comment (com_id, post_id, author_id, content, created_date, last_update, status) VALUES
+(5, 23, 118, 'mon commentaire', '2023-04-25 00:00:00', '2023-04-25 00:00:00', 'wait'),
+(7, 23, 118, 'test', '2023-04-25 00:00:00', NULL, 'valid'),
+(9, 26, 94, 'bla bla\r\n', '2023-04-26 16:03:32', NULL, 'valid'),
+(10, 26, 94, 'test', '2023-04-26 16:21:42', NULL, 'wait'),
+(11, 26, 94, 'test', '2023-04-26 16:40:38', NULL, 'valid'),
+(12, 26, 94, 'test ', '2023-04-26 16:41:59', NULL, 'wait'),
+(13, 26, 94, 'test test', '2023-04-26 16:42:13', NULL, 'valid'),
+(14, 26, 94, 'test 2', '2023-04-26 16:43:06', NULL, 'valid'),
+(15, 26, 94, 'test 2', '2023-04-26 16:43:30', NULL, 'valid'),
+(16, 26, 94, 'test2', '2023-04-26 16:44:14', NULL, 'valid'),
+(18, 25, 118, 'salut', '2023-04-27 06:46:06', NULL, 'valid');
 
 -- --------------------------------------------------------
 
@@ -55,7 +73,7 @@ CREATE TABLE IF NOT EXISTS `file` (
   mime varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
   size int NOT NULL,
   PRIMARY KEY (file_id)
-) ENGINE=InnoDB AUTO_INCREMENT=192 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=194 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table file
@@ -68,7 +86,9 @@ INSERT INTO file (file_id, title, url, ext, mime, size) VALUES
 (161, 'test.jpg', '/public/upload/blog/post/test_a98bc6.jpg', 'jpg', 'image/jpeg', 693),
 (187, 'test.jpg', '/public/upload/owner/test_da38f0.jpg', 'jpg', 'image/jpeg', 693),
 (190, 'test.jpg', '/public/upload/user/test_289012.jpg', 'jpg', 'image/jpeg', 693),
-(191, 'Specimen.pdf', '/public/upload/owner/Specimen_08d5b2.pdf', 'pdf', 'application/pdf', 40766);
+(191, 'Specimen.pdf', '/public/upload/owner/Specimen_08d5b2.pdf', 'pdf', 'application/pdf', 40766),
+(192, 'kara_small.jpg', '/public/upload/user/kara_small_11e346.jpg', 'jpg', 'image/jpeg', 8111),
+(193, 'default-post.jpg', '/public/upload/blog/post/default-post_fd4a1c.jpg', 'jpg', 'image/jpeg', 11571);
 
 -- --------------------------------------------------------
 
@@ -91,17 +111,18 @@ CREATE TABLE IF NOT EXISTS post (
   PRIMARY KEY (post_id),
   KEY author_id (author_id) USING BTREE,
   KEY feat_img_id (feat_img_id) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table post
 --
 
 INSERT INTO post (post_id, author_id, feat_img_id, title, slug, excerpt, content, creation_date, last_update, status) VALUES
-(23, 94, 2, 'Nam viverra commodo lacusd', 'nam-viverra-commodo-lacus', 'Nam viverra commodo lacus. Vestibulum ante ipsum', 'Nam viverra commodo lacus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Mauris ac est sit amet arcu laoreet pellentesque. Integer sollicitudin, dui et tincidunt fermentum, velit purus lobortis metus, vitae tincidunt leo dui at enim. Vestibulum lacus lacus, hendrerit sed egestas vel, sodales vel nibh. Etiam condimentum finibus massa maximus dignissim. Etiam pharetra, mauris sed gravida fermentum, est lacus rutrum augue, eget fermentum tellus urna et ipsum. Donec iaculis, nisi sit amet semper sodales, turpis nisl blandit orci, vulputate cursus mauris diam ac lorem. Duis facilisis est eget fringilla maximus. Suspendisse sit amet libero auctor, pulvinar nulla id, porta nisi.\r\n\r\nFusce sollicitudin lorem a euismod ultrices. Quisque semper viverra sem, sit amet rutrum urna varius nec. Praesent ac turpis pretium, dictum lorem eu, sagittis ex. Donec rhoncus pellentesque metus eu vehicula. Maecenas sit amet est eu augue blandit pellentesque eget vitae lacus. Donec hendrerit nisl ut sapien pulvinar ultrices. Proin ex purus, gravida ut mauris nec, bibendum efficitur leo. Quisque placerat porta tortor quis dictum. Maecenas nec metus non felis maximus ultrices in vel risus. Nunc ultricies ut ex ut ultrices. Nunc quis tortor vitae ex cursus ornare sed ac tortor.\r\n\r\n', '2023-04-06 10:39:39', '2023-04-21 14:40:33', 'arch'),
+(23, 94, 2, 'Nam viverra commodo lacusd', 'nam-viverra-commodo-lacus', 'Nam viverra commodo lacus. Vestibulum ante ipsum', 'Nam viverra commodo lacus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Mauris ac est sit amet arcu laoreet pellentesque. Integer sollicitudin, dui et tincidunt fermentum, velit purus lobortis metus, vitae tincidunt leo dui at enim. Vestibulum lacus lacus, hendrerit sed egestas vel, sodales vel nibh. Etiam condimentum finibus massa maximus dignissim. Etiam pharetra, mauris sed gravida fermentum, est lacus rutrum augue, eget fermentum tellus urna et ipsum. Donec iaculis, nisi sit amet semper sodales, turpis nisl blandit orci, vulputate cursus mauris diam ac lorem. Duis facilisis est eget fringilla maximus. Suspendisse sit amet libero auctor, pulvinar nulla id, porta nisi.\r\n\r\nFusce sollicitudin lorem a euismod ultrices. Quisque semper viverra sem, sit amet rutrum urna varius nec. Praesent ac turpis pretium, dictum lorem eu, sagittis ex. Donec rhoncus pellentesque metus eu vehicula. Maecenas sit amet est eu augue blandit pellentesque eget vitae lacus. Donec hendrerit nisl ut sapien pulvinar ultrices. Proin ex purus, gravida ut mauris nec, bibendum efficitur leo. Quisque placerat porta tortor quis dictum. Maecenas nec metus non felis maximus ultrices in vel risus. Nunc ultricies ut ex ut ultrices. Nunc quis tortor vitae ex cursus ornare sed ac tortor.\r\n\r\n', '2023-04-06 10:39:39', '2023-04-21 14:40:33', 'pub'),
 (25, 94, 2, 'Maecenas feugiat interdum quam', 'maecenas-feugiat-interdum-quam', 'Maecenas feugiat interdum quam, vel dictum mauris elementum at.', 'Maecenas feugiat interdum quam, vel dictum mauris elementum at. Sed ut elementum sem. Mauris in semper tortor. Mauris ante tortor, tincidunt eget rhoncus et, venenatis eget nibh. Aliquam fermentum aliquet magna, a blandit tellus dignissim egestas. Morbi fermentum ornare blandit. Cras gravida lacinia semper. Sed venenatis ipsum ac quam suscipit pulvinar. Praesent blandit, augue et condimentum fringilla, magna nisi sagittis tellus, in posuere ipsum purus vel sem. Proin molestie ligula ex, quis porta ligula porttitor id. Interdum et malesuada fames ac ante ipsum primis in faucibus. Quisque vehicula quam vel dapibus mollis. Sed luctus sed odio sed pharetra. Suspendisse finibus dui vitae sapien consequat, nec ultrices magna convallis. Vestibulum convallis nulla sed sapien vehicula, vitae euismod nibh aliquam.\r\n\r\nFusce sollicitudin lorem a euismod ultrices. Quisque semper viverra sem, sit amet rutrum urna varius nec. Praesent ac turpis pretium, dictum lorem eu, sagittis ex. Donec rhoncus pellentesque metus eu vehicula. Maecenas sit amet est eu augue blandit pellentesque eget vitae lacus. Donec hendrerit nisl ut sapien pulvinar ultrices. Proin ex purus, gravida ut mauris nec, bibendum efficitur leo. Quisque placerat porta tortor quis dictum. Maecenas nec metus non felis maximus ultrices in vel risus. Nunc ultricies ut ex ut ultrices. Nunc quis tortor vitae ex cursus ornare sed ac tortor.\r\n\r\n\r\n\r\n', '2023-03-02 10:39:39', '2023-04-25 13:53:42', 'pub'),
-(26, 94, 157, 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem', 'sed-ut-perspiciatis-unde-omnis-iste-natus', 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium dolor...', 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', '2023-04-20 12:51:50', '2023-04-20 16:07:57', 'draft'),
-(29, 94, 161, 'Titre de l\'article', 'slug-article', 'test...', 'test', '2023-04-20 13:37:51', '2023-04-20 16:07:46', 'arch');
+(26, 94, 157, 'Sed ut perspiciatis unde omnis', 'sed-ut-perspiciatis-unde-omnis-iste-natus', 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium dolor...', 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', '2023-04-20 12:51:50', '2023-04-26 22:44:40', 'pub'),
+(29, 94, 161, 'Titre de l\'article', 'slug-article', 'test...', 'test', '2023-04-20 13:37:51', '2023-04-20 16:07:46', 'arch'),
+(43, 94, 193, 'new art', 'new-art', 'new art...', 'new art', '2023-04-26 11:12:52', '2023-04-26 11:12:52', 'draft');
 
 -- --------------------------------------------------------
 
@@ -135,7 +156,14 @@ CREATE TABLE IF NOT EXISTS token (
   type varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (token_id),
   KEY fk_token_user1_idx (user_id)
-) ENGINE=InnoDB AUTO_INCREMENT=155 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=156 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table token
+--
+
+INSERT INTO token (token_id, user_id, content, expiration_date, type) VALUES
+(155, 119, 'ff3503c6a97104854a59b8a264cf1763249491d9f596417474e84baaa980246c', '2023-04-26 11:31:35', 'user-validation');
 
 -- --------------------------------------------------------
 
@@ -153,15 +181,16 @@ CREATE TABLE IF NOT EXISTS `user` (
   role varchar(15) COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (user_id),
   KEY file_id (avatar_id) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=119 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=120 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table user
 --
 
 INSERT INTO user (user_id, avatar_id, pseudo, pass, email, role) VALUES
-(94, 190, 'ownerrrr', 'dd87c23f8d5c9e464d4d4183e9522f614093e9eff6675c22e5bc150c4b82bfca', 'md@itopi.fr', 'owner'),
-(118, NULL, 'newuser2', 'dd87c23f8d5c9e464d4d4183e9522f614093e9eff6675c22e5bc150c4b82bfca', 'pub@itopi.fr', 'user');
+(94, 192, 'ownerrrr', 'dd87c23f8d5c9e464d4d4183e9522f614093e9eff6675c22e5bc150c4b82bfca', 'md@itopi.fr', 'owner'),
+(118, NULL, 'newuser2', 'dd87c23f8d5c9e464d4d4183e9522f614093e9eff6675c22e5bc150c4b82bfca', 'pub@itopi.fr', 'user'),
+(119, NULL, 'newuser3', 'dd87c23f8d5c9e464d4d4183e9522f614093e9eff6675c22e5bc150c4b82bfca', 'pub2@itopi.fr', 'user-validation');
 
 -- --------------------------------------------------------
 
@@ -194,13 +223,6 @@ INSERT INTO user_owner_infos (owner_id, user_id, photo_file_id, cv_file_id, firs
 --
 -- Contraintes pour les tables déchargées
 --
-
---
--- Contraintes pour la table comment
---
-ALTER TABLE comment
-  ADD CONSTRAINT fk_comment_post1 FOREIGN KEY (post_id) REFERENCES post (post_id),
-  ADD CONSTRAINT fk_comment_user1 FOREIGN KEY (author_id) REFERENCES `user` (user_id);
 
 --
 -- Contraintes pour la table post
