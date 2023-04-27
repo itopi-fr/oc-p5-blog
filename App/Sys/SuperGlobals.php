@@ -5,10 +5,15 @@ namespace App\Sys;
 class SuperGlobals
 {
     private array $sgEnv;
+
     private array $sgSes;
+
     private array $sgGet;
+
     private array $sgPost;
+
     private array $sgFiles;
+
     private array $sgServer;
 
 

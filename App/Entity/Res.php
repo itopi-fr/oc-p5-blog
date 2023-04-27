@@ -27,11 +27,14 @@ use Exception;
 class Res
 {
     private bool $err;
-    private array $msg;
-    private array $result;
-    private array $types;
-    private array $messages;
 
+    private array $msg;
+
+    private array $result;
+
+    private array $types;
+
+    private array $messages;
 
 
     /**

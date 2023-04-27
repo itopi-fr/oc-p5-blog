@@ -11,9 +11,11 @@ use App\Controller\TokenController;
 class FormUserResetPass extends FormController
 {
     private UserModel $userModel;
+
     private TokenController $tokenController;
+
     protected UserController $userController;
-//    protected FormUserChangePass $formUserChangePass;
+
     private Res $res;
 
 

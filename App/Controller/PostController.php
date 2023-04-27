@@ -14,8 +14,11 @@ use Twig\Error\SyntaxError;
 class PostController extends MainController
 {
     protected Res $res;
+
     protected array $posts;
+
     protected PostModel $postModel;
+
     protected Post $postSingle;
 
 
@@ -58,6 +61,22 @@ class PostController extends MainController
         // Display.
         $this->twigData['posts'] = $this->posts;
         $this->twig->display("pages/page_fo_posts.twig", $this->twigData);
+    }
+
+
+    /**
+     * Create a post in the database providing a Post object
+     * @param Post $post
+     * @return Res
+     */
+    public function createPost(Post $post): Res
+    {
+        // TODO: Random image if empty
+        $resCreatePost = $this->postModel->createPost($post);
+        if ($resCreatePost === null) {
+            return $this->res->ko('post-create', 'post-create-ko');
+        }
+        return $this->res->ok('post-create', 'post-create-ok');
     }
 
 
@@ -108,10 +127,11 @@ class PostController extends MainController
     }
 
     /**
-     * @param $postSlug
+     * Get a post from the database providing its slug
+     * @param string $postSlug
      * @return void
      */
-    public function single($postSlug): void
+    public function single(string $postSlug): void
     {
         // Check if the post exists.
         if ($this->postModel->postExistsBySlug($postSlug) === false) {
@@ -123,6 +143,10 @@ class PostController extends MainController
         // Build the Post object.
         $postObject = $this->postModel->getPostBySlug($postSlug);
         $this->postSingle = $this->hydratePostObject($postObject);
+
+        // Get the comments
+        $commentController = new CommentController();
+        $this->postSingle->setComments($commentController->getValidPostComments($this->postSingle->getPostId(), 100));
 
         // Display.
         $this->twigData['post'] = $this->postSingle;

@@ -5,12 +5,19 @@ namespace App\Entity;
 class UserOwner extends User
 {
     private int $owner_id;
+
     private int|null $photo_file_id;
+
     private File $photo_file;
+
     private int|null $cv_file_id;
+
     private File $cv_file;
+
     private string|null $first_name;
+
     private string|null $last_name;
+
     private string|null $catch_phrase;
 
 

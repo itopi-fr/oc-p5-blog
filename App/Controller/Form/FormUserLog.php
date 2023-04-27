@@ -11,10 +11,15 @@ use App\Model\UserModel;
 class FormUserLog extends FormController
 {
     protected Res $res;
+
     protected User $user;
+
     protected UserController $userController;
+
     protected UserModel $userModel;
+
     protected MainController $mainCtr;
+
 
     /**
      * Constructor
@@ -62,7 +67,7 @@ class FormUserLog extends FormController
 
         // TODO : Check email and pseudo format.
 
-        // hash.
+        // Hash.
         $password = $this->hashPassword($password);
 
         // If ok, create user.
@@ -85,13 +90,13 @@ class FormUserLog extends FormController
      */
     public function login(string $email, string $password): Res
     {
-        // hash.
+        // Hash.
         $password = $this->hashPassword($password);
 
         if ($this->userModel->userExistsByEmailPassword($email, $password)) {
             $this->user = $this->userModel->getUserByEmail($email);
 
-            // start session.
+            // Start session.
             $this->sGlob->setSes('usrid', $this->user->getUserId());
 
             $this->res->ok('user-login', 'user-login-ok-success');
@@ -107,7 +112,7 @@ class FormUserLog extends FormController
      */
     public function logout(): Res
     {
-        // destroy session.
+        // Destroy session.
         session_destroy();
         $this->res->ok('disconnect', 'Déconnexion réussie');
         return $this->res;

@@ -8,6 +8,7 @@ use App\Model\PostModel;
 class FormPostArchive extends FormController
 {
     protected Res $res;
+
     protected PostModel $postModel;
 
 

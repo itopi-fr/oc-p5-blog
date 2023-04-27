@@ -10,6 +10,7 @@ use DateTime;
 class FormPostEdit extends FormController
 {
     protected Res $res;
+
     protected postController $postController;
 
 
@@ -32,19 +33,19 @@ class FormPostEdit extends FormController
     public function treatFormPost(Post $post): Res
     {
         // -------------------------------------------------------------------- Checks.
-        // post-title : checks.
+        // Post-title : checks.
         $resCheckPostFieldText = $this->checkPostedText('post-edit', 'post-title', 3, 64);
         if ($resCheckPostFieldText->isErr() === true) {
             return $this->res->ko('post-edit', $resCheckPostFieldText->getMsg()['post-edit']);
         }
 
-        // post-slug : checks.
+        // Post-slug : checks.
         $resCheckPostFieldTextSlug = $this->checkPostedSlug('post-edit', 'post-slug', $post->getPostId());
         if ($resCheckPostFieldTextSlug->isErr() === true) {
             return $this->res->ko('post-edit', $resCheckPostFieldTextSlug->getMsg()['post-edit']);
         }
 
-        // post-image (File) : checks.
+        // Post-image (File) : checks.
         $resCheckPostedFileImg = $this->checkPostedFileImg(
             'post-edit',
             'post-image',
@@ -56,7 +57,7 @@ class FormPostEdit extends FormController
             return $this->res->ko('post-edit', $resCheckPostedFileImg->getMsg()['post-edit']);
         }
 
-        // post-content : checks.
+        // Post-content : checks.
         $resCheckPostFieldTextarea = $this->checkPostedText('post-edit', 'post-content', 3, 10000);
         if ($resCheckPostFieldTextarea->isErr() === true) {
             return $this->res->ko('post-edit', $resCheckPostFieldTextarea->getMsg()['post-edit']);

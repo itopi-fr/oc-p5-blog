@@ -1,5 +1,8 @@
 {% extends "layout.twig" %}
 {% use "blocks/owner/block_bo_owner_menu.twig" %}
+{% use "blocks/owner/block_bo_comments_manage.twig" %}
+
+{% set title = 'Comments' %}
 
 {% block title %}
     {{ title }}
@@ -8,7 +11,5 @@
 {% block content %}
     <h1>{{ title }}</h1>
     {{ block('bo_owner_menu') }}
-    <div class="row">
-        template : comments manage
-    </div>
+    {{ block('bo_comments_manage') }}
 {% endblock %}

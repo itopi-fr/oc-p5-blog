@@ -8,6 +8,7 @@ use App\Entity\Res;
 class FormPostDelete extends FormController
 {
     protected Res $res;
+
     protected postController $postController;
 
 

@@ -7,11 +7,20 @@ use DateTime;
 class Comment
 {
     private int $comId;
+
     private int $postId;
+
     private int $authorId;
+
+    private User $authorUser;
+
     private string $content;
+
     private DateTime $createdDate;
+
     private DateTime $lastUpdate;
+
+    private string $status;
 
 
     /**
@@ -118,5 +127,39 @@ class Comment
     public function setLastUpdate(DateTime $lastUpdate): void
     {
         $this->lastUpdate = $lastUpdate;
+    }
+
+    /**
+     * @return User
+     */
+    public function getAuthorUser(): User
+    {
+        return $this->authorUser;
+    }
+
+    /**
+     * @param User $authorUser
+     * @return Comment
+     */
+    public function setAuthorUser(User $authorUser): void
+    {
+        $this->authorUser = $authorUser;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param string $status
+     * @return void
+     */
+    public function setStatus(string $status): void
+    {
+        $this->status = $status;
     }
 }

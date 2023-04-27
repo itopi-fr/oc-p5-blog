@@ -8,17 +8,29 @@ use App\Model\MailModel;
 class MailController extends MainController
 {
     protected MailModel $mailModel;
+
     protected Res $res;
+
     protected string $smtpHost;
+
     protected int $smtpPort;
+
     protected string $smtpUser;
+
     protected string $smtpPass;
+
     protected string $mailFrom;
+
     protected string $mailFromName;
+
     protected string $mailTo;
+
     protected string $mailToName;
+
     protected string $mailSubject;
+
     protected string $mailMessageRaw;
+
     protected string $mailMessageHtml;
 
 
@@ -30,6 +42,7 @@ class MailController extends MainController
         parent::__construct();
         $this->res = new Res();
     }
+
 
     /**
      * Sends an email using SMTP protocol with authentification (SSL)
@@ -71,6 +84,7 @@ class MailController extends MainController
         $this->mailModel->sendEmailSmtp($to, $toName, $subject, $messageHtml, $this->generateRawMessage($messageHtml));
     }
 
+
     /**
      * Generates a raw message from a HTML message
      * @param string $messageHtml
@@ -83,6 +97,7 @@ class MailController extends MainController
         $this->mailMessageRaw = strip_tags($messageRaw);
         return $this->mailMessageRaw;
     }
+
 
     /** --------------------------------------------- Getters & Setters --------------------------------------------- */
     /**

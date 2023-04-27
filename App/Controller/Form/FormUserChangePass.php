@@ -20,6 +20,7 @@ class FormUserChangePass extends FormController
         $this->userModel = new UserModel();
     }
 
+
     /**
      * Treats the form to change the user password.
      * Checks if the old password is correct, if the new password and the new password confirmation match,
@@ -90,4 +91,6 @@ class FormUserChangePass extends FormController
     {
         return $new === $new_confirm;
     }
+
+
 }

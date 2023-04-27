@@ -7,17 +7,32 @@ use DateTime;
 class Post
 {
     protected int $post_id;
+
     protected int $author_id;
+
     protected User $author_user;
+
     protected int $feat_img_id;
+
     protected File $feat_img_file;
+
     protected string $title;
+
     protected string $slug;
+
     protected string $excerpt;
+
     protected string $content;
+
     protected DateTime $creation_date;
+
     protected DateTime $last_update;
+
     protected string $status;
+
+    protected array $comments;
+
+
 
     /**
      * ----------------------------------------------------------------------------------------------- Getters & Setters
@@ -225,5 +240,24 @@ class Post
     public function setStatus(string $status): void
     {
         $this->status = $status;
+    }
+
+
+    /**
+     * @return array
+     */
+    public function getComments(): array
+    {
+        return $this->comments;
+    }
+
+
+    /**
+     * @param array $comments
+     * @return void
+     */
+    public function setComments(array $comments): void
+    {
+        $this->comments = $comments;
     }
 }

@@ -10,9 +10,13 @@ namespace App\Entity;
 class SocialNetwork
 {
     private int $snId;
+
     private string $title;
+
     private string $imgUrl;
+
     private string $linkUrl;
+
     private int $snOrder;
 
 

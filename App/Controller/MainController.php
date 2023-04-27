@@ -10,10 +10,15 @@ use App\Sys\SuperGlobals;
 class MainController
 {
     protected FilesystemLoader $loader;
+
     protected Environment $twig;
+
     protected UserController $userController;
+
     public array $toDump = [];
+
     protected array $twigData = [];
+
     public SuperGlobals $sGlob;
 
 
@@ -76,7 +81,7 @@ class MainController
         // \pL = Unicode letter (including accents).
         // \pP = Unicode punctuation.
         // Cf. https://www.php.net/manual/en/regexp.reference.unicode.php.
-        return preg_match("/^[\s\pL\pP+]*$/u", $value);
+        return preg_match("/^[\w\s\pL\pP+]*$/u", $value);
     }
 
     /**
@@ -157,7 +162,7 @@ class MainController
      * @param int $delay
      * @return void
      */
-    protected function redirectTo(string $route, int $delay): void
+    protected function redirectTo(string $route, int $delay = 5): void
     {
         header("Refresh:$delay; url=$route");
     }
