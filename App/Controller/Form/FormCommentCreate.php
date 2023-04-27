@@ -3,23 +3,40 @@
 namespace App\Controller\Form;
 
 use App\Controller\CommentController;
-use App\Controller\PostController;
 use App\Entity\Comment;
 use App\Entity\Res;
 use App\Model\CommentModel;
 use App\Model\PostModel;
 use DateTime;
 
+/**
+ * Class FormCommentCreate - Manage the comment creation form.
+ */
 class FormCommentCreate extends FormController
 {
+    /**
+     * @var Res
+     */
     protected Res $res;
 
+    /**
+     * @var CommentModel
+     */
     protected CommentModel $commentModel;
 
+    /**
+     * @var Comment
+     */
     protected Comment $comment;
 
+    /**
+     * @var CommentController
+     */
     private CommentController $commentController;
 
+    /**
+     * @var PostModel
+     */
     private PostModel $postModel;
 
 
