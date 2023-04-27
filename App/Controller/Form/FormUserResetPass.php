@@ -8,14 +8,29 @@ use App\Entity\Res;
 use App\Model\UserModel;
 use App\Controller\TokenController;
 
+/**
+ * Class FormUserResetPass - Manage the user password reset form.
+ */
 class FormUserResetPass extends FormController
 {
+    /**
+     * @var UserModel
+     */
     private UserModel $userModel;
 
+    /**
+     * @var TokenController
+     */
     private TokenController $tokenController;
 
+    /**
+     * @var UserController
+     */
     protected UserController $userController;
 
+    /**
+     * @var Res
+     */
     private Res $res;
 
 
@@ -130,4 +145,6 @@ class FormUserResetPass extends FormController
         $this->redirectTo('/user/connexion', 5);
         return $this->res;
     }
+
+
 }

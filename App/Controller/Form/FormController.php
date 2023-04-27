@@ -10,36 +10,79 @@ use App\Model\PostModel;
 use App\Model\UserModel;
 use Exception;
 
+/**
+ * Class FormController - Manage the forms.
+ * The several forms are managed in different classes that extend this class.
+ */
 class FormController extends MainController
 {
+    /**
+     * @var Res
+     */
     private Res $res;
 
+    /**
+     * @var array|string[]
+     */
     private array $imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
 
+    /**
+     * @var array|string[]
+     */
     private array $docExtensions = ['pdf', 'doc', 'docx'];
 
+    /**
+     * @var array|string[]
+     */
     private array $imageMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
 
+    /**
+     * @var array|string[]
+     */
     private array $docMimeTypes = [
         'application/pdf',
         'application/msword',
         'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
     ];
 
+    /**
+     * @var int
+     */
     private int $photoMaxSize = 2097152;
 
+    /**
+     * @var int
+     */
     private int $postImgMaxSize = 2097152;
 
+    /**
+     * @var int
+     */
     private int $cvMaxSize = 5242880;
 
+    /**
+     * @var int
+     */
     private int $avatarMaxSize = 2097152;
 
+    /**
+     * @var string
+     */
     private string $photoPath = 'public/upload/owner/';
 
+    /**
+     * @var string
+     */
     private string $postImgPath = 'public/upload/blog/post/';
 
+    /**
+     * @var string
+     */
     private string $cvPath = 'public/upload/owner/';
 
+    /**
+     * @var string
+     */
     private string $avatarPath = 'public/upload/user/';
 
 

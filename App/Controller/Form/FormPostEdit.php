@@ -7,10 +7,19 @@ use App\Entity\Post;
 use App\Entity\Res;
 use DateTime;
 
+/**
+ * Class FormPostEdit - Manage the post edition form (owner).
+ */
 class FormPostEdit extends FormController
 {
+    /**
+     * @var Res
+     */
     protected Res $res;
 
+    /**
+     * @var PostController
+     */
     protected postController $postController;
 
 

@@ -7,12 +7,25 @@ use App\Controller\MainController;
 use App\Entity\Res;
 use App\Model\UserModel;
 
+/**
+ * Class OwnerController - Manage the owner pages (posts, comments, users).
+ * This class is herited by more specific owner controllers.
+ */
 class OwnerController extends MainController
 {
+    /**
+     * @var Res
+     */
     private Res $res;
 
+    /**
+     * @var UserModel
+     */
     private UserModel $userModel;
 
+    /**
+     *
+     */
     public function __construct()
     {
         parent::__construct();

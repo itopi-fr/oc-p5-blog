@@ -5,32 +5,74 @@ namespace App\Controller;
 use App\Entity\Res;
 use App\Model\MailModel;
 
+/**
+ * Class MailController - Mail functions.
+ */
 class MailController extends MainController
 {
+    /**
+     * @var MailModel
+     */
     protected MailModel $mailModel;
 
+    /**
+     * @var Res
+     */
     protected Res $res;
 
+    /**
+     * @var string
+     */
     protected string $smtpHost;
 
+    /**
+     * @var int
+     */
     protected int $smtpPort;
 
+    /**
+     * @var string
+     */
     protected string $smtpUser;
 
+    /**
+     * @var string
+     */
     protected string $smtpPass;
 
+    /**
+     * @var string
+     */
     protected string $mailFrom;
 
+    /**
+     * @var string
+     */
     protected string $mailFromName;
 
+    /**
+     * @var string
+     */
     protected string $mailTo;
 
+    /**
+     * @var string
+     */
     protected string $mailToName;
 
+    /**
+     * @var string
+     */
     protected string $mailSubject;
 
+    /**
+     * @var string
+     */
     protected string $mailMessageRaw;
 
+    /**
+     * @var string
+     */
     protected string $mailMessageHtml;
 
 

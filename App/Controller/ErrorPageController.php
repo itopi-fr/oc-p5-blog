@@ -7,6 +7,9 @@ use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
+/**
+ * Class ErrorPageController - Error page tools.
+ */
 class ErrorPageController extends MainController
 {
     /**

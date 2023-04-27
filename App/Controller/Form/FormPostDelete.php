@@ -5,10 +5,19 @@ namespace App\Controller\Form;
 use App\Controller\PostController;
 use App\Entity\Res;
 
+/**
+ * Class FormPostDelete - Manage the post deletion form (owner).
+ */
 class FormPostDelete extends FormController
 {
+    /**
+     * @var Res
+     */
     protected Res $res;
 
+    /**
+     * @var PostController
+     */
     protected postController $postController;
 
 

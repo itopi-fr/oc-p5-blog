@@ -8,16 +8,34 @@ use App\Entity\Res;
 use App\Entity\User;
 use App\Model\UserModel;
 
+/**
+ * Class FormUserLog - Manage the user login, logout and register forms.
+ */
 class FormUserLog extends FormController
 {
+    /**
+     * @var Res
+     */
     protected Res $res;
 
+    /**
+     * @var User
+     */
     protected User $user;
 
+    /**
+     * @var UserController
+     */
     protected UserController $userController;
 
+    /**
+     * @var UserModel
+     */
     protected UserModel $userModel;
 
+    /**
+     * @var MainController
+     */
     protected MainController $mainCtr;
 
 

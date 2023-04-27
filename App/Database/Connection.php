@@ -11,20 +11,41 @@ use App\Entity\UserOwner;
 use PDO;
 use PDOException;
 use App\Sys\SuperGlobals;
-use App\Controller\MainController;
 
+/**
+ * Class Connection - Database connection.
+ * Used as a parent class for other models.
+ */
 class Connection
 {
+    /**
+     * @var string
+     */
     private string $host;
 
+    /**
+     * @var string
+     */
     private string $dbname;
 
+    /**
+     * @var string
+     */
     private string $username;
 
+    /**
+     * @var string
+     */
     private string $password;
 
+    /**
+     * @var PDO|null
+     */
     private ?PDO $conn;
 
+    /**
+     * @var SuperGlobals
+     */
     private SuperGlobals $superGlobals;
 
 
@@ -39,6 +60,7 @@ class Connection
         $this->username =   $this->superGlobals->getEnv('DB_USER');
         $this->password =   $this->superGlobals->getEnv('DB_PASS');
     }
+
 
     /**
      * Creates a PDO connection to the database.
@@ -62,6 +84,7 @@ class Connection
         }
         return $this->conn;
     }
+
 
     /**
      * Returns a single result as specific class object.
@@ -108,6 +131,7 @@ class Connection
         }
     }
 
+
     /**
      * Returns a single element as an object.
      * @param string $statement
@@ -127,6 +151,7 @@ class Connection
             throw new PDOException($e);
         }
     }
+
 
     /**
      * Returns a multiple element as an array of objects.
@@ -150,6 +175,7 @@ class Connection
         }
     }
 
+
     /**
      * Inserts a single element into the database. Returns the id of the last inserted element or a null value.
      * @param string $statement
@@ -170,6 +196,7 @@ class Connection
         }
     }
 
+
     /**
      * Deletes a single element in the database.
      * @param string $statement
@@ -187,6 +214,7 @@ class Connection
             throw new PDOException($e);
         }
     }
+
 
     /**
      * Checks if a single element exists in the database.
@@ -207,6 +235,7 @@ class Connection
         }
     }
 
+
     /**
      * Updates a single element in the database.
      * @param string $statement
@@ -225,6 +254,7 @@ class Connection
         }
     }
 
+
     /**
      * @param string $statement
      * @param array $data
@@ -241,4 +271,6 @@ class Connection
             throw new PDOException($e);
         }
     }
+
+
 }

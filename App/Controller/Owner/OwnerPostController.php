@@ -11,22 +11,49 @@ use App\Entity\Post;
 use App\Entity\Res;
 use App\Model\PostModel;
 
+/**
+ * Class OwnerPostController - Manage the posts in the BO (owner).
+ */
 class OwnerPostController extends OwnerController
 {
+    /**
+     * @var PostController
+     */
     protected PostController $postController;
 
+    /**
+     * @var FormPostCreate
+     */
     protected FormPostCreate $formPostCreate;
 
+    /**
+     * @var FormPostEdit
+     */
     protected FormPostEdit $formPostEdit;
 
+    /**
+     * @var FormPostDelete
+     */
     protected FormPostDelete $formPostDelete;
 
+    /**
+     * @var FormPostArchive
+     */
     protected FormPostArchive $formPostArchive;
 
+    /**
+     * @var PostModel
+     */
     protected PostModel $postModel;
 
+    /**
+     * @var Post
+     */
     protected Post $postSingle;
 
+    /**
+     * @var Res
+     */
     protected Res $res;
 
 
@@ -135,6 +162,10 @@ class OwnerPostController extends OwnerController
     }
 
 
+    /**
+     * @param int $postId
+     * @return void
+     */
     public function archivePost(int $postId): void
     {
         // Check that the post exists.

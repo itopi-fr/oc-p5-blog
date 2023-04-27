@@ -9,14 +9,29 @@ use App\Model\UserModel;
 use DateTime;
 use Exception;
 
+/**
+ * Class TokenController - Token functions.
+ */
 class TokenController extends MainController
 {
+    /**
+     * @var Res
+     */
     private Res $res;
 
+    /**
+     * @var Token
+     */
     private Token $token;
 
+    /**
+     * @var TokenModel
+     */
     private TokenModel $tokenModel;
 
+    /**
+     * @var UserModel
+     */
     private UserModel $userModel;
 
 

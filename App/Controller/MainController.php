@@ -7,18 +7,41 @@ use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use App\Sys\SuperGlobals;
 
+/**
+ * Class MainController - Main tools.
+ * Used as a parent class for other controllers.
+ * Used to load Twig and set global variables.
+ */
 class MainController
 {
+    /**
+     * @var FilesystemLoader
+     */
     protected FilesystemLoader $loader;
 
+    /**
+     * @var Environment
+     */
     protected Environment $twig;
 
+    /**
+     * @var UserController
+     */
     protected UserController $userController;
 
+    /**
+     * @var array
+     */
     public array $toDump = [];
 
+    /**
+     * @var array
+     */
     protected array $twigData = [];
 
+    /**
+     * @var SuperGlobals
+     */
     public SuperGlobals $sGlob;
 
 
@@ -31,6 +54,9 @@ class MainController
         $this->initTwig();
     }
 
+    /**
+     *
+     */
     public function __destruct()
     {
         $this->showDump();

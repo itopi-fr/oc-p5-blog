@@ -8,10 +8,19 @@ use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
+/**
+ * Class OwnerCommentController - Manage the comments (owner panel).
+ */
 class OwnerCommentController extends OwnerController
 {
+    /**
+     * @var CommentController
+     */
     protected CommentController $commentController;
 
+    /**
+     * @var CommentModel
+     */
     protected CommentModel $commentModel;
 
 

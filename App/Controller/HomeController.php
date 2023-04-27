@@ -4,8 +4,14 @@ namespace App\Controller;
 
 use App\Model\PostModel;
 
+/**
+ * Class HomeController - Home page tools.
+ */
 class HomeController extends MainController
 {
+    /**
+     * @var PostModel
+     */
     protected PostModel $postModel;
 
 
@@ -18,6 +24,12 @@ class HomeController extends MainController
         $this->postModel = new PostModel();
     }
 
+    /**
+     * @return void
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     */
     public function index()
     {
         $this->twigData['lastposts'] = $this->postModel->getLastPubPosts(2);

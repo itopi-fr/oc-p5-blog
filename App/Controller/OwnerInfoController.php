@@ -6,12 +6,25 @@ use App\Entity\OwnerInfo;
 use App\Model\OwnerInfoModel;
 use App\Entity\File;
 
+/**
+ * Class OwnerInfoController - Owner info functions.
+ * Read only owner info displayed in the header
+ */
 class OwnerInfoController
 {
+    /**
+     * @var OwnerInfoModel
+     */
     protected OwnerInfoModel $ownerInfoModel;
 
+    /**
+     * @var OwnerInfo
+     */
     protected OwnerInfo $ownerInfo;
 
+    /**
+     * @var MainController
+     */
     protected MainController $mainCtr;
 
 

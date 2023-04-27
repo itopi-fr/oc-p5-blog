@@ -8,12 +8,24 @@ use App\Entity\Res;
 use App\Model\PostModel;
 use DateTime;
 
+/**
+ * Class FormPostCreate - Manage the post creation form (owner).
+ */
 class FormPostCreate extends FormController
 {
+    /**
+     * @var Res
+     */
     protected Res $res;
 
+    /**
+     * @var PostModel
+     */
     protected PostModel $postModel;
 
+    /**
+     * @var Post
+     */
     protected Post $post;
 
 

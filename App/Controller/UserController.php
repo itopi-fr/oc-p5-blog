@@ -18,18 +18,39 @@ use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
+/**
+ * Class UserController - User functions.
+ */
 class UserController extends MainController
 {
+    /**
+     * @var Res
+     */
     protected Res $res;
 
+    /**
+     * @var UserModel
+     */
     protected UserModel $userModel;
 
+    /**
+     * @var User
+     */
     protected User $user;
 
+    /**
+     * @var UserOwner
+     */
     protected UserOwner $userOwner;
 
+    /**
+     * @var TokenController
+     */
     protected TokenController $tokenController;
 
+    /**
+     * @var UserOwnerModel
+     */
     protected UserOwnerModel $userOwnerModel;
 
 

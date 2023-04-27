@@ -7,10 +7,19 @@ use App\Entity\Res;
 use App\Model\FileModel;
 use Exception;
 
+/**
+ * Class FileController - File functions.
+ */
 class FileController extends MainController
 {
+    /**
+     * @var Res
+     */
     private Res $res;
 
+    /**
+     * @var File
+     */
     private File $file;
 
 

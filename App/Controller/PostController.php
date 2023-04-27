@@ -11,14 +11,29 @@ use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
+/**
+ * Class PostController - Post functions.
+ */
 class PostController extends MainController
 {
+    /**
+     * @var Res
+     */
     protected Res $res;
 
+    /**
+     * @var array
+     */
     protected array $posts;
 
+    /**
+     * @var PostModel
+     */
     protected PostModel $postModel;
 
+    /**
+     * @var Post
+     */
     protected Post $postSingle;
 
 

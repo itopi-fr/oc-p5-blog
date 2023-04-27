@@ -13,16 +13,34 @@ use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
+/**
+ * Class CommentController - Comment functions.
+ */
 class CommentController extends MainController
 {
+    /**
+     * @var Res
+     */
     protected Res $res;
 
+    /**
+     * @var array
+     */
     protected array $comments;
 
+    /**
+     * @var CommentModel
+     */
     protected CommentModel $commentModel;
 
+    /**
+     * @var Comment
+     */
     protected Comment $commentSingle;
 
+    /**
+     * @var UserModel
+     */
     private UserModel $userModel;
 
 

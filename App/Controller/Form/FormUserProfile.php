@@ -8,10 +8,19 @@ use App\Entity\User;
 use App\Entity\UserOwner;
 use Exception;
 
+/**
+ * Class FormUserProfile - Manage the user profile form.
+ */
 class FormUserProfile extends FormController
 {
+    /**
+     * @var Res
+     */
     private Res $res;
 
+    /**
+     * @var UserController
+     */
     protected UserController $userController;
 
 

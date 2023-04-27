@@ -5,10 +5,19 @@ namespace App\Controller\Form;
 use App\Entity\Res;
 use App\Model\PostModel;
 
+/**
+ * Class FormPostArchive - Manage the post archive form (owner).
+ */
 class FormPostArchive extends FormController
 {
+    /**
+     * @var Res
+     */
     protected Res $res;
 
+    /**
+     * @var PostModel
+     */
     protected PostModel $postModel;
 
 

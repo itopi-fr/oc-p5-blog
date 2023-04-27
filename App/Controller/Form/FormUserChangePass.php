@@ -6,8 +6,14 @@ use App\Entity\Res;
 use App\Entity\User;
 use App\Model\UserModel;
 
+/**
+ * Class FormUserChangePass - Manage the user password change form.
+ */
 class FormUserChangePass extends FormController
 {
+    /**
+     * @var UserModel
+     */
     private UserModel $userModel;
 
 
