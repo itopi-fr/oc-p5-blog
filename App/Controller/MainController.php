@@ -119,13 +119,13 @@ class MainController
         $caller = debug_backtrace()[0];
         preg_match('/.*(root.*)/', $caller['file'], $match);
         $this->toDump[] = [
-            'data' => $dumpThis,
-            'caller_file' => $match[1] . ':' . $caller['line'],
-            'caller_line' => $caller['line'],
-            'caller_function' => $caller['function'],
-            'caller_class' => $caller['class'],
-            'caller_object' => $caller['object'],
-        ];
+                               'data' => $dumpThis,
+                               'caller_file' => $match[1] . ':' . $caller['line'],
+                               'caller_line' => $caller['line'],
+                               'caller_function' => $caller['function'],
+                               'caller_class' => $caller['class'],
+                               'caller_object' => $caller['object'],
+                               ];
     }
 
     /**
@@ -162,7 +162,7 @@ class MainController
      * @param int $delay
      * @return void
      */
-    protected function redirectTo(string $route, int $delay = 5): void
+    protected function redirectTo(string $route, int $delay = 3): void
     {
         header("Refresh:$delay; url=$route");
     }
@@ -206,9 +206,9 @@ class MainController
         $this->loader = new FilesystemLoader(__DIR__ . '/../View/templates');
 
         $this->twig = new Environment($this->loader, [
-            'cache' => false,
-            'debug' => true,
-        ]);
+                                                        'cache' => false,
+                                                        'debug' => true,
+                                                       ]);
 
         if (empty($this->sGlob->getSesAll() === false)) {
             // Current user info

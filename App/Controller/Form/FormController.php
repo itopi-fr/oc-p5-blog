@@ -20,17 +20,19 @@ class FormController extends MainController
 
     private array $imageMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
 
-    private array $docMimeTypes = [ 'application/pdf',
-                                    'application/msword',
-                                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    private array $docMimeTypes = [
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    ];
 
-    private int $photoMaxSize = 2097152; // 2 Mo.
+    private int $photoMaxSize = 2097152;
 
-    private int $postImgMaxSize = 2097152; // 2 Mo.
+    private int $postImgMaxSize = 2097152;
 
-    private int $cvMaxSize = 5242880; // 5 Mo.
+    private int $cvMaxSize = 5242880;
 
-    private int $avatarMaxSize = 2097152; // 2 Mo.
+    private int $avatarMaxSize = 2097152;
 
     private string $photoPath = 'public/upload/owner/';
 

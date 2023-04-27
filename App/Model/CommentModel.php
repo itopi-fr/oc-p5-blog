@@ -55,11 +55,11 @@ class CommentModel extends Connection
         return $this->insert(
             $sql,
             [
-                $comment->getPostId(),
-                $comment->getAuthorId(),
-                $comment->getContent(),
-                $comment->getCreatedDate()->format('Y-m-d H:i:s'),
-                $comment->getStatus()
+               $comment->getPostId(),
+               $comment->getAuthorId(),
+               $comment->getContent(),
+               $comment->getCreatedDate()->format('Y-m-d H:i:s'),
+               $comment->getStatus(),
             ]
         );
     }
@@ -88,6 +88,7 @@ class CommentModel extends Connection
         return $this->delete($sql, [$comId]);
     }
 
+
     /**
      * Checks if a comment exists based on its id
      * @param int $comId
@@ -99,4 +100,6 @@ class CommentModel extends Connection
         $result = $this->exists($sql, [$comId]);
         return $result;
     }
+
+
 }

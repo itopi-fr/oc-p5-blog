@@ -54,7 +54,8 @@ class Connection
                     $this->password
                 );
                 $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                $this->conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false); // Mysql bug : int converted to string.
+                // Mysql bug : int converted to string.
+                $this->conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
             }
         } catch (PDOException $e) {
             throw new PDOException($e);

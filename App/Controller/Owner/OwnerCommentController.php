@@ -36,7 +36,6 @@ class OwnerCommentController extends OwnerController
     public function manageComments(): void
     {
         // TODO: Pagination.
-
         $this->twigData['title'] = 'Administration des commentaires';
 
         // Get all comments.
@@ -64,7 +63,7 @@ class OwnerCommentController extends OwnerController
      */
     public function validateComment(string $comIdFromUrl): void
     {
-        $comId = (int)$comIdFromUrl;
+        $comId = (int) $comIdFromUrl;
         $this->commentController->validateComment($comId);
         $this->redirectTo("/owner/comments", 0);
     }
@@ -77,7 +76,7 @@ class OwnerCommentController extends OwnerController
      */
     public function deleteComment(string $comIdFromUrl): void
     {
-        $comId = (int)$comIdFromUrl;
+        $comId = (int) $comIdFromUrl;
         $this->commentController->deleteComment($comId);
         $this->redirectTo("/owner/comments", 0);
     }

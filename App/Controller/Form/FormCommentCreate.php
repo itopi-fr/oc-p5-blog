@@ -89,21 +89,20 @@ class FormCommentCreate extends FormController
         $this->comment->setPostId($postId);
         $this->comment->setCreatedDate(new DateTime());
 
-        // Status
+        // Status.
         if ($this->sGlob->getSes('userobj')->getRole() === 'owner') {
             $this->comment->setStatus('valid');
         } else {
             $this->comment->setStatus('wait');
         }
 
-
         // -------------------------------------------------------------------- Insert the comment.
-
         $resCreateComment = $this->commentController->createComment($this->comment);
         if ($resCreateComment->isErr() === true) {
             return $this->res->ko('form-comment-create', $resCreateComment->getMsg()['form-comment-create']);
         }
         return $this->res->ok('form-comment-create', $resCreateComment->getMsg()['form-comment-create']);
     }
+
 
 }

@@ -144,7 +144,7 @@ class PostController extends MainController
         $postObject = $this->postModel->getPostBySlug($postSlug);
         $this->postSingle = $this->hydratePostObject($postObject);
 
-        // Get the comments
+        // Get the comments.
         $commentController = new CommentController();
         $this->postSingle->setComments($commentController->getValidPostComments($this->postSingle->getPostId(), 100));
 

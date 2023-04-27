@@ -25,8 +25,6 @@ class CommentController extends MainController
 
     private UserModel $userModel;
 
-    private FormCommentCreate $formPostCreate;
-
 
     /**
      * Constructor
@@ -51,7 +49,7 @@ class CommentController extends MainController
      */
     public function index(string $pageAction): void
     {
-        // Create Comment
+        // Create Comment.
         if ($pageAction === 'create' && empty($this->sGlob->getPost("submit-comment-create")) === false) {
             $formPostCreate = new FormCommentCreate();
             $resTreatFormComment = $formPostCreate->treatForm();
@@ -198,7 +196,7 @@ class CommentController extends MainController
         $comment->setLastUpdate(new DateTime($comObj->last_update));
         $comment->setStatus($comObj->status);
 
-        // User object
+        // User object.
         if (empty($comObj->author_user) === true) {
             $comment->setAuthorUser($this->userModel->getUserById($comObj->author_id));
         } else {
@@ -206,4 +204,6 @@ class CommentController extends MainController
         }
         return $comment;
     }
+
+
 }

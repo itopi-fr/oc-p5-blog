@@ -24,8 +24,10 @@ class InitApp
             error_reporting(E_ALL);
         }
 
-        // Routing
+        // Routing.
         $route = new Router();
         $route->run();
     }
+
+
 }
