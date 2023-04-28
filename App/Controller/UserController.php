@@ -53,6 +53,11 @@ class UserController extends MainController
      */
     protected UserOwnerModel $userOwnerModel;
 
+    /**
+     * @var FileController
+     */
+    protected FileController $fileController;
+
 
     /**
      * Constructor
@@ -63,6 +68,7 @@ class UserController extends MainController
         $this->res = new Res();
         $this->tokenController = new TokenController();
         $this->userModel = new UserModel();
+        $this->fileController = new FileController();
     }
 
 
@@ -223,6 +229,12 @@ class UserController extends MainController
 
         $user = $resUserByEmail->getResult()['user-by-email'];
 
+        if ($user->getRole() == 'user-banned') {
+            $this->res->ko('user-login', 'user-login-ko-account-banned');
+            $this->twigData['result'] = $this->res;
+            return;
+        }
+
         if ($user->getRole() == 'user-validation') {
             $this->res->ko('user-login', 'user-login-ko-account-token-not-validated');
             $this->twigData['result'] = $this->res;
@@ -285,6 +297,29 @@ class UserController extends MainController
         return $this->res;
     }
 
+
+    /**
+     * Get all users
+     * @return Res
+     */
+    public function getAllUsers(): Res
+    {
+        $resAllUsers = $this->userModel->getAllUsers();
+
+        if (empty($resAllUsers)) {
+            $this->res->ko('all-users', 'all-users-ko');
+            return $this->res;
+        }
+
+        // Hydrate standard objects to proper User objects.
+        $allUsers = [];
+        foreach ($resAllUsers as $userObj) {
+            $allUsers[] = $this->hydrateUser($userObj);
+        }
+
+        $this->res->ok('all-users', 'all-users-ok', $allUsers);
+        return $this->res;
+    }
 
     /**
      * Get a user by its id
@@ -431,6 +466,7 @@ class UserController extends MainController
 
 
     /**
+     * Updates owner info providing a userOwner object
      * @param UserOwner $userOwner
      * @return Res
      */
@@ -448,4 +484,138 @@ class UserController extends MainController
         }
         return $this->res;
     }
+
+
+    /**
+     * Mute a user by setting his role to 'user-muted'
+     * @param int $userId
+     * @return Res
+     */
+    public function muteUser(int $userId): Res
+    {
+        $user = $this->userModel->getUserById($userId);
+        if ($user === null) {
+            $this->res->ko('mute-user', 'mute-user-ko-user-not-found');
+            return $this->res;
+        }
+        $user->setRole('user-muted');
+        $result = $this->userModel->updateUser($user);
+        if ($result === 0) {
+            $this->res->ok('mute-user', 'mute-user-ok-no-change');
+        } elseif ($result === 1) {
+            $this->res->ok('mute-user', 'mute-user-ok-updated');
+        } else {
+            $this->res->ko('mute-user', 'mute-user-ko-error');
+        }
+        return $this->res;
+    }
+
+
+    /**
+     * Activate a user by setting his role to 'user'
+     * @param int $userId
+     * @return Res
+     */
+    public function activateUser(int $userId): Res
+    {
+        $user = $this->userModel->getUserById($userId);
+        if ($user === null) {
+            $this->res->ko('activate-user', 'activate-user-ko-user-not-found');
+            return $this->res;
+        }
+        $user->setRole('user');
+        $result = $this->userModel->updateUser($user);
+        if ($result === 0) {
+            $this->res->ok('activate-user', 'activate-user-ok-no-change');
+        } elseif ($result === 1) {
+            $this->res->ok('activate-user', 'activate-user-ok-updated');
+        } else {
+            $this->res->ko('activate-user', 'activate-user-ko-error');
+        }
+        return $this->res;
+    }
+
+
+    /**
+     * Bans a user by setting his role to 'user-banned'
+     * @param int $userId
+     * @return Res
+     */
+    public function banUser(int $userId): Res
+    {
+        $user = $this->userModel->getUserById($userId);
+        if ($user === null) {
+            $this->res->ko('ban-user', 'ban-user-ko-user-not-found');
+            return $this->res;
+        }
+        $user->setRole('user-banned');
+        $result = $this->userModel->updateUser($user);
+        if ($result === 0) {
+            $this->res->ok('ban-user', 'ban-user-ok-no-change');
+        } elseif ($result === 1) {
+            $this->res->ok('ban-user', 'ban-user-ok-updated');
+        } else {
+            $this->res->ko('ban-user', 'ban-user-ko-error');
+        }
+        return $this->res;
+    }
+
+
+    /**
+     * @param int $userId
+     * @param string $subject
+     * @param string $content
+     * @return Res
+     */
+    public function sendEmailToUser(int $userId, string $subject, string $content): Res
+    {
+        $user = $this->userModel->getUserById($userId);
+        if ($user === null) {
+            $this->res->ko('send-email-to-user', 'send-email-to-user-ko-user-not-found');
+            return $this->res;
+        }
+        $mailTo = $user->getEmail();
+        $mailToName = $user->getPseudo();
+        $mailSubject = $subject;
+        $mailContent = $content;
+
+        // Send mail.
+        $mailController = new MailController();
+        $resSendMail = $mailController->sendEmail($mailTo, $mailToName, $mailSubject, $mailContent);
+
+        if ($resSendMail->isErr() === true) {
+            $this->res->ko('send-email-to-user', 'send-email-to-user-ko-error');
+            return $this->res;
+        }
+
+        $this->res->ok('send-email-to-user', 'send-email-to-user-ok', $user);
+        return $this->res;
+    }
+
+
+    /**
+     * Hydrates a proper User object with data from the database
+     * @param object $userObj
+     * @return User
+     */
+    public function hydrateUser(object $userObj): User
+    {
+        $user = new User();
+        $user->setUserId($userObj->user_id);
+        $user->setPseudo($userObj->pseudo);
+        $user->setEmail($userObj->email);
+        $user->setPass($userObj->pass);
+        $user->setAvatarId($userObj->avatar_id);
+        $user->setRole($userObj->role);
+
+        // Get Avatar File.
+        if (empty($userObj->avatar_id) === false) {
+            if ($this->fileController->fileExistsById($userObj->avatar_id) === true) {
+                $user->setAvatarFile($this->fileController->getFileById($userObj->avatar_id));
+            }
+        }
+        return $user;
+    }
+
+
 }

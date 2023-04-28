@@ -1,6 +1,6 @@
 {% extends "layout.twig" %}
 {% use "blocks/owner/block_bo_owner_menu.twig" %}
-{% use "blocks/owner/block_bo_users_manage.twig" %}
+{% use "forms/owner/form_sendmail_to_user.twig" %}
 
 {% block title %}
     {{ title }}
@@ -9,5 +9,5 @@
 {% block content %}
     <h1>{{ title }}</h1>
     {{ block('bo_owner_menu') }}
-    {{ block('bo_users_manage') }}
+    {{ block('form_sendmail_to_user') }}
 {% endblock %}

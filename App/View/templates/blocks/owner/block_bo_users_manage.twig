@@ -1,0 +1,52 @@
+{% block bo_users_manage %}
+    <section class="row gx-4 gx-lg-5 justify-content-center manage-comments">
+        <div class="row">
+            <div class="col-2"><strong>Actions</strong></div>
+            <div class="col-2"><strong>Pseudo</strong></div>
+            <div class="col-2"><strong>Email</strong></div>
+            <div class="col-6"><strong>Statut</strong></div>
+        </div>
+
+        {% for user in users |slice(0, 100) %}
+            <div class="row status-{{ user.getRole() }}">
+
+                <div class="col-2">
+                    {# User active or waiting #}
+                    {% if (user.getRole() == 'user' or user.getRole() == 'user-validation') %}
+                        <a href="/owner/user-mute/{{ user.getUserId() }}"><i class="fa-solid fa-comment-slash"></i></a>&nbsp; | &nbsp;
+                        <a href="/owner/user-ban/{{ user.getUserId() }}"><i class="fa-solid fa-user-slash"></i></a>&nbsp; | &nbsp;
+
+                    {# User Muted #}
+                    {% elseif user.getRole() == 'user-muted' %}
+                        <a href="/owner/user-activate/{{ user.getUserId() }}"><i class="fa-solid fa-user-check"></i></a>&nbsp; | &nbsp;
+                        <a href="/owner/user-ban/{{ user.getUserId() }}"><i class="fa-solid fa-user-slash"></i></a>&nbsp; | &nbsp;
+
+                    {# User Banned #}
+                    {% elseif user.getRole() == 'user-banned' %}
+                        <a href="/owner/user-activate/{{ user.getUserId() }}"><i class="fa-solid fa-user-check"></i></a>&nbsp; | &nbsp;
+                        <a href="/owner/user-mute/{{ user.getUserId() }}"><i class="fa-solid fa-comment-slash"></i></a>&nbsp; | &nbsp;
+                    {% endif %}
+
+                    <a href="/owner/user-sendmail/{{ user.getUserId() }}"><i class="fa-solid fa-paper-plane"></i></a>&nbsp; | &nbsp;
+
+                </div>
+
+                <div class="col-2">{{ user.getPseudo() }}</div>
+                <div class="col-2">{{ user.getEmail() }}</div>
+
+                {# TODO: Temporaire - à faire côté code #}
+                <div class="col-6">
+                    {% if user.getRole() == 'user' %}
+                        Utilisateur actif
+                    {% elseif user.getRole() == 'user-validation' %}
+                        Utilisateur en attente de validation (email)
+                    {% elseif user.getRole() == 'user-muted' %}
+                        Utilisateur muet (ne peut plus commenter)
+                    {% elseif user.getRole() == 'user-banned' %}
+                        Utilisateur banni (ne peut plus se connecter)
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </section>
+{% endblock %}

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Res;
 use App\Model\MailModel;
+use Exception;
 
 /**
  * Class MailController - Mail functions.
@@ -97,33 +98,44 @@ class MailController extends MainController
      */
     public function sendEmail(string $to, string $toName, string $subject, string $messageHtml)
     {
-        $this->mailTo = $to;
-        $this->mailToName = $toName;
-        $this->mailSubject = $subject;
-        $this->mailMessageHtml = $messageHtml;
-        $this->mailMessageRaw = $this->generateRawMessage($messageHtml);
+        try {
+            $this->mailTo = $to;
+            $this->mailToName = $toName;
+            $this->mailSubject = $subject;
+            $this->mailMessageHtml = $messageHtml;
+            $this->mailMessageRaw = $this->generateRawMessage($messageHtml);
 
-        // Check mailTo.
-        if ($this->isSet($this->mailTo) === false) {
-            return $this->res->ko("send-email", 'missing-mail-to');
-        } elseif (!$this->isEmail($this->mailTo)) {
-            return $this->res->ko("send-email", 'invalid-format-mail-to');
+            // Check mailTo.
+            if ($this->isSet($this->mailTo) === false) {
+                return $this->res->ko("send-email", 'send-email-ko-missing-mail-to');
+            } elseif (!$this->isEmail($this->mailTo)) {
+                return $this->res->ko("send-email", 'send-email-ko-invalid-format-mail-to');
+            }
+
+            // Check mailToName.
+            if ($this->isSet($this->mailToName) === false) {
+                return $this->res->ko("send-email", 'send-email-ko-missing-mail-to-name');
+            } elseif (!$this->isAlphaNumDashUnderscore($this->mailToName)) {
+                return $this->res->ko("send-email", 'send-email-ko-invalid-format-mail-to-name');
+            }
+
+            // Check mailSubject.
+            if ($this->isSet($this->mailSubject) === false) {
+                return $this->res->ko("send-email", 'send-email-ko-missing-mail-subject');
+            }
+
+            $this->mailModel = new MailModel();
+            $this->mailModel->sendEmailSmtp(
+                $to,
+                $toName,
+                $subject,
+                $messageHtml,
+                $this->generateRawMessage($messageHtml)
+            );
+            return $this->res->ok("send-email", 'send-email-ok');
+        } catch (Exception $e) {
+            return $this->res->ko("send-email", 'send-email-ko-exception', $e);
         }
-
-        // Check mailToName.
-        if ($this->isSet($this->mailToName) === false) {
-            return $this->res->ko("send-email", 'missing-mail-to-name');
-        } elseif (!$this->isAlphaNumDashUnderscore($this->mailToName)) {
-            return $this->res->ko("send-email", 'invalid-format-mail-to-name');
-        }
-
-        // Check mailSubject.
-        if ($this->isSet($this->mailSubject) === false) {
-            return $this->res->ko("send-email", 'missing-mail-subject');
-        }
-
-        $this->mailModel = new MailModel();
-        $this->mailModel->sendEmailSmtp($to, $toName, $subject, $messageHtml, $this->generateRawMessage($messageHtml));
     }
 
 

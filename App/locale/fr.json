@@ -81,6 +81,11 @@
     "post-edit": "Édition d'un article",
     "post-create": "Nouvel article",
     "form-comment-create": "Publication d'un commentaire"
-  }
+  },
+    "show-user-role": {
+        "user": "Utilisateur actif",
+        "user-validation": "Mail de validation envoyé",
+        "user-muted": "Utilisateur muet"
+    }
 }
 

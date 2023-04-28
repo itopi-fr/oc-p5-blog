@@ -167,8 +167,6 @@ class Connection
             $req->setFetchMode(PDO::FETCH_OBJ);
             $req->execute($data);
             $result = $req->fetchAll();
-
-
             return $result ? $result : null;
         } catch (PDOException $e) {
             throw new PDOException($e);

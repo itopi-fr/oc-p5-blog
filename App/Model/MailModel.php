@@ -4,6 +4,7 @@ namespace App\Model;
 
 use App\Sys\SuperGlobals;
 use App\Entity\Res;
+use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 
 class MailModel
@@ -22,6 +23,16 @@ class MailModel
         $this->superGlobals = new SuperGlobals();
     }
 
+    /**
+     * Send an email with the PHPMailer library.
+     * @param string $mailTo
+     * @param string $mailToName
+     * @param string $subject
+     * @param string $msgHtml
+     * @param string $msgRaw
+     * @return Res
+     * @throws Exception
+     */
     public function sendEmailSmtp(
         string $mailTo,
         string $mailToName,

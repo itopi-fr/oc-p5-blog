@@ -76,6 +76,18 @@ class OwnerController extends MainController
         } elseif ($pageAction === 'users') {
             $controller = new OwnerUserController();
             $controller->manageUsers();
+        } elseif ($pageAction === 'user-mute') {
+            $controller = new OwnerUserController();
+            $controller->muteUser($pageActionParam);
+        } elseif ($pageAction === 'user-ban') {
+            $controller = new OwnerUserController();
+            $controller->banUser($pageActionParam);
+        } elseif ($pageAction === 'user-activate') {
+            $controller = new OwnerUserController();
+            $controller->activateUser($pageActionParam);
+        } elseif ($pageAction === 'user-sendmail') {
+            $controller = new OwnerUserController();
+            $controller->sendmailToUser($pageActionParam);
         } else {
             $this->twigData['title'] = 'Administration - Accueil';
             $this->twig->display("pages/owner/page_bo_owner.twig", $this->twigData);
