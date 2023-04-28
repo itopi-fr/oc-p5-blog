@@ -1,0 +1,32 @@
+{% block form_sendmail_to_user %}
+    {% use "blocks/block_res_message.twig" %}
+    {% set getType = "" %}
+    {% set getMess = "" %}
+    {% set targetType = "send-mail-to-user" %}
+
+    {# Messages #}
+    {{ block('res_message') }}
+
+    {# Form #}
+    <form action="/owner/user-sendmail/{{ mailtoUserId }}" method="POST" enctype="multipart/form-data" class="row form-general">
+
+        <div class="col-12">
+            <input type="hidden" name="send-mail-user-id" value="{{ mailtoUserId }}"/>
+            <div class="form-group">
+                <label for="mail-subject"><h5>Sujet</h5></label>
+                <input type="text" name="mail-subject" class="form-control mail-subject" id="mail-subject" placeholder="Sujet" style="width: 100%;">
+            </div>
+
+            <div class="form-group">
+                <label for="mail-content"><h5>Votre message</h5></label>
+                <textarea name="mail-content" class="form-control mail-content" id="mail-content" placeholder="Message" rows="10" style="width: 100%;"></textarea>
+            </div>
+        </div>
+
+        <div class="form-group text-center">
+            <input type="submit" name="submit-user-sendmail"/>
+        </div>
+
+    </form>
+
+{% endblock %}

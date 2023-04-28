@@ -7,8 +7,14 @@ use App\Entity\User;
 use App\Entity\File;
 use Exception;
 
+/**
+ * Class UserModel - Manage the users in the database.
+ */
 class UserModel extends Connection
 {
+    /**
+     * @var User
+     */
     public User $user;
 
 
@@ -19,6 +25,7 @@ class UserModel extends Connection
     {
         parent::__construct();
     }
+
 
     /**
      * Checks if a value is unique in the user table
@@ -33,6 +40,18 @@ class UserModel extends Connection
         // TODO: replace by exists().
         $result = $this->getSingleAsClass($sql, [$value, $userId], 'App\Entity\User');
         return $result === null;
+    }
+
+
+    /**
+     * Get all users. Returns an array of standard objects.
+     * @return array
+     */
+    public function getAllUsers(): array
+    {
+        $sql = "SELECT * FROM user WHERE role != 'owner' ORDER BY role";
+        $allUsers = $this->getMultipleAsObjectsArray($sql, []);
+        return $allUsers;
     }
 
     /**
@@ -57,6 +76,7 @@ class UserModel extends Connection
         }
         return $this->user;
     }
+
 
     /**
      * Returns a user object based on its email.
@@ -86,6 +106,7 @@ class UserModel extends Connection
         }
     }
 
+
     /**
      * Create a user providing a user object
      * @param User $user
@@ -107,6 +128,7 @@ class UserModel extends Connection
         );
         return $createdUserId;
     }
+
 
     /**
      * Updates a user in database
@@ -133,6 +155,7 @@ class UserModel extends Connection
         );
     }
 
+
     /**
      * Checks if a user exists in database based on its id
      * @param int $userId
@@ -143,6 +166,7 @@ class UserModel extends Connection
         $sql = "SELECT EXISTS(SELECT * FROM user WHERE user_id = ?)";
         return $this->exists($sql, [$userId]);
     }
+
 
     /**
      * Checks if a user exists in database based on its pseudo
@@ -155,6 +179,7 @@ class UserModel extends Connection
         return $this->exists($sql, [$userPseudo]);
     }
 
+
     /**
      * Checks if a user exists in database based on its email
      * @param string $userEmail
@@ -165,6 +190,7 @@ class UserModel extends Connection
         $sql = "SELECT EXISTS(SELECT * FROM user WHERE email = ?)";
         return $this->exists($sql, [$userEmail]);
     }
+
 
     /**
      * Checks if a user exists in database based on its email and password
@@ -177,4 +203,6 @@ class UserModel extends Connection
         $sql = 'SELECT EXISTS(SELECT * FROM user WHERE email = ? AND pass = ?)';
         return $this->exists($sql, [$userEmail, $userPassword]);
     }
+
+
 }

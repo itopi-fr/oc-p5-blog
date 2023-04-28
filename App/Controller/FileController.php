@@ -107,7 +107,7 @@ class FileController extends MainController
     {
         try {
             // Check that this file exists in the database.
-            if (!(new FileModel())->fileExistsById($fileId)) {
+            if ($this->fileExistsById($fileId) === false) {
                 return $this->res->ko('delete-file', 'delete-file-ko-not-found');
             }
 
@@ -131,4 +131,17 @@ class FileController extends MainController
             return $this->res->ko('delete-file', 'delete-file-ko-not-deleted', $e);
         }
     }
+
+
+    /**
+     * Check that a file exists in the database provided its id.
+     * @param int $fileId
+     * @return bool
+     */
+    public function fileExistsById(int $fileId): bool
+    {
+        return (new FileModel())->fileExistsById($fileId);
+    }
+
+
 }
