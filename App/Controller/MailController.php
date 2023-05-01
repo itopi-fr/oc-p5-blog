@@ -115,7 +115,7 @@ class MailController extends MainController
             // Check mailToName.
             if ($this->isSet($this->mailToName) === false) {
                 return $this->res->ko("send-email", 'send-email-ko-missing-mail-to-name');
-            } elseif (!$this->isAlphaNumDashUnderscore($this->mailToName)) {
+            } elseif (!$this->isAlphaNumSpacesPunct($this->mailToName)) {
                 return $this->res->ko("send-email", 'send-email-ko-invalid-format-mail-to-name');
             }
 

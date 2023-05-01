@@ -1,0 +1,34 @@
+{% block form_contact_owner %}
+    {% use "blocks/block_res_message.twig" %}
+    {% set getType = "" %}
+    {% set getMess = "" %}
+    {% set targetType = "form-contact-owner" %}
+
+    {# Messages #}
+    {{ block('res_message') }}
+
+    {# Form #}
+    {% if formsent != true %}
+        <form action="/contact/owner" method="POST" enctype="multipart/form-data" class="row form-general contact-owner">
+
+            <div class="col-12">
+                <div class="form-group">
+                    <label for="mail-subject"><h5>Sujet</h5></label>
+                    <input type="text" name="mail-subject" class="form-control mail-subject" id="mail-subject" value="test mail" placeholder="Sujet" style="width: 100%;">
+                </div>
+
+                <div class="form-group">
+                    <label for="mail-content"><h5>Votre message</h5></label>
+                    <textarea name="mail-content" class="form-control mail-content" id="mail-content" placeholder="Message" rows="10" style="width: 100%;">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat
+                    </textarea>
+                </div>
+            </div>
+
+            <div class="form-group text-center">
+                <input type="submit" name="submit-contact-owner"/>
+            </div>
+
+        </form>
+    {% endif %}
+
+{% endblock %}

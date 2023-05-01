@@ -3,6 +3,7 @@
 namespace App\Routing;
 
 use App\Controller\CommentController;
+use App\Controller\ContactController;
 use App\Controller\HomeController;
 use App\Controller\ErrorPageController;
 use App\Controller\MainController;
@@ -93,6 +94,11 @@ class Router
 
                 case ('comment'):
                     $controller = new CommentController();
+                    $controller->index($this->pageAction);
+                    break;
+
+                case ('contact'):
+                    $controller = new ContactController();
                     $controller->index($this->pageAction);
                     break;
 

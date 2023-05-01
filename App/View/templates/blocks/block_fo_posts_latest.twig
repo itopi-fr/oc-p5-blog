@@ -1,4 +1,4 @@
-{% block lastposts %}
+{% block posts_latest %}
     <!-- Last Posts -->
     <section class="row gx-4 gx-lg-5 justify-content-center last-posts">
         <h2>Derniers articles</h2>
@@ -7,7 +7,7 @@
             {%  for post in lastposts %}
                 <article class="post-preview">
                     <a href="/article/{{ post.slug }}">
-                        <h2 class="post-title">{{ post.title }}</h2>
+                        <h3 class="post-title">{{ post.title }}</h3>
                     </a>
                     <p class="post-meta">
                         Le {{ post.last_update|date('d/m/Y') }}

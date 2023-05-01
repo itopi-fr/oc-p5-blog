@@ -12,7 +12,27 @@ a:hover {
 }
 
 h2 {
-  margin-top: 25px;
+  margin-top: 25px !important;
+}
+
+/* Header */
+header.masthead {
+  background-image: url("/public/assets/img/home-bg.jpg");
+}
+
+.site-heading {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.owner-photo img {
+  width: 100%;
+  height: auto;
+}
+
+.owner-cv {
+  margin-top: 50px;
 }
 
 /* Form */
@@ -28,6 +48,12 @@ label {
 
 .form-group {
   padding: 10px;
+}
+
+.contact-owner {
+  margin: 75px 0 25px;
+  background-color: #2e255b;
+  color: #fff;
 }
 
 /* Vardump */

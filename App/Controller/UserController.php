@@ -562,20 +562,20 @@ class UserController extends MainController
 
 
     /**
-     * @param int $userId
+     * @param int $toUserId
      * @param string $subject
      * @param string $content
      * @return Res
      */
-    public function sendEmailToUser(int $userId, string $subject, string $content): Res
+    public function sendEmailToUser(int $toUserId, string $subject, string $content): Res
     {
-        $user = $this->userModel->getUserById($userId);
-        if ($user === null) {
+        $userTo = $this->userModel->getUserById($toUserId);
+        if ($userTo === null) {
             $this->res->ko('send-email-to-user', 'send-email-to-user-ko-user-not-found');
             return $this->res;
         }
-        $mailTo = $user->getEmail();
-        $mailToName = $user->getPseudo();
+        $mailTo = $userTo->getEmail();
+        $mailToName = $userTo->getPseudo();
         $mailSubject = $subject;
         $mailContent = $content;
 
@@ -588,7 +588,55 @@ class UserController extends MainController
             return $this->res;
         }
 
-        $this->res->ok('send-email-to-user', 'send-email-to-user-ok', $user);
+        $this->res->ok('send-email-to-user', 'send-email-to-user-ok', $userTo);
+        return $this->res;
+    }
+
+
+    /**
+     * @param string $fromUserEmail
+     * @param string $subject
+     * @param string $content
+     * @return Res
+     */
+    public function sendEmailToOwner(string $fromUserEmail, string $subject, string $content): Res
+    {
+        // User sending the mail.
+        $userFrom = $this->userModel->getUserByEmail($fromUserEmail);
+        if ($userFrom === null) {
+            $this->res->ko('form-contact-owner', 'form-contact-owner-ko-user-not-found');
+            return $this->res;
+        }
+
+        // MailTo : Owner of the blog.
+        $mailToOwnerMail = $this->sGlob->getEnv('BLOG_CONTACT_EMAIL');
+
+        // Build mail.
+        $mailTo = $mailToOwnerMail;
+        $mailToName = "Admin " . $this->sGlob->getEnv('BLOG_NAME');
+        $mailSubject = "[" . $this->sGlob->getEnv('BLOG_NAME') . " - Contact] " . $subject;
+
+        // Build mail link.
+        $replyHref = '<a href="';
+        $replyHref .= $this->sGlob->getEnv('BLOG_URL') . '/owner/user-sendmail/' . $userFrom->getUserId();
+        $replyHref .= '">Répondre à ' . $userFrom->getPseudo() . '</a><br /><br />';
+
+        // Build mail content.
+        $mailContent = 'Message de ' . $userFrom->getPseudo() . ' (' . $userFrom->getEmail() . '):<br /><br />';
+        $mailContent .= 'Vous pouvez répondre à cet utilisateur en cliquant sur ce lien :<br />' . $replyHref;
+        $mailContent .= "Message :<br />";
+        $mailContent .= $content;
+
+        // Send mail.
+        $mailController = new MailController();
+        $resSendMail = $mailController->sendEmail($mailTo, $mailToName, $mailSubject, $mailContent);
+
+        if ($resSendMail->isErr() === true) {
+            $this->res->ko('form-contact-owner', $resSendMail->getMsg()['send-email']);
+            return $this->res;
+        }
+
+        $this->res->ok('form-contact-owner', 'form-contact-owner-ok', $userFrom);
         return $this->res;
     }
 
