@@ -595,11 +595,13 @@ class UserController extends MainController
 
     /**
      * @param string $fromUserEmail
+     * @param string $firstname
+     * @param string $lastname
      * @param string $subject
      * @param string $content
      * @return Res
      */
-    public function sendEmailToOwner(string $fromUserEmail, string $subject, string $content): Res
+    public function sendEmailToOwner(string $fromUserEmail, string $firstname, string $lastname, string $subject, string $content): Res
     {
         // User sending the mail.
         $userFrom = $this->userModel->getUserByEmail($fromUserEmail);
@@ -622,7 +624,8 @@ class UserController extends MainController
         $replyHref .= '">Répondre à ' . $userFrom->getPseudo() . '</a><br /><br />';
 
         // Build mail content.
-        $mailContent = 'Message de ' . $userFrom->getPseudo() . ' (' . $userFrom->getEmail() . '):<br /><br />';
+        $mailContent = 'Message de ' . $userFrom->getPseudo() . ' (' . $userFrom->getEmail() . ').<br />';
+        $mailContent .= 'Nom : ' . $firstname . ' ' .  $lastname . '<br /><br />';
         $mailContent .= 'Vous pouvez répondre à cet utilisateur en cliquant sur ce lien :<br />' . $replyHref;
         $mailContent .= "Message :<br />";
         $mailContent .= $content;

@@ -1,20 +1,21 @@
 {% block posts_latest %}
     <!-- Last Posts -->
-    <section class="row gx-4 gx-lg-5 justify-content-center last-posts">
+    <section class="row gx-4 gx-lg-5 justify-content-center section-general section-lined last-posts">
         <h2>Derniers articles</h2>
-        <div class="col-md-10 col-lg-8 col-xl-7">
+        <div class="col-md-10">
 
             {%  for post in lastposts %}
-                <article class="post-preview">
-                    <a href="/article/{{ post.slug }}">
-                        <h3 class="post-title">{{ post.title }}</h3>
-                    </a>
-                    <p class="post-meta">
-                        Le {{ post.last_update|date('d/m/Y') }}
-                    </p>
-                <div class="post-content">
-                    {{ post.excerpt }}
-                </article>
+                <a href="/article/{{ post.slug }}" class="article-block-link">
+                    <article class="post-preview trans-quick trans-bgclr trans-trnsf">
+                        <h3 class="post-title trans-long trans-clr">{{ post.title }}</h3>
+                        <p class="post-meta trans-long trans-clr">
+                            Le {{ post.last_update|date('d/m/Y') }}
+                        </p>
+                        <div class="post-excerpt trans-long trans-clr">
+                            {{ post.excerpt }}
+                        </div>
+                    </article>
+                </a>
 
                 {% if not loop.last %}
                     <hr class="my-4"/>

@@ -144,11 +144,11 @@ class PostModel extends Connection
             return null;
         }
 
-        // TODO: add dates.
-        $sql = 'UPDATE post SET title = ?, slug = ?, content = ?, last_update = ?, status = ? WHERE post_id = ?';
+        $sql = 'UPDATE post SET feat_img_id = ?, title = ?, slug = ?, content = ?, last_update = ?, status = ? WHERE post_id = ?';
         return $this->update(
             $sql,
             [
+                $post->getFeatImgId(),
                 $post->getTitle(),
                 $post->getSlug(),
                 $post->getContent(),

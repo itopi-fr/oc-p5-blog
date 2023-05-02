@@ -32,7 +32,7 @@ class HomeController extends MainController
      */
     public function index()
     {
-        $this->twigData['lastposts'] = $this->postModel->getLastPubPosts(2);
+        $this->twigData['lastposts'] = $this->postModel->getLastPubPosts(3);
         $this->twig->display("pages/page_fo_home.twig", $this->twigData);
     }
 }

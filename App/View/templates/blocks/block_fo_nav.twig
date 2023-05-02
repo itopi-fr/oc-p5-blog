@@ -9,16 +9,26 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ms-auto py-4 py-lg-0">
-                    <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/">Accueil</a></li>
-                    <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/articles">Articles</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link px-lg-3 py-3 py-lg-4 trans-quick trans-clr trans-trnsf" href="/">Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-lg-3 py-3 py-lg-4 trans-quick trans-clr trans-trnsf" href="/articles">Articles</a>
+                    </li>
                     {% if usrid is not null %}
-                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/user/home">Profil</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link px-lg-3 py-3 py-lg-4 trans-quick trans-clr trans-trnsf" href="/user/home">Profil</a>
+                        </li>
                     {% else %}
-                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/user/connexion">Connexion</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link px-lg-3 py-3 py-lg-4 trans-quick trans-clr trans-trnsf" href="/user/connexion">Connexion</a>
+                        </li>
                     {% endif %}
 
                     {% if userobj.getRole() == 'owner' %}
-                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="/owner">Admin</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link px-lg-3 py-3 py-lg-4 trans-quick trans-clr trans-trnsf" href="/owner">Admin</a>
+                        </li>
                     {% endif %}
                 </ul>
             </div>

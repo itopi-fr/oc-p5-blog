@@ -1,4 +1,4 @@
-/* General */
+/* ---------------------------------------------------- General */
 a {
   color: #0085a1;
 }
@@ -8,14 +8,113 @@ button > a {
 }
 
 a:hover {
-  color: #48d0ee;
+  color: #48d0ee !important;
+}
+
+h1 {
+  margin-top: 40px !important;
 }
 
 h2 {
-  margin-top: 25px !important;
+  margin-top: 36px !important;
 }
 
-/* Header */
+h3 {
+  font-size: 30px !important;
+}
+
+.strong {
+  font-weight: 700 !important;
+}
+
+
+
+@media (max-width: 767px) {
+  body {
+    font-size: 1rem;
+  }
+}
+
+/* ----------------------------------------------- Sections Base */
+.section-general {
+  margin: 25px 0;
+  padding: 25px;
+}
+
+.section-lined {
+  border-left: 1px solid rgba(46, 37, 91, 0.37);
+}
+
+.section-blue {
+  background-color: #2e255b;
+  color: #fff;
+}
+
+/* --------------------------------------------- Transition Base */
+.trans-quick {
+  transition-duration: .3s;
+  transition-timing-function: ease-in-out;
+}
+.trans-mid {
+  transition-duration: .45s;
+  transition-timing-function: ease-in-out;
+}
+.trans-long {
+  transition-duration: .55s;
+  transition-timing-function: ease-in-out;
+}
+
+/* Transition : color only */
+.trans-clr {
+  transition-property: color;
+}
+
+/* Transition : background-color only */
+.trans-bgclr {
+  transition-property: background-color;
+}
+
+/* Transition : transform only */
+.trans-trnsf {
+  transition-property: transform;
+}
+
+/* Transition : color + background-color */
+.trans-clr.trans-bgclr {
+  transition-property: color, background-color;
+}
+
+/* Transition : color + transform */
+.trans-clr.trans-trnsf {
+  transition-property: color, transform;
+}
+
+/* Transition : background-color + transform */
+.trans-bgclr.trans-trnsf {
+  transition-property: background-color, transform;
+}
+
+/* Transition : color + background-color + transform */
+.trans-bgclr.trans-trnsf {
+  transition-property: color, background-color, transform;
+}
+
+
+/* ------------------------------------------------------ Navbar */
+.navbar {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.nav-link {
+  color: #fff;
+}
+.nav-link:hover {
+  color: #48d0ee;
+  transform: scale(1.1);
+}
+
+/* ------------------------------------------------------ Header */
 header.masthead {
   background-image: url("/public/assets/img/home-bg.jpg");
 }
@@ -35,7 +134,14 @@ header.masthead {
   margin-top: 50px;
 }
 
-/* Form */
+.owner-cv > a {
+  color: #fff;
+}
+.owner-cv > a:hover {
+  color: #48d0ee;
+}
+
+/* /* ---------------------------------------------------- Forms */
 label {
   display: inline;
 }
@@ -50,13 +156,120 @@ label {
   padding: 10px;
 }
 
-.contact-owner {
-  margin: 75px 0 25px;
-  background-color: #2e255b;
-  color: #fff;
+.img-thumbnail {
+  width: 30px;
+  height: auto;
+  padding: 0;
 }
 
-/* Vardump */
+
+
+
+/* -------------------------------------------------- Posts List */
+.post-list article {
+  padding: 10px;
+  background-color: #fff;
+}
+
+.post-list article:hover {
+  background-color: #f4f8fd;
+  transform: scale(1.01);
+}
+
+.post-list .post-title,
+.post-list .post-meta,
+.post-list .post-excerpt {
+  color: #3d4b7a;
+}
+
+.post-list article:hover .post-title,
+.post-list article:hover .post-meta,
+.post-list article:hover .post-excerpt {
+  color: #652e5f;
+}
+
+/* -------------------------------------------------- Last Posts */
+.last-posts article {
+  padding: 10px;
+  background-color: #fff;
+}
+.last-posts article:hover {
+  background-color: #f4f8fd;
+  transform: scale(1.01);
+}
+
+.last-posts .post-title,
+.last-posts .post-meta,
+.last-posts .post-excerpt {
+  color: #3d4b7a;
+}
+
+.last-posts article:hover .post-title,
+.last-posts article:hover .post-meta,
+.last-posts article:hover .post-excerpt {
+  color: #652e5f;
+}
+
+
+/* ------------------------------------------------- Post Single */
+.post-single-feat-img {
+  width: 100%;
+  height: auto;
+}
+
+/* -------------------------------------------------Owner Manage */
+.owner-menu {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  background-color: #f3f3f3;
+}
+
+@media (max-width: 991px) {
+  .manage-item {
+    border: 1px solid #ccc;
+    margin-bottom: 15px;
+    padding: 5px;
+  }
+}
+
+/* -----------------------------------------Owner Manage : Posts */
+
+.manage-posts {
+  margin-top: 25px;
+}
+
+.manage-posts-btn-create {
+  margin-bottom: 25px;
+}
+
+.form-control.post-title,
+.form-control.post-slug {
+  width: 400px;
+}
+
+.form-control.post-content {
+  width: 100%;
+}
+
+.post-image-input {
+  margin-top: 25px;
+}
+
+.img-post-edit {
+  width: 50%;
+  height: auto;
+}
+
+/* ------------------------------------- Owner Manage : Comments */
+.manage-comments .status-valid {
+  background-color: #edffe4;
+}
+
+.manage-comments .status-wait {
+  background-color: #fff092;
+}
+
+/* ----------------------------------------------------- Vardump */
 .vardump {
   position: absolute;
   width: 95%;
@@ -100,62 +313,31 @@ label {
   transform: translate(-50%, -50%);
 }
 
-/* Forms */
-.img-thumbnail {
-  width: 30px;
-  height: auto;
-  padding: 0;
+/* ----------------------------------------------- Responsive */
+@media (max-width: 767px) {
+  header.masthead {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+
+  .section-general {
+    margin: 15px 0;
+    padding: 5px;
+  }
 }
 
-/* Post Single */
-.post-single-feat-img {
-  width: 100%;
-  height: auto;
+@media (min-width: 768px) and (max-width: 991px) {
+  .section-general {
+    margin: 15px 0;
+    padding: 5px;
+  }
 }
 
-/* Owner Manage */
-.owner-menu {
-  margin-top: 20px;
-  margin-bottom: 20px;
-  background-color: #f3f3f3;
-}
-
-.manage-posts {
-  margin-top: 25px;
-}
-
-/* Owner Manage : Posts */
-.form-control.post-title,
-.form-control.post-slug {
-  width: 400px;
-}
-
-.form-control.post-content {
-  width: 100%;
-}
-
-.post-image-input {
-  margin-top: 25px;
-}
-
-.img-post-edit {
-  width: 50%;
-  height: auto;
-}
-
-/* Owner Manage : Comments */
-.manage-comments .status-valid {
-  background-color: #edffe4;
-}
-
-.manage-comments .status-wait {
-  background-color: #fff092;
-}
-
-/* Surcharge Starter Theme */
 @media (min-width: 992px) {
   header.masthead {
     padding-top: 4rem;
     padding-bottom: 4rem;
   }
 }
+
+

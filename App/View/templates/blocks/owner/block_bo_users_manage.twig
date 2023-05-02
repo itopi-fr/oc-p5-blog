@@ -1,41 +1,49 @@
 {% block bo_users_manage %}
     <section class="row gx-4 gx-lg-5 justify-content-center manage-comments">
-        <div class="row">
-            <div class="col-2"><strong>Actions</strong></div>
-            <div class="col-2"><strong>Pseudo</strong></div>
-            <div class="col-2"><strong>Email</strong></div>
-            <div class="col-6"><strong>Statut</strong></div>
+        <div class="row d-none d-lg-flex">
+            <div class="col-lg-2"><strong>Actions</strong></div>
+            <div class="col-lg-2"><strong>Pseudo</strong></div>
+            <div class="col-lg-2"><strong>Email</strong></div>
+            <div class="col-lg-6"><strong>Statut</strong></div>
         </div>
 
         {% for user in users |slice(0, 100) %}
-            <div class="row status-{{ user.getRole() }}">
+            <div class="row manage-item status-{{ user.getRole() }}">
 
-                <div class="col-2">
+                <div class="col-lg-2">
                     {# User active or waiting #}
                     {% if (user.getRole() == 'user' or user.getRole() == 'user-validation') %}
-                        <a href="/owner/user-mute/{{ user.getUserId() }}"><i class="fa-solid fa-comment-slash"></i></a>&nbsp; | &nbsp;
-                        <a href="/owner/user-ban/{{ user.getUserId() }}"><i class="fa-solid fa-user-slash"></i></a>&nbsp; | &nbsp;
+                        <a href="/owner/user-mute/{{ user.getUserId() }}"><i class="fa-solid fa-comment-slash"></i></a>&nbsp;
+                        <a href="/owner/user-ban/{{ user.getUserId() }}"><i class="fa-solid fa-user-slash"></i></a>&nbsp;
 
                     {# User Muted #}
                     {% elseif user.getRole() == 'user-muted' %}
-                        <a href="/owner/user-activate/{{ user.getUserId() }}"><i class="fa-solid fa-user-check"></i></a>&nbsp; | &nbsp;
-                        <a href="/owner/user-ban/{{ user.getUserId() }}"><i class="fa-solid fa-user-slash"></i></a>&nbsp; | &nbsp;
+                        <a href="/owner/user-activate/{{ user.getUserId() }}"><i class="fa-solid fa-user-check"></i></a>&nbsp;
+                        <a href="/owner/user-ban/{{ user.getUserId() }}"><i class="fa-solid fa-user-slash"></i></a>&nbsp;
 
                     {# User Banned #}
                     {% elseif user.getRole() == 'user-banned' %}
-                        <a href="/owner/user-activate/{{ user.getUserId() }}"><i class="fa-solid fa-user-check"></i></a>&nbsp; | &nbsp;
-                        <a href="/owner/user-mute/{{ user.getUserId() }}"><i class="fa-solid fa-comment-slash"></i></a>&nbsp; | &nbsp;
+                        <a href="/owner/user-activate/{{ user.getUserId() }}"><i class="fa-solid fa-user-check"></i></a>&nbsp;
+                        <a href="/owner/user-mute/{{ user.getUserId() }}"><i class="fa-solid fa-comment-slash"></i></a>&nbsp;
                     {% endif %}
 
-                    <a href="/owner/user-sendmail/{{ user.getUserId() }}"><i class="fa-solid fa-paper-plane"></i></a>&nbsp; | &nbsp;
+                    <a href="/owner/user-sendmail/{{ user.getUserId() }}"><i class="fa-solid fa-paper-plane"></i></a>&nbsp;
 
                 </div>
 
-                <div class="col-2">{{ user.getPseudo() }}</div>
-                <div class="col-2">{{ user.getEmail() }}</div>
+                <div class="col-lg-2">
+                    <span class="d-lg-none">Pseudo : </span>
+                    {{ user.getPseudo() }}
+                </div>
+
+                <div class="col-lg-2">
+                    <span class="d-lg-none">Email : </span>
+                    {{ user.getEmail() }}
+                </div>
 
                 {# TODO: Temp - do it on php side #}
-                <div class="col-6">
+                <div class="col-lg-6">
+                    <span class="d-lg-none">Statut : </span>
                     {% if user.getRole() == 'user' %}
                         Utilisateur actif
                     {% elseif user.getRole() == 'user-validation' %}

@@ -57,6 +57,28 @@ class FormContactOwner extends FormController
             return $this->res->ko('form-contact-owner', $resCheckSubject->getMsg()['form-contact-owner']);
         }
 
+        // Mail Firstname : checks.
+        $resCheckSubject = $this->checkPostedText(
+            'form-contact-owner',
+            'mail-firstname',
+            3,
+            64
+        );
+        if ($resCheckSubject->isErr() === true) {
+            return $this->res->ko('form-contact-owner', $resCheckSubject->getMsg()['form-contact-owner']);
+        }
+
+        // Mail Lastname : checks.
+        $resCheckSubject = $this->checkPostedText(
+            'form-contact-owner',
+            'mail-lastname',
+            3,
+            64
+        );
+        if ($resCheckSubject->isErr() === true) {
+            return $this->res->ko('form-contact-owner', $resCheckSubject->getMsg()['form-contact-owner']);
+        }
+
         // Mail Message : checks.
         $resCheckContent = $this->checkPostedText(
             'form-contact-owner',
@@ -71,13 +93,21 @@ class FormContactOwner extends FormController
         // TODO: add captcha check.
 
         // -------------------------------------------------------------------- Set the data.
+        $firstname = $this->sGlob->getPost('mail-firstname');
+        $lastname = $this->sGlob->getPost('mail-lastname');
         $subject = $this->sGlob->getPost('mail-subject');
         $message = $this->sGlob->getPost('mail-content');
 
         // -------------------------------------------------------------------- Send the email.
         $fromUserMail = $this->userModel->getUserById($fromUserId)->getEmail();
 
-        $resSendMail = $this->userController->sendEmailToOwner($fromUserMail, $subject, $message);
+        $resSendMail = $this->userController->sendEmailToOwner(
+            $fromUserMail,
+            $firstname,
+            $lastname,
+            $subject,
+            $message
+        );
         if ($resSendMail->isErr() === true) {
             return $this->res->ko('form-contact-owner', $resSendMail->getMsg()['form-contact-owner']);
         }

@@ -144,7 +144,6 @@ class CommentController extends MainController
     public function createComment(Comment $comment): Res
     {
         $userRole = $this->sGlob->getSes('userobj')->getRole();
-        $this->dump($userRole);
         if ($userRole !== 'user' && $userRole !== 'owner') {
             return $this->res->ko('form-comment-create', 'form-comment-create-ko-not-allowed');
         }

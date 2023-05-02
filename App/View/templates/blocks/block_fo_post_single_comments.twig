@@ -1,25 +1,33 @@
 {% block fo_post_single_comments %}
     {% use "forms/form_post_comment.twig" %}
 
-<h3>Commentaires</h3>
-<div class="post-comments">
-    {% for comment in post.getComments() %}
-    <div class="post-comment row">
-        <div class="post-comment-author col-4 col-md-2">
-            <img src="{{ comment.authorUser().getAvatarFile().getUrl() }}" alt="{{ comment.author.name }}" width="50px" />
-            <span class="post-comment-author">{{ comment.authorUser().getPseudo() }}</span>
+    {# Comments Display #}
+    <section class="row gx-4 gx-lg-5 justify-content-center section-general post-single-comment-list">
+        <h3>Commentaires</h3>
+        <div class="post-comments">
+            {% for comment in post.getComments() %}
+                <div class="post-comment row">
+                    <div class="post-comment-author col-4 col-md-2">
+                        <img src="{{ comment.authorUser().getAvatarFile().getUrl() }}" alt="{{ comment.author.name }}" width="50px" />
+                        <span class="post-comment-author">{{ comment.authorUser().getPseudo() }}</span>
+                    </div>
+                    <div class="post-comment-content col-8 col-md-10">
+                        {{ comment.content }}
+                        <div class="post-comment-date text-end">le {{ comment.getCreatedDate()|date('d/m/Y') }} à {{ comment.getCreatedDate()|date('H:i') }}</div>
+                    </div>
+                </div>
+                <hr />
+            {% endfor %}
         </div>
-        <div class="post-comment-content col-8 col-md-10">
-            {{ comment.content }}
-            <div class="post-comment-date text-end">le {{ comment.getCreatedDate()|date('d/m/Y') }} à {{ comment.getCreatedDate()|date('H:i') }}</div>
-        </div>
-    </div>
-    <hr />
-    {% endfor %}
-</div>
-{#    {% if userobj is not null %}#}
-        <h3>Poster un commentaire</h3>
-        {{ block('form_post_comment') }}
-{#    {% endif %}#}
+    </section>
+
+    {# New Comment Form #}
+    <section class="row gx-4 gx-lg-5 justify-content-center section-general section-blue post-single-comment"
+        {% if userobj is not null %}
+            <h3>Poster un commentaire</h3>
+            {{ block('form_post_comment') }}
+        {% endif %}
+    </section>
+
 
 {% endblock %}

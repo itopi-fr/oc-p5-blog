@@ -12,24 +12,25 @@
 {% endblock %}
 
 {% block content %}
+    <section class="row gx-4 gx-lg-5 justify-content-center section-general section-lined user-profile">
 
-    {% if usrid > 0 %}
+        {% if usrid > 0 %}
 
-        {{ block('form_user_logout') }}
+            {{ block('form_user_logout') }}
 
-        <div class="col-md-6">
-            {{ block('form_user_profile') }}
-            {{ block('form_user_password') }}
-        </div>
+            <div class="col-md-6">
+                {{ block('form_user_profile') }}
+                {{ block('form_user_password') }}
+            </div>
 
-        <div class="col-md-6">
-            {% if owner %}
-                {{ block('form_owner_info') }}
-            {% endif %}
-        </div>
+            <div class="col-md-6">
+                {% if owner %}
+                    {{ block('form_owner_info') }}
+                {% endif %}
+            </div>
 
-    {% else %}
-        {{ block('form_user_login') }}
-    {% endif %}
-
+        {% else %}
+            {{ block('form_user_login') }}
+        {% endif %}
+    </section>
 {% endblock %}
