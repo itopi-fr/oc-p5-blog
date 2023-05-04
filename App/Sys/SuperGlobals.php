@@ -77,6 +77,7 @@ class SuperGlobals
     public function setSes(string $varName, mixed $varValue): void
     {
         $_SESSION[$varName] = $varValue;
+        $this->defineSg('ses');
     }
 
 
@@ -165,17 +166,40 @@ class SuperGlobals
 
     /**
      * Function to define superglobals for use locally.
-     *
+     * @param string|null $which
      * @return void
      */
-    private function defineSg(): void
+    private function defineSg(string|null $which = null): void
     {
-        $this->sgEnv = (isset($_ENV) === true) ? $_ENV : null;
-        $this->sgSes = (isset($_SESSION) === true) ? $_SESSION : null;
-        $this->sgGet = (isset($_GET) === true) ? $_GET : null;
-        $this->sgPost = (isset($_POST) === true) ? $_POST : null;
-        $this->sgFiles = (isset($_FILES) === true) ? $_FILES : null;
-        $this->sgServer = (isset($_SERVER) === true) ? $_SERVER : null;
+        if ($which === null) {
+            $this->sgEnv = (isset($_ENV) === true) ? $_ENV : null;
+            $this->sgSes = (isset($_SESSION) === true) ? $_SESSION : null;
+            $this->sgGet = (isset($_GET) === true) ? $_GET : null;
+            $this->sgPost = (isset($_POST) === true) ? $_POST : null;
+            $this->sgFiles = (isset($_FILES) === true) ? $_FILES : null;
+            $this->sgServer = (isset($_SERVER) === true) ? $_SERVER : null;
+        } else {
+            switch ($which) {
+                case 'env':
+                    $this->sgEnv = (isset($_ENV) === true) ? $_ENV : null;
+                    break;
+                case 'ses':
+                    $this->sgSes = (isset($_SESSION) === true) ? $_SESSION : null;
+                    break;
+                case 'get':
+                    $this->sgGet = (isset($_GET) === true) ? $_GET : null;
+                    break;
+                case 'post':
+                    $this->sgPost = (isset($_POST) === true) ? $_POST : null;
+                    break;
+                case 'files':
+                    $this->sgFiles = (isset($_FILES) === true) ? $_FILES : null;
+                    break;
+                case 'server':
+                    $this->sgServer = (isset($_SERVER) === true) ? $_SERVER : null;
+                    break;
+            }
+        }
     }
 
 

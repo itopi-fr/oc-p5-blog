@@ -1,0 +1,13 @@
+{% block button_post_delete %}
+    {# Button #}
+    <a href="javascript:void(0)"
+            id="{{ post.getPostId() }}"
+            data-bs-toggle="modal"
+            data-bs-target="#post-delete-modal"
+            data-post-id="{{ post.getPostId() }}"
+            data-post-title="{{ post.getTitle() }}"
+            onclick=fillModal(this.id)
+    >
+        <i class="fa-solid fa-trash"></i>
+    </a>
+{% endblock %}

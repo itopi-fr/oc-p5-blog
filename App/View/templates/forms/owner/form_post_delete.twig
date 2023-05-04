@@ -1,0 +1,11 @@
+{% block form_post_delete %}
+    {% use "blocks/block_res_message.twig" %}
+    {% set getType = "" %}
+    {% set getMess = "" %}
+    {% set targetType = "post-delete" %}
+
+    {# Messages #}
+    {{ block('res_message') }}
+
+
+{% endblock %}

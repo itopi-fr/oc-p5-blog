@@ -103,6 +103,14 @@ class FormUserProfile extends FormController
         $this->res = $this->checkPostedText('owner-profile', 'lastname', 4, 30);
         $this->res = $this->checkPostedText('owner-profile', 'catchphrase', 4, 254);
 
+        if (empty($this->sGlob->getPost('sn-github')) === false) {
+            $this->res = $this->checkPostedUrl('owner-profile', 'sn-github');
+        }
+
+        if (empty($this->sGlob->getPost('sn-linkedin')) === false) {
+            $this->res = $this->checkPostedUrl('owner-profile', 'sn-linkedin');
+        }
+
         // File-cv : checks.
         $this->res = $this->checkPostedFileDoc(
             'owner-profile',
@@ -127,6 +135,18 @@ class FormUserProfile extends FormController
             $userOwner->setFirstName($this->sGlob->getPost('firstname'));
             $userOwner->setLastName($this->sGlob->getPost('lastname'));
             $userOwner->setCatchPhrase($this->sGlob->getPost('catchphrase'));
+
+            if (empty($this->sGlob->getPost('sn-github')) === false) {
+                $userOwner->setSnGithub($this->sGlob->getPost('sn-github'));
+            } else {
+                $userOwner->setSnGithub(null);
+            }
+
+            if (empty($this->sGlob->getPost('sn-linkedin')) === false) {
+                $userOwner->setSnLinkedin($this->sGlob->getPost('sn-linkedin'));
+            } else {
+                $userOwner->setSnLinkedin(null);
+            }
 
             // Owner CV file : treatment.
             $cvFile = $this->sGlob->getFiles('file-cv');

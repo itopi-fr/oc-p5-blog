@@ -1,0 +1,14 @@
+{% block button_user_mute %}
+{#    <a href="/owner/user-mute/{{ user.getUserId() }}" ><i class="fa-solid fa-comment-slash"></i></a>#}
+    {# Button #}
+    <a href="javascript:void(0)"
+       id="mute-{{ user.getUserId() }}"
+       data-bs-toggle="modal"
+       data-bs-target="#user-modal"
+       data-user-id="{{ user.getUserId() }}"
+       data-user-pseudo="{{ user.getPseudo() }}"
+       onclick=fillModal(this.id)
+    >
+        <i class="fa-solid fa-comment-slash"></i>
+    </a>
+{% endblock %}

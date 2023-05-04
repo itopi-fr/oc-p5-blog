@@ -20,6 +20,10 @@ class OwnerInfo
 
     protected File $cv_file;
 
+    protected string $sn_github = '';
+
+    protected string $sn_linkedin = '';
+
 
     /**
      * --------------------------------------------------------------------------------------------------------- Getters
@@ -99,95 +103,121 @@ class OwnerInfo
 
 
     /**
-     * --------------------------------------------------------------------------------------------------------- Setters
+     * @return string
      */
+    public function getSnGithub(): string
+    {
+        return $this->sn_github;
+    }
 
 
     /**
-     * @param int $owner_id
-     * @return OwnerInfo
+     * @return string
      */
-    public function setOwnerId(int $owner_id): OwnerInfo
+    public function getSnLinkedin(): string
+    {
+        return $this->sn_linkedin;
+    }
+
+
+    /**
+     * --------------------------------------------------------------------------------------------------------- Setters
+     */
+    /**
+     * @param int $owner_id
+     * @return void
+     */
+    public function setOwnerId(int $owner_id): void
     {
         $this->owner_id = $owner_id;
-        return $this;
     }
 
 
     /**
      * @param string $first_name
-     * @return OwnerInfo
+     * @return void
      */
-    public function setFirstName(string $first_name): OwnerInfo
+    public function setFirstName(string $first_name): void
     {
         $this->first_name = $first_name;
-        return $this;
     }
 
 
     /**
      * @param string $last_name
-     * @return OwnerInfo
+     * @return void
      */
-    public function setLastName(string $last_name): OwnerInfo
+    public function setLastName(string $last_name): void
     {
         $this->last_name = $last_name;
-        return $this;
     }
 
 
     /**
      * @param string $catch_phrase
-     * @return OwnerInfo
+     * @return void
      */
-    public function setCatchPhrase(string $catch_phrase): OwnerInfo
+    public function setCatchPhrase(string $catch_phrase): void
     {
         $this->catch_phrase = $catch_phrase;
-        return $this;
     }
 
 
     /**
      * @param int $photo_file_id
-     * @return OwnerInfo
+     * @return void
      */
-    public function setPhotoFileId(int $photo_file_id): OwnerInfo
+    public function setPhotoFileId(int $photo_file_id): void
     {
         $this->photo_file_id = $photo_file_id;
-        return $this;
     }
 
 
     /**
      * @param File $photo_file
-     * @return OwnerInfo
+     * @return void
      */
-    public function setPhotoFile(File $photo_file): OwnerInfo
+    public function setPhotoFile(File $photo_file): void
     {
         $this->photo_file = $photo_file;
-        return $this;
     }
 
 
     /**
      * @param int $cv_file_id
-     * @return OwnerInfo
+     * @return void
      */
-    public function setCvFileId(int $cv_file_id): OwnerInfo
+    public function setCvFileId(int $cv_file_id): void
     {
         $this->cv_file_id = $cv_file_id;
-        return $this;
     }
 
 
     /**
      * @param File $cv_file
-     * @return OwnerInfo
+     * @return void
      */
-    public function setCvFile(File $cv_file): OwnerInfo
+    public function setCvFile(File $cv_file): void
     {
         $this->cv_file = $cv_file;
-        return $this;
+    }
+
+
+    /**
+     * @param string $sn_github
+     */
+    public function setSnGithub(string $sn_github): void
+    {
+        $this->sn_github = $sn_github;
+    }
+
+
+    /**
+     * @param string $sn_linkedin
+     */
+    public function setSnLinkedin(string $sn_linkedin): void
+    {
+        $this->sn_linkedin = $sn_linkedin;
     }
 
 }

@@ -1,11 +1,12 @@
 {% block bo_comments_manage %}
-    <section class="row gx-4 gx-lg-5 justify-content-center manage-comments">
+    <section class="row gx-4 gx-lg-5 justify-content-center manage-items manage-comments">
         <div class="row d-none d-lg-flex">
             <div class="col-lg-1"><strong>Actions</strong></div>
-            <div class="col-lg-2"><strong>Auteur</strong></div>
-            <div class="col-lg-5"><strong>Contenu</strong></div>
-            <div class="col-lg-2"><strong>Créé le</strong></div>
-            <div class="col-lg-2"><strong>Statut</strong></div>
+            <div class="col-lg-1"><strong>Auteur</strong></div>
+            <div class="col-lg-4"><strong>Article</strong></div>
+            <div class="col-lg-4"><strong>Contenu</strong></div>
+            <div class="col-lg-1"><strong>Créé le</strong></div>
+            <div class="col-lg-1"><strong>Statut</strong></div>
         </div>
 
         {% for comment in comments |slice(0, 100) %}
@@ -15,12 +16,26 @@
                     {% if comment.getStatus() != 'valid' %}
                         <a href="/owner/comment-validate/{{ comment.getComId() }}"><i class="fa-solid fa-thumbs-up"></i></a>&nbsp;
                     {% endif %}
-                    <a href="/owner/comment-delete/{{ comment.getComId() }}"><i class="fa-solid fa-trash"></i></a>
+                    <a href="javascript:void(0)"
+                       id="{{ comment.getComId() }}"
+                       data-bs-toggle="modal"
+                       data-bs-target="#comment-delete-modal"
+                       data-comment-id="{{ comment.getComId() }}"
+                       data-comment-content="{{ comment.getContent() }}"
+                       onclick=fillModal(this.id)
+                    >
+                        <i class="fa-solid fa-trash"></i>
+                    </a>
                 </div>
 
-                <div class="col-lg-2">
+                <div class="col-lg-1">
                     <span class="d-lg-none">Auteur : </span>
                     {{ comment.getAuthorUser().getPseudo() }}
+                </div>
+
+                <div class="col-lg-4">
+                    <span class="d-lg-none">Article : </span>
+                    <a href="/article/{{ comment.getPostSlug() }}" target="_blank">{{ comment.getPostTitle() }}</a>
                 </div>
 
                 <div class="col-lg-4">
@@ -29,13 +44,44 @@
                     <span class="d-lg-none"><br /><br /></span>
                 </div>
 
-                <div class="col-lg-2">{{ comment.getCreatedDate()|date('d/m/Y') }}</div>
+                <div class="col-lg-1">{{ comment.getCreatedDate()|date('d/m/Y') }}</div>
 
-                <div class="col-lg-2">
+                <div class="col-lg-1">
                     <span class="d-lg-none">Statut : </span>
                     {{ comment.getStatus() }}
                 </div>
             </div>
         {% endfor %}
     </section>
+
+    <!-- Modal -->
+    <div class="modal fade" id="comment-delete-modal" tabindex="-1" aria-labelledby="comment-delete-modal-label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="comment-delete-modal-label">Suppression d'un commentaire</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    Commentaire :<br />
+                    <span id="comment-content" class="alert-danger"></span><br /><br />
+                    Êtes-vous sûr.e de vouloir supprimer ce commentaire ?<br />
+                    Cette action est irréversible.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="alert" data-bs-dismiss="modal">Annuler</button>
+                    <a id="comment-href" href="/owner/comment-delete/{{ comment.getComId() }}" class="alert alert-danger"><i class="fa-solid fa-trash"></i>&nbsp;Supprimer</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        function fillModal(btnId) {
+            let commentId = document.getElementById(btnId).getAttribute('data-comment-id');
+            let commentContent = document.getElementById(btnId).getAttribute('data-comment-content');
+            document.getElementById('comment-content').innerHTML = commentContent;
+            document.getElementById('comment-href').href = '/owner/comment-delete/' + commentId;
+        }
+    </script>
 {% endblock %}

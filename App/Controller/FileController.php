@@ -29,6 +29,7 @@ class FileController extends MainController
     public function __construct()
     {
         parent::__construct();
+        $this->res = new Res();
     }
 
 

@@ -224,6 +224,10 @@ label {
   background-color: #f3f3f3;
 }
 
+.manage-items {
+  font-size: 1.1rem;
+}
+
 @media (max-width: 991px) {
   .manage-item {
     border: 1px solid #ccc;

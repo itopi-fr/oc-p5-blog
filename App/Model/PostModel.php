@@ -42,17 +42,7 @@ class PostModel extends Connection
     }
 
 
-    /**
-     * Check that a post exists providing its id
-     * @param int $postId
-     * @return bool
-     */
-    public function postExistsById(int $postId): bool
-    {
-        $req = "SELECT * FROM post WHERE post_id = ?";
-        $result = $this->getSingleAsObject($req, [$postId]);
-        return (bool)$result;
-    }
+
 
 
     /**
@@ -65,6 +55,18 @@ class PostModel extends Connection
         $req = "SELECT * FROM post WHERE post_id = ?";
         $result = $this->getSingleAsObject($req, [$postId]);
         return $result ? $result : null;
+    }
+
+
+    /**
+     * Check that a post exists providing its id
+     * @param int $postId
+     * @return bool
+     */
+    public function postExistsById(int $postId): bool
+    {
+        $sql = "SELECT EXISTS(SELECT * FROM post WHERE post_id = ?)";
+        return $this->exists($sql, [$postId]);
     }
 
 
@@ -163,9 +165,9 @@ class PostModel extends Connection
     /**
      * Delete a post from the database providing its id
      * @param int $postId
-     * @return int|null
+     * @return bool|null
      */
-    public function deletePost(int $postId): int|null
+    public function deletePost(int $postId): bool|null
     {
         if ($this->postExistsById($postId) === false) {
             return null;

@@ -90,7 +90,7 @@ class FormContactOwner extends FormController
             return $this->res->ko('form-contact-owner', $resCheckContent->getMsg()['send-email-to-user']);
         }
 
-        // TODO: add captcha check.
+        // TODO: add captcha.
 
         // -------------------------------------------------------------------- Set the data.
         $firstname = $this->sGlob->getPost('mail-firstname');

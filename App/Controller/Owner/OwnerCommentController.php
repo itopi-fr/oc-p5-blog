@@ -3,6 +3,7 @@
 namespace App\Controller\Owner;
 
 use App\Controller\CommentController;
+use App\Controller\PostController;
 use App\Model\CommentModel;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -22,6 +23,7 @@ class OwnerCommentController extends OwnerController
      * @var CommentModel
      */
     protected CommentModel $commentModel;
+    protected PostController $postController;
 
 
     /**
@@ -32,6 +34,7 @@ class OwnerCommentController extends OwnerController
         parent::__construct();
         $this->commentController = new CommentController();
         $this->commentModel = new CommentModel();
+        $this->postController = new PostController();
     }
 
 
@@ -49,7 +52,7 @@ class OwnerCommentController extends OwnerController
 
         // Get all comments.
         $allComments = [];
-        $resGetComments = $this->commentController->getAllComments(100);
+        $resGetComments = $this->commentController->getAllPostComments(100);
 
         if ($resGetComments->isErr() === true) {
             $this->twigData['comments'] = null;

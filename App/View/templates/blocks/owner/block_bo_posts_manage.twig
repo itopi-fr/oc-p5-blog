@@ -1,4 +1,6 @@
 {% block bo_posts_manage %}
+    {% use "blocks/items/button_post_delete.twig" %}
+
     <section class="row gx-4 gx-lg-5 justify-content-center manage-posts">
         <div class="col-12 text-center text-lg-left manage-posts-btn-create">
             <a href="/owner/post-create"><button class="btn btn-info">Nouvel article</button></a>
@@ -15,39 +17,24 @@
         {%  for post in posts |slice(0, 10) %}
             <div class="row manage-item">
                 <div class="col-lg-2">
-                    <a href="/owner/post-edit/{{ post.getPostId() }}"><i class="fa-solid fa-pen-to-square"></i></a>
-                    &nbsp;
-                    <a href="javascript:void(0)"
-                            id="{{ post.getPostId() }}"
-                            data-bs-toggle="modal"
-                            data-bs-target="#post-delete-modal"
-                            data-post-id="{{ post.getPostId() }}"
-                            data-post-title="{{ post.getTitle() }}"
-                            onclick=fillModal(this.id)
-                    >
-                        <i class="fa-solid fa-trash"></i>
-                    </a>
-                    &nbsp;
+                    <a href="/owner/post-edit/{{ post.getPostId() }}"><i class="fa-solid fa-pen-to-square"></i></a>&nbsp;
+                    {{ block('button_post_delete') }}&nbsp;
                     <a href="/owner/post-archive/{{ post.getPostId() }}"><i class="fa-solid fa-box-archive"></i></a>
                 </div>
-
 
                 <div class="col-lg-5">
                     <span><strong>{{ post.getTitle() }}</strong></span>
                 </div>
-
 
                 <div class="col-lg-1">
                     <span class="d-lg-none">Statut : </span>
                     {{ post.getStatus() }}
                 </div>
 
-
                 <div class="col-lg-2">
                     <span class="d-lg-none">Créé le </span>
                     {{ post.getCreatedDate()|date('d/m/Y') }}
                 </div>
-
 
                 <div class="col-lg-2">
                     <span class="d-lg-none">MAJ le </span>
@@ -57,11 +44,7 @@
         {% endfor %}
     </section>
 
-
-    <!-- Button trigger modal -->
-
-
-    <!-- Modal -->
+    {# Modal #}
     <div class="modal fade" id="post-delete-modal" tabindex="-1" aria-labelledby="post-delete-modal-label" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -82,6 +65,7 @@
         </div>
     </div>
 
+    {# Script #}
     <script type="text/javascript">
         function fillModal(btnId) {
             let postId = document.getElementById(btnId).getAttribute('data-post-id');
@@ -90,5 +74,4 @@
             document.getElementById('post-href').href = '/owner/post-delete/' + postId;
         }
     </script>
-
 {% endblock %}

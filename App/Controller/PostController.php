@@ -4,8 +4,10 @@ namespace App\Controller;
 
 use App\Entity\Post;
 use App\Entity\Res;
+use App\Model\CommentModel;
 use App\Model\PostModel;
 use DateTime;
+use DateTimeZone;
 use Exception;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -35,6 +37,7 @@ class PostController extends MainController
      * @var Post
      */
     protected Post $postSingle;
+    protected CommentModel $commentModel;
 
 
     /**
@@ -45,6 +48,7 @@ class PostController extends MainController
         parent::__construct();
         $this->res = new Res();
         $this->postModel = new PostModel();
+        $this->commentModel = new CommentModel();
         $this->postSingle = new Post();
     }
 
@@ -58,7 +62,7 @@ class PostController extends MainController
      */
     public function index(): void
     {
-        $resPosts = $this->postModel->getLastPubPosts(5);
+        $resPosts = $this->postModel->getLastPubPosts(25);
 
         if ($resPosts === null) {
             $this->twigData['posts'] = null;
@@ -128,18 +132,40 @@ class PostController extends MainController
 
     /**
      * Delete a post from the database providing its ID
+     * Also delete the comments and the featured image associated to this post
      * Calls the PostModel::deletePost() method
      * @param int $postId
      * @return Res
      */
     public function deletePost(int $postId): Res
     {
+        // Verify that the post exists
+        if ($this->postModel->postExistsById($postId) === false) {
+            return $this->res->ko('post-delete', 'post-delete-ko-not-exists');
+        }
+        $post = $this->getPostById($postId);
+
+        // Delete associated comments
+        $resDeletePostComments = $this->commentModel->deletePostComments($postId);
+        if ($resDeletePostComments === null) {
+            return $this->res->ko('post-delete', 'post-delete-comments-ko');
+        }
+
+        // Delete associated featured image
+        $fileController = new FileController();
+        $resDeletePostFeaturedImage = $fileController->deleteFileById($post->getFeatImgId());
+        if ($resDeletePostFeaturedImage->isErr() === true) {
+            return $this->res->ko('post-delete', 'post-delete-featured-image-ko');
+        }
+
+        // Delete the post
         $resDeletePost = $this->postModel->deletePost($postId);
         if ($resDeletePost === null) {
             return $this->res->ko('post-delete', 'post-delete-ko');
         }
         return $this->res->ok('post-delete', 'post-delete-ok');
     }
+
 
     /**
      * Get a post from the database providing its slug
@@ -166,6 +192,52 @@ class PostController extends MainController
         // Display.
         $this->twigData['post'] = $this->postSingle;
         $this->twig->display("pages/page_fo_post_single.twig", $this->twigData);
+    }
+
+
+    /**
+     * Get a post from the database providing its ID
+     * @param int $postId
+     * @return Post
+     */
+    public function getPostById(int $postId): Post
+    {
+        $postObject = $this->postModel->getPostById($postId);
+        return $this->hydratePostObject($postObject);
+    }
+
+
+    /**
+     * Get x last published posts from the database
+     * @param int $nbPosts
+     * @return array
+     * @throws Exception
+     */
+    public function getLastPubPosts(int $nbPosts): array
+    {
+        $resPosts = $this->postModel->getLastPubPosts($nbPosts);
+
+        if ($resPosts === null) {
+            return [];
+        } else {
+            $this->posts = $resPosts;
+        }
+
+        // Build each post object.
+        foreach ($this->posts as $key => $post) {
+            $this->posts[$key] = $this->hydratePostObject($post);
+
+            // Convert created_date and last_update to GMT+2.
+            $this->posts[$key]->setCreationDate(
+                $this->posts[$key]->getCreationDate()->setTimezone(new DateTimeZone('Europe/Paris'))
+            );
+
+            $this->posts[$key]->setLastUpdate(
+                $this->posts[$key]->getLastUpdate()->setTimezone(new DateTimeZone('Europe/Paris'))
+            );
+        }
+
+        return $this->posts;
     }
 
 

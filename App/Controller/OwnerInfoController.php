@@ -8,7 +8,7 @@ use App\Entity\File;
 
 /**
  * Class OwnerInfoController - Owner info functions.
- * Read only owner info displayed in the header
+ * Read only owner info displayed in the header/footer
  */
 class OwnerInfoController
 {
@@ -99,6 +99,20 @@ class OwnerInfoController
             $ownerInfo->setCatchPhrase('');
         } else {
             $ownerInfo->setCatchPhrase($ownerInfoObject->catch_phrase);
+        }
+
+        // Github.
+        if ($ownerInfoObject->sn_github == null) {
+            $ownerInfo->setSnGithub('');
+        } else {
+            $ownerInfo->setSnGithub($ownerInfoObject->sn_github);
+        }
+
+        // LinkedIn.
+        if ($ownerInfoObject->sn_linkedin == null) {
+            $ownerInfo->setSnLinkedin('');
+        } else {
+            $ownerInfo->setSnLinkedin($ownerInfoObject->sn_linkedin);
         }
 
         return $ownerInfo;

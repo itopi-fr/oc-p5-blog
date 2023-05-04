@@ -13,6 +13,7 @@ class HomeController extends MainController
      * @var PostModel
      */
     protected PostModel $postModel;
+    protected PostController $postController;
 
 
     /**
@@ -22,6 +23,7 @@ class HomeController extends MainController
     {
         parent::__construct();
         $this->postModel = new PostModel();
+        $this->postController = new PostController();
     }
 
     /**
@@ -32,7 +34,7 @@ class HomeController extends MainController
      */
     public function index()
     {
-        $this->twigData['lastposts'] = $this->postModel->getLastPubPosts(3);
+        $this->twigData['lastposts'] = $this->postController->getLastPubPosts(5);
         $this->twig->display("pages/page_fo_home.twig", $this->twigData);
     }
 }

@@ -339,6 +339,25 @@ class FormController extends MainController
         return $this->res;
     }
 
+    /**
+     * Check if a POST field is sent, is a valid url and is between 5 and 2048 chars
+     * @param string $formName
+     * @param string $field
+     * @return Res
+     */
+    public function checkPostedUrl(string $formName, string $field): Res
+    {
+        $data = $this->sGlob->getPost($field);
+        if ($this->isSet($data) === false) {
+            $this->res->ko($formName, $formName . '-ko-' . $field . '-empty');
+        } elseif ($this->validateUrl($data) === false) {
+            $this->res->ko($formName, $formName . '-ko-' . $field . '-not-url-format');
+        } elseif ($this->isBetween($data, 5, 2048) === false) {
+            $this->res->ko($formName, $formName . '-ko-' . $field . '-not-between-5-and-2048');
+        }
+        return $this->res;
+    }
+
 
     /**
      * Treats a file and returns a Res containing a File object

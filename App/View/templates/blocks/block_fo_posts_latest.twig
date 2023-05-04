@@ -2,27 +2,35 @@
     <!-- Last Posts -->
     <section class="row gx-4 gx-lg-5 justify-content-center section-general section-lined last-posts">
         <h2>Derniers articles</h2>
-        <div class="col-md-10">
 
-            {%  for post in lastposts %}
-                <a href="/article/{{ post.slug }}" class="article-block-link">
-                    <article class="post-preview trans-quick trans-bgclr trans-trnsf">
-                        <h3 class="post-title trans-long trans-clr">{{ post.title }}</h3>
+        {%  for post in lastposts %}
+            <a href="/article/{{ post.getSlug() }}" class="article-block-link">
+                <article class="row post-preview trans-quick trans-bgclr trans-trnsf">
+
+                    <div class="col-lg-10">
+                        <h3 class="post-title trans-long trans-clr">{{ post.getTitle() }}</h3>
                         <p class="post-meta trans-long trans-clr">
-                            Le {{ post.last_update|date('d/m/Y') }}
+                            Créé le {{ post.getCreationDate()|date('d/m/Y') }} à {{ post.getCreationDate()|date('H:i') }}
+                            {%  if post.getCreationDate() != post.getLastUpdate() %}
+                                - Modifié le {{ post.getLastUpdate()|date('d/m/Y') }} à {{ post.getLastUpdate()|date('H:i') }}
+                            {%  endif %}
                         </p>
+
                         <div class="post-excerpt trans-long trans-clr">
-                            {{ post.excerpt }}
+                            {{ post.getExcerpt() }}
                         </div>
-                    </article>
-                </a>
+                    </div>
 
-                {% if not loop.last %}
-                    <hr class="my-4"/>
-                {% endif %}
+                    <div class="col-lg-2">
+                        <img class="post-single-feat-img" src="{{ post.getFeatImgFile().getUrl() }}" alt="">
+                    </div>
+                </article>
+            </a>
 
-            {% endfor %}
+            {% if not loop.last %}
+                <hr class="my-4"/>
+            {% endif %}
 
-        </div>
+        {% endfor %}
     </section>
 {% endblock %}

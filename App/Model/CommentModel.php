@@ -22,9 +22,18 @@ class CommentModel extends Connection
      * @param int $max
      * @return array|null
      */
+//    public function getThisPostComments(int $postId, int $max): array|null
+//    {
+//        $req = "SELECT * FROM comment WHERE post_id = ? ORDER BY created_date LIMIT ?";
+//        $result = $this->getMultipleAsObjectsArray($req, [$postId, $max]);
+//        return $result ? $result : [];
+//    }
     public function getThisPostComments(int $postId, int $max): array|null
     {
-        $req = "SELECT * FROM comment WHERE post_id = ? ORDER BY created_date LIMIT ?";
+        $req = "SELECT comment.*, post.title AS post_title, post.slug AS post_slug
+                FROM comment
+                JOIN post ON comment.post_id = post.post_id
+                WHERE post.post_id = ? ORDER BY comment.created_date LIMIT ?";
         $result = $this->getMultipleAsObjectsArray($req, [$postId, $max]);
         return $result ? $result : [];
     }
@@ -37,7 +46,11 @@ class CommentModel extends Connection
      */
     public function getAllPostComments(int $max): array|null
     {
-        $req = "SELECT * FROM comment  ORDER BY status DESC LIMIT ?";
+        $req = "SELECT comment.*, post.title AS post_title, post.slug AS post_slug
+                FROM comment
+                JOIN post ON comment.post_id = post.post_id
+                ORDER BY comment.status DESC LIMIT ?";
+
         $result = $this->getMultipleAsObjectsArray($req, [$max]);
         return $result ? $result : [];
     }
@@ -86,6 +99,18 @@ class CommentModel extends Connection
     {
         $sql = "DELETE FROM comment WHERE com_id = ?";
         return $this->delete($sql, [$comId]);
+    }
+
+
+    /**
+     * Delete all comments for a given post id
+     * @param int $postId
+     * @return bool|null
+     */
+    public function deletePostComments(int $postId): bool|null
+    {
+        $sql = "DELETE FROM comment WHERE post_id = ?";
+        return $this->delete($sql, [$postId]);
     }
 
 

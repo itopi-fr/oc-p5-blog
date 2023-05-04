@@ -11,8 +11,11 @@
                     <article class="row post-preview trans-quick trans-bgclr trans-trnsf">
                         <div class="col-md-10">
                             <h2 class="post-title">{{ post.title }}</h2>
-                            <p class="post-meta">
-                                Le {{ post.date|date('d/m/Y') }}
+                            <p class="post-meta trans-long trans-clr">
+                                Créé le {{ post.getCreationDate()|date('d/m/Y') }} à {{ post.getCreationDate()|date('H:i') }}
+                                {%  if post.getCreationDate() != post.getLastUpdate() %}
+                                    - Modifié le {{ post.getLastUpdate()|date('d/m/Y') }} à {{ post.getLastUpdate()|date('H:i') }}
+                                {%  endif %}
                             </p>
                             <div class="post-excerpt">
                                 {{ post.excerpt }}

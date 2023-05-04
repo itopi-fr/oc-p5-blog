@@ -6,17 +6,6 @@
 
     {{ block('res_message') }}
 
-    {# Messages #}
-{#    <div class="col-12 text-center">#}
-{#        {% if (result) %}#}
-{#            <div class="alert alert-{{ (result.isErr()) ? 'warning' : 'success' }}" role="alert">#}
-{#                {% for type, msg in result.getMsg() %}#}
-{#                    {{ result.showMsg(msg) }}#}
-{#                {% endfor %}#}
-{#            </div>#}
-{#        {% endif %}#}
-{#    </div>#}
-
     {# Form Login #}
     <div class="col-md-8">
         <form action="connexion" method="POST" enctype="multipart/form-data" class="row form-general">
@@ -32,8 +21,6 @@
             <div class="form-group text-center">
                 <input type="submit" name="submit-connect"/>
             </div>
-
-
         </form>
     </div>
 
@@ -41,6 +28,5 @@
         md@itopi.fr / PassP4ss (Owner)<br />
         pub@itopi.fr / PassP4ss (User)
     </div>
-
 
 {% endblock %}

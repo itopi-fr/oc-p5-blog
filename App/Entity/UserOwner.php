@@ -20,6 +20,10 @@ class UserOwner extends User
 
     private string|null $catch_phrase;
 
+    private string|null $sn_github;
+
+    private string|null $sn_linkedin;
+
 
     /**
      * ----------------------------------------------------------------------------------------------- Getters & Setters
@@ -159,5 +163,37 @@ class UserOwner extends User
     public function setCatchPhrase(string $catch_phrase): void
     {
         $this->catch_phrase = $catch_phrase;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSnGithub(): ?string
+    {
+        return $this->sn_github;
+    }
+
+    /**
+     * @param string|null $sn_github
+     */
+    public function setSnGithub(?string $sn_github): void
+    {
+        $this->sn_github = $sn_github;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSnLinkedin(): ?string
+    {
+        return $this->sn_linkedin;
+    }
+
+    /**
+     * @param string|null $sn_linkedin
+     */
+    public function setSnLinkedin(?string $sn_linkedin): void
+    {
+        $this->sn_linkedin = $sn_linkedin;
     }
 }

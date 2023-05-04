@@ -114,15 +114,17 @@ class FormUserLog extends FormController
         if ($this->userModel->userExistsByEmailPassword($email, $password)) {
             $this->user = $this->userModel->getUserByEmail($email);
 
-            // Start session.
+            // Save to session.
             $this->sGlob->setSes('usrid', $this->user->getUserId());
+            $this->sGlob->setSes('userobj', $this->user);
 
-            $this->res->ok('user-login', 'user-login-ok-success');
+            $this->res->ok('user-login', 'user-login-ok-success', $this->user);
         } else {
             $this->res->ko('user-login', 'user-login-ko-no-user-pass-match');
         }
         return $this->res;
     }
+
 
     /**
      * Logs out a user by destroying the session.

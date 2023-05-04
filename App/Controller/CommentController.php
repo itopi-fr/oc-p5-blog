@@ -72,7 +72,8 @@ class CommentController extends MainController
             $formPostCreate = new FormCommentCreate();
             $resTreatFormComment = $formPostCreate->treatForm();
             $this->twigData['result'] = $resTreatFormComment;
-            $this->redirectTo("/article/" . $this->sGlob->getPost('comment-create-post-slug'));
+            $this->twigData['formsent'] = true;
+            $this->redirectTo("/article/" . $this->sGlob->getPost('comment-create-post-slug'), 10);
             $this->twig->display("pages/page_fo_post_single.twig", $this->twigData);
         }
     }
@@ -115,7 +116,7 @@ class CommentController extends MainController
      * @param int $max
      * @return Res $res
      */
-    public function getAllComments(int $max): Res
+    public function getAllPostComments(int $max): Res
     {
         try {
             $resAllComments = $this->commentModel->getAllPostComments($max);
@@ -218,6 +219,8 @@ class CommentController extends MainController
         $comment->setCreatedDate(new DateTime($comObj->created_date));
         $comment->setLastUpdate(new DateTime($comObj->last_update));
         $comment->setStatus($comObj->status);
+        $comment->setPostTitle($comObj->post_title);
+        $comment->setPostSlug($comObj->post_slug);
 
         // User object.
         if (empty($comObj->author_user) === true) {
@@ -227,6 +230,8 @@ class CommentController extends MainController
         }
         return $comment;
     }
+
+
 
 
 }

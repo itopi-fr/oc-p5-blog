@@ -54,16 +54,18 @@ class MainController
         $this->initTwig();
     }
 
+
     /**
-     *
+     * Destructor
+     * Show the dump
      */
     public function __destruct()
     {
         $this->showDump();
     }
 
-    /** -------------------------------------------------- Methods -------------------------------------------------  */
 
+    /** -------------------------------------------------- Methods -------------------------------------------------  */
     /**
      * Check if a value is set
      * @param mixed $value
@@ -110,6 +112,7 @@ class MainController
         return preg_match("/^[\w\s\pL\pP+]*$/u", $value);
     }
 
+
     /**
      * Check if a string is between 2 lengths
      * @param string $value
@@ -122,6 +125,7 @@ class MainController
         return strlen($value) >= $min && strlen($value) <= $max;
     }
 
+
     /**
      * Check if a string is a valid email
      * @param string $value
@@ -131,6 +135,35 @@ class MainController
     {
         return filter_var($value, FILTER_VALIDATE_EMAIL);
     }
+
+
+    /**
+     * Check if a string is a valid URL
+     * Add http:// if not present
+     * @param string $value
+     * @return string|null
+     */
+    protected function validateUrl(string $value): string|null
+    {
+        // Sanitize url.
+        $value = filter_var($value, FILTER_SANITIZE_URL);
+
+        // Validate url.
+        if (filter_var($value, FILTER_VALIDATE_URL)) {
+            return true;
+        } else {
+            // Add http:// if not present.
+            $value = 'http://' . $value;
+
+            // Re-validate url.
+            if (filter_var($value, FILTER_VALIDATE_URL)) {
+                return $value;
+            } else {
+                return null;
+            }
+        }
+    }
+
 
     /**
      * Every dump is stored inside the $toDump array.
@@ -235,6 +268,8 @@ class MainController
                                                         'cache' => false,
                                                         'debug' => true,
                                                        ]);
+        // Display dates in French timezone
+        $this->twig->getExtension(\Twig\Extension\CoreExtension::class)->setTimezone('Europe/Paris');
 
         if (empty($this->sGlob->getSesAll() === false)) {
             // Current user info

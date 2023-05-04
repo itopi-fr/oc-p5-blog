@@ -74,7 +74,9 @@ class UserOwnerModel extends UserModel
                             cv_file_id=?, 
                             first_name=?, 
                             last_name=?, 
-                            catch_phrase=? 
+                            catch_phrase=?,
+                            sn_github=?,
+                            sn_linkedin=?
                         WHERE owner_id=?';
 
         return $this->update($sql, [
@@ -83,6 +85,8 @@ class UserOwnerModel extends UserModel
             $userOwner->getFirstName(),
             $userOwner->getLastName(),
             $userOwner->getCatchPhrase(),
+            $userOwner->getSnGithub(),
+            $userOwner->getSnLinkedin(),
             $userOwner->getOwnerId()
         ]);
     }

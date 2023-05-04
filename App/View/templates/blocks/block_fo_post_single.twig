@@ -1,11 +1,19 @@
 {% block fo_post_single %}
-    <section class="row gx-4 gx-lg-5 justify-content-center section-general section-lined post-single">
-        <h1>{{ post.title }}</h1>
-        <div class="col-md-10">
-            <p>{{ post.content }}</p>
-        </div>
-        <div class="col-md-2 d-none d-md-block">
-            <img class="post-single-feat-img" src="{{ post.getFeatImgFile().getUrl() }}" alt="" class="src">
-        </div>
-    </section>
+    {% if formsent != true %}
+        <section class="row gx-4 gx-lg-5 justify-content-center section-general section-lined post-single">
+            <h1>{{ post.getTitle() }}</h1>
+            <p class="post-meta">
+                Créé le {{ post.getCreationDate()|date('d/m/Y') }} à {{ post.getCreationDate()|date('H:i') }}
+                {%  if post.getCreationDate() != post.getLastUpdate() %}
+                    - Modifié le {{ post.getLastUpdate()|date('d/m/Y') }} à {{ post.getLastUpdate()|date('H:i') }}
+                {%  endif %}
+            </p>
+            <div class="col-md-10">
+                <p>{{ post.getContent() }}</p>
+            </div>
+            <div class="col-md-2 d-none d-md-block">
+                <img class="post-single-feat-img" src="{{ post.getFeatImgFile().getUrl() }}" alt="">
+            </div>
+        </section>
+    {% endif %}
 {% endblock %}

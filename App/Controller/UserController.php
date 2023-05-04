@@ -158,9 +158,25 @@ class UserController extends MainController
         }
 
         // --------------------------------------------------------------------------------------------- user/connexion.
-        if ($userAction === 'connexion' && empty($this->sGlob->getPost('submit-connect')) === false) {
-            $this->userLogin();
-            $this->redirectTo('/user/profile', 2);
+        if ($userAction === 'connexion') {
+            if (empty($this->sGlob->getPost('submit-connect')) === false) {
+                $resUserLogin = $this->userLogin();
+                $this->twigData['result'] = $resUserLogin;
+
+                if ($resUserLogin->isErr() === true) {
+                    $this->redirectTo('/user/connexion', 5);
+                    // Display page.
+                    $this->twig->display("pages/page_bo_user.twig", $this->twigData);
+                    return;
+                }
+
+                // Login success - redirect to the right page.
+                if ($resUserLogin->getResult()['user-login']->getRole() == 'owner') {
+                    $this->redirectTo('/owner', 0);
+                } else {
+                    $this->redirectTo('/user/profile', 0);
+                }
+            }
         }
 
         // ------------------------------------------------------------------------------------------------ user/profil.
@@ -177,7 +193,7 @@ class UserController extends MainController
 
                     // Refresh page if no error.
                     if ($this->twigData['result']->isErr() === false) {
-                        $this->refresh();
+                        $this->refresh(100);
                     }
                 }
                 $this->twigData['owner'] = $this->userOwner;
@@ -202,7 +218,7 @@ class UserController extends MainController
             // Form Logout.
             if ($userAction === 'deconnexion') {
                 $this->twigData['result'] = (new FormUserLog())->logout();
-                $this->refresh(0);
+                $this->redirectTo('/', 0);
             }
 
             // User.
@@ -216,35 +232,30 @@ class UserController extends MainController
 
     /**
      * Login a user
-     * @return void
+     * @return Res
      */
-    public function userLogin(): void
+    public function userLogin(): Res
     {
+        // Check that a user exists with this email and get that user if exists.
         $resUserByEmail = $this->getUserByEmail($this->sGlob->getPost('email'));
         if ($resUserByEmail->isErr()) {
-            $this->res->ko('user-login', 'user-login-ko-no-user-pass-match');
-            $this->twigData['result'] = $this->res;
-            return;
+            return $this->res->ko('user-login', 'user-login-ko-no-user-pass-match');
         }
-
         $user = $resUserByEmail->getResult()['user-by-email'];
 
+        // Check if user is banned.
         if ($user->getRole() == 'user-banned') {
-            $this->res->ko('user-login', 'user-login-ko-account-banned');
-            $this->twigData['result'] = $this->res;
-            return;
+            return $this->res->ko('user-login', 'user-login-ko-account-banned');
+        }
+        // Check if user is waiting for validation.
+        if ($user->getRole() == 'user-validation') {
+            return $this->res->ko('user-login', 'user-login-ko-account-token-not-validated');
         }
 
-        if ($user->getRole() == 'user-validation') {
-            $this->res->ko('user-login', 'user-login-ko-account-token-not-validated');
-            $this->twigData['result'] = $this->res;
-            return;
-        }
-        $this->twigData['result'] = (new FormUserLog())->login(
-            $this->sGlob->getPost('email'),
-            $this->sGlob->getPost('pass')
-        );
-        $this->sGlob->setSes('userobj', $user);
+        // TODO: Add Captcha and track IP login attempts.
+
+        // Start the login process.
+        return (new FormUserLog())->login($this->sGlob->getPost('email'), $this->sGlob->getPost('pass'));
     }
 
 
@@ -601,8 +612,13 @@ class UserController extends MainController
      * @param string $content
      * @return Res
      */
-    public function sendEmailToOwner(string $fromUserEmail, string $firstname, string $lastname, string $subject, string $content): Res
-    {
+    public function sendEmailToOwner(
+        string $fromUserEmail,
+        string $firstname,
+        string $lastname,
+        string $subject,
+        string $content
+    ): Res {
         // User sending the mail.
         $userFrom = $this->userModel->getUserByEmail($fromUserEmail);
         if ($userFrom === null) {
