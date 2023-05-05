@@ -71,7 +71,7 @@ class Connection
         try {
             if (isset($this->conn) === false) {
                 $this->conn = new PDO(
-                    "mysql:host=" . $this->host . ";dbname=" . $this->dbname,
+                    "mysql:host=".$this->host.";dbname=".$this->dbname,
                     $this->username,
                     $this->password
                 );
@@ -110,6 +110,7 @@ class Connection
             throw new PDOException($e);
         }
     }
+
 
     /**
      * Returns a single result as File class object.

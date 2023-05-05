@@ -1,7 +1,7 @@
 {% block posts_latest %}
     <!-- Last Posts -->
     <section class="row gx-4 gx-lg-5 justify-content-center section-general section-lined last-posts">
-        <h2>Derniers articles</h2>
+        <h1>Derniers articles</h1>
 
         {%  for post in lastposts %}
             <a href="/article/{{ post.getSlug() }}" class="article-block-link">

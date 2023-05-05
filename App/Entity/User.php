@@ -2,20 +2,44 @@
 
 namespace App\Entity;
 
+/**
+ * Class User - Represents a user
+ */
 class User
 {
+    /**
+     * @var int
+     */
     protected int $user_id;
 
+    /**
+     * @var int|null
+     */
     protected ?int $avatar_id;
 
+    /**
+     * @var File
+     */
     protected File $avatar_file;
 
+    /**
+     * @var string
+     */
     protected string $pseudo;
 
+    /**
+     * @var string
+     */
     protected string $email;
 
+    /**
+     * @var string
+     */
     protected string $pass;
 
+    /**
+     * @var string
+     */
     protected string $role;
 
 
@@ -24,7 +48,6 @@ class User
      */
     public function __construct()
     {
-//        $this->userId = 0;
         $this->avatar_file = new File();
     }
 
@@ -32,7 +55,6 @@ class User
     /**
      * ----------------------------------------------------------------------------------------------- Getters & Setters
      */
-
     /**
      * @return int
      */
@@ -40,6 +62,7 @@ class User
     {
         return $this->user_id;
     }
+
 
     /**
      * @param int $user_id
@@ -50,6 +73,7 @@ class User
         $this->user_id = $user_id;
     }
 
+
     /**
      * @return int|null
      */
@@ -57,6 +81,7 @@ class User
     {
         return $this->avatar_id;
     }
+
 
     /**
      * @param int|null $avatar_id
@@ -67,6 +92,7 @@ class User
         $this->avatar_id = $avatar_id;
     }
 
+
     /**
      * @return File
      */
@@ -74,6 +100,7 @@ class User
     {
         return $this->avatar_file;
     }
+
 
     /**
      * @param File $avatar_file
@@ -84,6 +111,7 @@ class User
         $this->avatar_file = $avatar_file;
     }
 
+
     /**
      * @return string
      */
@@ -91,6 +119,7 @@ class User
     {
         return $this->pseudo;
     }
+
 
     /**
      * @param string $pseudo
@@ -101,6 +130,7 @@ class User
         $this->pseudo = $pseudo;
     }
 
+
     /**
      * @return string
      */
@@ -108,6 +138,7 @@ class User
     {
         return $this->email;
     }
+
 
     /**
      * @param string $email
@@ -118,6 +149,7 @@ class User
         $this->email = $email;
     }
 
+
     /**
      * @return string
      */
@@ -125,6 +157,7 @@ class User
     {
         return $this->pass;
     }
+
 
     /**
      * @param string $pass
@@ -135,6 +168,7 @@ class User
         $this->pass = $pass;
     }
 
+
     /**
      * @return string
      */
@@ -142,6 +176,7 @@ class User
     {
         return $this->role;
     }
+
 
     /**
      * @param string $role

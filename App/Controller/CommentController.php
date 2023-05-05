@@ -232,6 +232,4 @@ class CommentController extends MainController
     }
 
 
-
-
 }

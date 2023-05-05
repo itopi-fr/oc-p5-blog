@@ -2,6 +2,7 @@
 
 namespace App\Controller\Form;
 
+use App\Controller\PostController;
 use App\Entity\File;
 use App\Entity\Post;
 use App\Entity\Res;
@@ -28,6 +29,11 @@ class FormPostCreate extends FormController
      */
     protected Post $post;
 
+    /**
+     * @var PostController
+     */
+    private PostController $postController;
+
 
     /**
      * Constructor
@@ -37,12 +43,13 @@ class FormPostCreate extends FormController
         parent::__construct();
         $this->res = new Res();
         $this->postModel = new PostModel();
+        $this->postController = new PostController();
         $this->post = new Post();
     }
 
 
     /**
-     * Used to create a new post
+     * Treat the form to create a new post
      * @return Res
      */
     public function treatForm(): Res
@@ -57,12 +64,6 @@ class FormPostCreate extends FormController
         );
         if ($resCheckTitle->isErr() === true) {
             return $this->res->ko('post-create', $resCheckTitle->getMsg()['post-create']);
-        }
-
-        // Post-slug : checks.
-        $resCheckPostFieldTextSlug = $this->checkPostedSlug('post-create', 'post-slug', -1);
-        if ($resCheckPostFieldTextSlug->isErr() === true) {
-            return $this->res->ko('post-create', $resCheckPostFieldTextSlug->getMsg()['post-create']);
         }
 
         // Post-image (File) : checks.
@@ -96,7 +97,6 @@ class FormPostCreate extends FormController
         // -------------------------------------------------------------------- Treatments.
         $this->post->setAuthorId($this->sGlob->getSes('usrid'));
         $this->post->setTitle($this->sGlob->getPost('post-title'));
-        $this->post->setSlug($this->sGlob->getPost('post-slug'));
         $this->post->setContent($this->sGlob->getPost('post-content'));
         $this->post->setExcerpt(substr($this->sGlob->getPost('post-content'), 0, 80) . '...');
         $this->post->setStatus($this->sGlob->getPost('post-status'));
@@ -116,7 +116,7 @@ class FormPostCreate extends FormController
             $this->post->setFeatImgId($savedFile->getFileId());
         }
 
-        if ($this->postModel->createPost($this->post) !== null) {
+        if ($this->postController->createPost($this->post) !== null) {
             $this->res->ok('post-create', 'post-create-ok');
         } else {
             $this->res->ko('post-create', 'post-create-ko');

@@ -38,6 +38,7 @@ class PostController extends MainController
      */
     protected Post $postSingle;
     protected CommentModel $commentModel;
+    private FileController $fileController;
 
 
     /**
@@ -49,6 +50,7 @@ class PostController extends MainController
         $this->res = new Res();
         $this->postModel = new PostModel();
         $this->commentModel = new CommentModel();
+        $this->fileController = new FileController();
         $this->postSingle = new Post();
     }
 
@@ -90,7 +92,15 @@ class PostController extends MainController
      */
     public function createPost(Post $post): Res
     {
-        // TODO: Random image if empty
+        // Generate slug
+        $slug = $this->generateSlug($post->getTitle());
+        if ($this->postModel->postExistsBySlug($slug) === true) {
+            $slug = $slug . '-' . $this->generateKey(3);
+        }
+        $post->setSlug($slug);
+
+        // TODO: Random image if empty.
+
         $resCreatePost = $this->postModel->createPost($post);
         if ($resCreatePost === null) {
             return $this->res->ko('post-create', 'post-create-ko');
@@ -107,6 +117,13 @@ class PostController extends MainController
      */
     public function updatePost(Post $post): Res
     {
+        // Remove the old featured image if a new one has been sent.
+        $dbFeatImgId = $this->getPostById($post->getPostId())->getFeatImgId();
+        if ($dbFeatImgId !== $post->getFeatImgId()) {
+            $this->fileController->deleteFileById($dbFeatImgId);
+        }
+
+        // Update the post.
         $resUpdate = $this->postModel->updatePost($post);
         if ($resUpdate === null) {
             return $this->res->ko('post-update', 'post-update-ko');
@@ -238,6 +255,20 @@ class PostController extends MainController
         }
 
         return $this->posts;
+    }
+
+
+    /**
+     * Generate a slug from a string
+     * @param string $postTitle
+     * @return string
+     */
+    public function generateSlug(string $postTitle): string
+    {
+        $slug = strtolower($postTitle);
+        $slug = str_replace(' ', '-', $slug);
+        $slug = preg_replace('/[^a-z0-9-]/', '', $slug);
+        return $slug;
     }
 
 

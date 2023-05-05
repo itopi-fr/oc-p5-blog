@@ -64,7 +64,7 @@
     "post-edit-ko-post-slug-empty": "Veuillez saisir un slug",
     "post-edit-ko-post-slug-not-alpha-num-dash": "Slug : doit être composé uniquement de lettres, chiffres et tirets",
     "post-edit-ko-post-slug-not-between-3-and-64": "Slug : doit être composé de 3 à 64 caractères",
-    "post-edit-ko-post-slug-not-unique": "Slug : ce slug est déjà utilisé",
+    "post-edit-ko-post-slug-not-unique": "Slug : ce slug est déjà utilisé. Redirection en cours...",
     "post-edit-ko-post-content-not-alpha-num-punct": "Contenu : doit être composé de lettres, chiffres, espaces, ponctuation et sauts de ligne",
     "//post_create": "------------------------------------------------------------------- post-create",
     "post-create-ok": "Article créé avec succès. Redirection en cours...",

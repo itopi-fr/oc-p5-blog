@@ -35,7 +35,7 @@ class FormPostArchive extends FormController
     /**
      * Archive a post from the database provided its ID
      * Calls the PostModel::archivePost() method
-     * @param int $postId
+     * @param int $postId - The post ID
      * @return Res
      */
     public function treatForm(int $postId): Res

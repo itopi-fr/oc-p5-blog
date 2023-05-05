@@ -28,10 +28,10 @@ class UserModel extends Connection
 
 
     /**
-     * Checks if a value is unique in the user table
-     * @param string $value
-     * @param string $field
-     * @param int $userId
+     * Checks if a value is unique in the user table - can be based on any field.
+     * @param string $value - The value to check
+     * @param string $field - The field to check
+     * @param int $userId - The user id to exclude from the check
      * @return bool
      */
     public function isUnique(string $value, string $field, int $userId): bool
@@ -54,9 +54,10 @@ class UserModel extends Connection
         return $allUsers;
     }
 
+
     /**
      * Returns a user object based on its id.
-     * @param int|null $userId
+     * @param int|null $userId - The user id
      * @return User|null
      */
     public function getUserById(int|null $userId): User|null
@@ -80,7 +81,7 @@ class UserModel extends Connection
 
     /**
      * Returns a user object based on its email.
-     * @param string $userEmail
+     * @param string $userEmail - The user email
      * @return null|User
      */
     public function getUserByEmail(string $userEmail): null|User
@@ -109,7 +110,7 @@ class UserModel extends Connection
 
     /**
      * Create a user providing a user object
-     * @param User $user
+     * @param User $user - The user object
      * @return int|null
      */
     public function createUser(User $user): int|null
@@ -132,7 +133,7 @@ class UserModel extends Connection
 
     /**
      * Updates a user in database
-     * @param User $user
+     * @param User $user - The user object
      * @return int|null
      */
     public function updateUser(User $user): int|null
@@ -158,7 +159,7 @@ class UserModel extends Connection
 
     /**
      * Checks if a user exists in database based on its id
-     * @param int $userId
+     * @param int $userId - The user id
      * @return bool
      */
     public function userExistsById(int $userId): bool
@@ -170,7 +171,7 @@ class UserModel extends Connection
 
     /**
      * Checks if a user exists in database based on its pseudo
-     * @param string $userPseudo
+     * @param string $userPseudo - The user pseudo
      * @return bool
      */
     public function userExistsByPseudo(string $userPseudo): bool
@@ -182,7 +183,7 @@ class UserModel extends Connection
 
     /**
      * Checks if a user exists in database based on its email
-     * @param string $userEmail
+     * @param string $userEmail - The user email
      * @return bool
      */
     public function userExistsByEmail(string $userEmail): bool
@@ -194,8 +195,8 @@ class UserModel extends Connection
 
     /**
      * Checks if a user exists in database based on its email and password
-     * @param string $userEmail
-     * @param string $userPassword
+     * @param string $userEmail - The user email
+     * @param string $userPassword - The user password
      * @return bool
      */
     public function userExistsByEmailPassword(string $userEmail, string $userPassword): bool
@@ -203,6 +204,4 @@ class UserModel extends Connection
         $sql = 'SELECT EXISTS(SELECT * FROM user WHERE email = ? AND pass = ?)';
         return $this->exists($sql, [$userEmail, $userPassword]);
     }
-
-
 }

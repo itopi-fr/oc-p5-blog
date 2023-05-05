@@ -26,14 +26,29 @@ use Exception;
  */
 class Res
 {
+    /**
+     * @var bool
+     */
     private bool $err;
 
+    /**
+     * @var array
+     */
     private array $msg;
 
+    /**
+     * @var array
+     */
     private array $result;
 
+    /**
+     * @var array|mixed
+     */
     private array $types;
 
+    /**
+     * @var array|mixed
+     */
     private array $messages;
 
 
@@ -50,6 +65,7 @@ class Res
         $this->types = json_decode($jsonMessages, true)["show-type"];
     }
 
+
     /**
      * Builds an error response object with the given parameters.
      * @param string $type
@@ -63,6 +79,7 @@ class Res
         $this->result[$type] = null;
         return $this;
     }
+
 
     /**
      * Builds a success response object with the given parameters.
@@ -78,6 +95,7 @@ class Res
         return $this;
     }
 
+
     /**
      * Translates the error type into a readable message. If no translation is found, the raw error type is returned.
      * Loads the translations from the [language].json file (/locale/[language].json).
@@ -88,6 +106,7 @@ class Res
     {
         return $this->types[$type] ?? $type;
     }
+
 
     /**
      * Translates the error code into a readable message. If no translation is found, the raw error code is returned.
@@ -100,9 +119,8 @@ class Res
         return $this->messages[$msg] ?? $msg;
     }
 
+
     /** --------------------------------------------- Getters & Setters --------------------------------------------- */
-
-
     /**
      * @return bool
      */

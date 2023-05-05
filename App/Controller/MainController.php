@@ -25,11 +25,6 @@ class MainController
     protected Environment $twig;
 
     /**
-     * @var UserController
-     */
-    protected UserController $userController;
-
-    /**
      * @var array
      */
     public array $toDump = [];

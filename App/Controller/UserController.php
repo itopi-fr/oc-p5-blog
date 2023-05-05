@@ -460,6 +460,13 @@ class UserController extends MainController
     public function updateUser(User $user): Res
     {
         try {
+            // Remove old avatar file if a new one is sent.
+            $dbAvatarId = $this->getUserById($user->getUserId())->getAvatarId();
+            if ($dbAvatarId !== $user->getAvatarId()) {
+                $this->fileController->deleteFileById($dbAvatarId);
+            }
+
+            // Update the user.
             $result = $this->userModel->updateUser($user);
             if ($result === 0) {
                 $this->res->ok('user-profile', 'user-profile-ok-no-change');
@@ -484,6 +491,19 @@ class UserController extends MainController
     public function updateUserOwner(UserOwner $userOwner): Res
     {
         $this->userOwnerModel = new UserOwnerModel();
+        $dbUserOwner = $this->userOwnerModel->getUserOwnerById($userOwner->getUserId());
+
+        // Remove old photo file if a new one is sent.
+        if ($dbUserOwner->getPhotoFileId() !== $userOwner->getPhotoFileId()) {
+            $this->fileController->deleteFileById($dbUserOwner->getPhotoFileId());
+        }
+
+        // Remove old cv file if a new one is sent.
+        if ($dbUserOwner->getCvFileId() !== $userOwner->getCvFileId()) {
+            $this->fileController->deleteFileById($dbUserOwner->getCvFileId());
+        }
+
+        // Update the user.
         $result = $this->userOwnerModel->updateUserOwner($userOwner);
 
         if ($result === 0) {
