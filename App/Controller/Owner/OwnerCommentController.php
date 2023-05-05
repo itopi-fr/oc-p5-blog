@@ -23,6 +23,10 @@ class OwnerCommentController extends OwnerController
      * @var CommentModel
      */
     protected CommentModel $commentModel;
+
+    /**
+     * @var PostController
+     */
     protected PostController $postController;
 
 
@@ -40,6 +44,7 @@ class OwnerCommentController extends OwnerController
 
     /**
      * Manage comments.
+     *
      * @return void
      * @throws LoaderError
      * @throws RuntimeError
@@ -70,7 +75,8 @@ class OwnerCommentController extends OwnerController
 
     /**
      * Validate a comment (set the status to 'valid')
-     * @param string $comIdFromUrl
+     *
+     * @param string $comIdFromUrl - The comment ID from the URL
      * @return void
      */
     public function validateComment(string $comIdFromUrl): void
@@ -83,7 +89,8 @@ class OwnerCommentController extends OwnerController
 
     /**
      * Delete a comment
-     * @param string $comIdFromUrl
+     *
+     * @param string $comIdFromUrl - The comment ID from the URL
      * @return void
      */
     public function deleteComment(string $comIdFromUrl): void

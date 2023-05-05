@@ -29,6 +29,7 @@ class FormPostDelete extends FormController
     /**
      * Delete a post from the database provided its ID
      * Calls the PostController::deletePost() method
+     *
      * @param int $postId
      * @return Res
      */
@@ -41,4 +42,6 @@ class FormPostDelete extends FormController
         }
         return $this->res->ok('post-delete', 'post-delete-ok');
     }
+
+
 }

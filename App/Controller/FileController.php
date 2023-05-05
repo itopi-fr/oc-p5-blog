@@ -35,7 +35,8 @@ class FileController extends MainController
 
     /**
      * Builds a file object from a posted file.
-     * @param $filePosted
+     *
+     * @param $filePosted - The posted file.
      * @return File
      */
     public function buildFileObjectFromPostedFile($filePosted): File
@@ -53,7 +54,8 @@ class FileController extends MainController
 
     /**
      * Returns a file object based on its id.
-     * @param int $fileId
+     *
+     * @param int $fileId - The id of the file.
      * @return File|bool
      */
     public function getFileById(int $fileId): File|bool
@@ -64,7 +66,8 @@ class FileController extends MainController
 
     /**
      * Upload a file to the file system
-     * @param array $user_file
+     *
+     * @param array $user_file - The file to upload.
      * @return Res
      */
     public function uploadFile(array $user_file): Res
@@ -91,7 +94,8 @@ class FileController extends MainController
 
     /**
      * Insert file in the database
-     * @param File $file
+     *
+     * @param File $file - The file to insert.
      * @return string|null
      */
     public function insertFile(File $file): string|null
@@ -99,9 +103,11 @@ class FileController extends MainController
         return (new FileModel())->insertFile($file);
     }
 
+
     /**
      * Delete file from the database
-     * @param int $fileId
+     *
+     * @param int $fileId - The id of the file to delete.
      * @return Res
      */
     public function deleteFileById(int $fileId): Res
@@ -136,7 +142,8 @@ class FileController extends MainController
 
     /**
      * Check that a file exists in the database provided its id.
-     * @param int $fileId
+     *
+     * @param int $fileId - The id of the file to check.
      * @return bool
      */
     public function fileExistsById(int $fileId): bool

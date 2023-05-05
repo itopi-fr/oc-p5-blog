@@ -50,6 +50,7 @@ class FormPostCreate extends FormController
 
     /**
      * Treat the form to create a new post
+     *
      * @return Res
      */
     public function treatForm(): Res

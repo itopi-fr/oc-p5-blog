@@ -41,6 +41,7 @@ class OwnerUserController extends OwnerController
 
     /**
      * Manage the users
+     *
      * @return void
      */
     public function manageUsers(): void
@@ -56,6 +57,7 @@ class OwnerUserController extends OwnerController
 
     /**
      * Mute a user by its id by setting its role to 'user-muted'
+     *
      * @param string $userId - The user id to mute
      * @return void
      */
@@ -68,6 +70,7 @@ class OwnerUserController extends OwnerController
 
     /**
      * Unmute or unban a user by its id by setting its role back to 'user'
+     *
      * @param string $userId - The user id to unmute or unban
      * @return void
      */
@@ -80,6 +83,7 @@ class OwnerUserController extends OwnerController
 
     /**
      * Ban a user by its id by setting its role to 'user-banned'
+     *
      * @param string $userId - The user id to ban
      * @return void
      */
@@ -93,6 +97,7 @@ class OwnerUserController extends OwnerController
     /**
      * Displays the form to email a user or treats it if sent
      * @param string $userId - The user id to send the email to
+     *
      * @return void
      */
     public function sendmailToUser(string $strUserId): void

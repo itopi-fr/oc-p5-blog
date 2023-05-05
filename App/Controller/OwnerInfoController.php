@@ -37,8 +37,10 @@ class OwnerInfoController
         $this->ownerInfo = new OwnerInfo();
     }
 
+
     /**
      * Supposing that there is only one owner, get his info
+     *
      * @return OwnerInfo
      */
     public function getOwnerInfo(): OwnerInfo
@@ -48,9 +50,11 @@ class OwnerInfoController
         return $this->ownerInfo;
     }
 
+
     /**
      * Hydrate a proper OwnerInfo object with data from database
-     * @param $ownerInfoObject
+     *
+     * @param $ownerInfoObject - The owner info object from database.
      * @return OwnerInfo
      */
     public function hydrateOwnerInfoObject($ownerInfoObject): OwnerInfo
@@ -117,4 +121,6 @@ class OwnerInfoController
 
         return $ownerInfo;
     }
+
+
 }

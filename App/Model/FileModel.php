@@ -30,7 +30,8 @@ class FileModel extends Connection
 
     /**
      * Returns a File instance based on its id
-     * @param int $fileId - The id of the file
+     *
+     * @param int $fileId - the ID of the file to check if it exists
      * @return bool
      */
     public function fileExistsById(int $fileId): bool
@@ -41,8 +42,9 @@ class FileModel extends Connection
 
 
     /**
-     * Returns a File instance based on its id
-     * @param int $fileId - The id of the file
+     * Returns a File instance based on its id.
+     *
+     * @param int $fileId - The id of the file to get
      * @return File|null
      */
     public function getFileById(int $fileId): File|null
@@ -53,7 +55,8 @@ class FileModel extends Connection
 
 
     /**
-     * Insert a file in the database
+     * Insert a file in the database.
+     *
      * @param File $file - The file to insert
      * @return string|null
      */
@@ -79,8 +82,9 @@ class FileModel extends Connection
 
 
     /**
-     * Delete a file from the database based on its id
-     * @param int $fileId - The id of the file
+     * Delete a file from the database based on its id.
+     *
+     * @param int $fileId - The id of the file to delete
      * @return bool|null
      */
     public function deleteFileById(int $fileId): bool|null
@@ -88,4 +92,6 @@ class FileModel extends Connection
         $sql = "DELETE FROM file WHERE file_id = ?";
         return $this->delete($sql, [$fileId]);
     }
+
+
 }

@@ -33,6 +33,8 @@ class FormContactOwner extends FormController
 
 
     /**
+     * Treat the form. If ok, send the email to the owner of the blog.
+     *
      * @return Res $res
      */
     public function treatForm(): Res

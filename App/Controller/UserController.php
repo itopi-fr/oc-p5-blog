@@ -6,7 +6,6 @@ use App\Controller\Form\FormUserLog;
 use App\Controller\Form\FormUserChangePass;
 use App\Controller\Form\FormUserProfile;
 use App\Controller\Form\FormUserResetPass;
-use App\Entity\File;
 use App\Entity\Res;
 use App\Entity\Token;
 use App\Entity\UserOwner;
@@ -74,8 +73,9 @@ class UserController extends MainController
 
     /**
      * Used as a sub-router for user actions
-     * @param $userAction
-     * @param $userActionData
+     *
+     * @param $userAction - User action to perform.
+     * @param $userActionData - Data to use for the action.
      * @return void
      * @throws LoaderError
      * @throws RuntimeError
@@ -193,7 +193,7 @@ class UserController extends MainController
 
                     // Refresh page if no error.
                     if ($this->twigData['result']->isErr() === false) {
-                        $this->refresh(100);
+                        $this->refresh(3);
                     }
                 }
                 $this->twigData['owner'] = $this->userOwner;
@@ -232,6 +232,7 @@ class UserController extends MainController
 
     /**
      * Login a user
+     *
      * @return Res
      */
     public function userLogin(): Res
@@ -263,7 +264,8 @@ class UserController extends MainController
      * Activate a user account. This method is called when a user click on the activation link in the email.
      * This email contains a link with a token : /user/activation/123456789
      * If the token is valid, not expired and the user exists, the user is activated and the token is deleted.
-     * @param string $tokenContent
+     *
+     * @param string $tokenContent - Token key to activate the user.
      * @return Res
      */
     public function userActivate(string $tokenContent): Res
@@ -310,7 +312,8 @@ class UserController extends MainController
 
 
     /**
-     * Get all users
+     * Get all users.
+     *
      * @return Res
      */
     public function getAllUsers(): Res
@@ -332,9 +335,11 @@ class UserController extends MainController
         return $this->res;
     }
 
+
     /**
-     * Get a user by its id
-     * @param int $userId
+     * Get a user by its id.
+     *
+     * @param int $userId - the ID of the user to get.
      * @return User
      */
     public function getUserById(int $userId): User
@@ -344,8 +349,9 @@ class UserController extends MainController
 
 
     /**
-     * Get a user by its email
-     * @param string $email
+     * Get a user by its email.
+     *
+     * @param string $email - the email of the user to get.
      * @return Res
      */
     public function getUserByEmail(string $email): Res
@@ -360,8 +366,9 @@ class UserController extends MainController
 
 
     /**
-     * Get a user by a token
-     * @param int|string $tokenData
+     * Get a user by a token.
+     *
+     * @param int|string $tokenData - the token (id or key) to get the user from.
      * @return Res
      */
     public function getUserByToken(int|string $tokenData): Res
@@ -388,10 +395,11 @@ class UserController extends MainController
 
 
     /**
-     * Create a user providing a pseudo, an email and a password
-     * @param string $pseudo
-     * @param string $email
-     * @param string $password
+     * Create a user providing a pseudo, an email and a password.
+     *
+     * @param string $pseudo - the pseudo of the user to create.
+     * @param string $email - the email of the user to create.
+     * @param string $password - the password of the user to create.
      * @return Res
      */
     public function regCreateUser(string $pseudo, string $email, string $password): Res
@@ -453,8 +461,9 @@ class UserController extends MainController
 
 
     /**
-     * Updates a user providing a user object
-     * @param User $user
+     * Updates a user providing a user object.
+     *
+     * @param User $user - the user to update.
      * @return Res
      */
     public function updateUser(User $user): Res
@@ -462,7 +471,8 @@ class UserController extends MainController
         try {
             // Remove old avatar file if a new one is sent.
             $dbAvatarId = $this->getUserById($user->getUserId())->getAvatarId();
-            if ($dbAvatarId !== $user->getAvatarId()) {
+            $this->dump($dbAvatarId);
+            if ($dbAvatarId !== $user->getAvatarId() && $dbAvatarId !== null) {
                 $this->fileController->deleteFileById($dbAvatarId);
             }
 
@@ -484,8 +494,9 @@ class UserController extends MainController
 
 
     /**
-     * Updates owner info providing a userOwner object
-     * @param UserOwner $userOwner
+     * Updates owner info providing a userOwner object.
+     *
+     * @param UserOwner $userOwner - the userOwner to update.
      * @return Res
      */
     public function updateUserOwner(UserOwner $userOwner): Res
@@ -494,12 +505,12 @@ class UserController extends MainController
         $dbUserOwner = $this->userOwnerModel->getUserOwnerById($userOwner->getUserId());
 
         // Remove old photo file if a new one is sent.
-        if ($dbUserOwner->getPhotoFileId() !== $userOwner->getPhotoFileId()) {
+        if ($dbUserOwner->getPhotoFileId() !== $userOwner->getPhotoFileId() && $dbUserOwner->getPhotoFileId() !== null) {
             $this->fileController->deleteFileById($dbUserOwner->getPhotoFileId());
         }
 
         // Remove old cv file if a new one is sent.
-        if ($dbUserOwner->getCvFileId() !== $userOwner->getCvFileId()) {
+        if ($dbUserOwner->getCvFileId() !== $userOwner->getCvFileId() && $dbUserOwner->getCvFileId() !== null) {
             $this->fileController->deleteFileById($dbUserOwner->getCvFileId());
         }
 
@@ -518,8 +529,9 @@ class UserController extends MainController
 
 
     /**
-     * Mute a user by setting his role to 'user-muted'
-     * @param int $userId
+     * Mute a user by setting his role to 'user-muted'.
+     *
+     * @param int $userId - the ID of the user to mute.
      * @return Res
      */
     public function muteUser(int $userId): Res
@@ -543,8 +555,9 @@ class UserController extends MainController
 
 
     /**
-     * Activate a user by setting his role to 'user'
-     * @param int $userId
+     * Activate a user by setting his role to 'user'.
+     *
+     * @param int $userId - the ID of the user to activate.
      * @return Res
      */
     public function activateUser(int $userId): Res
@@ -568,8 +581,9 @@ class UserController extends MainController
 
 
     /**
-     * Bans a user by setting his role to 'user-banned'
-     * @param int $userId
+     * Bans a user by setting his role to 'user-banned'.
+     *
+     * @param int $userId - the ID of the user to ban.
      * @return Res
      */
     public function banUser(int $userId): Res
@@ -593,9 +607,11 @@ class UserController extends MainController
 
 
     /**
-     * @param int $toUserId
-     * @param string $subject
-     * @param string $content
+     * Email a user.
+     *
+     * @param int $toUserId - the ID of the user to send the email to.
+     * @param string $subject - the subject of the email.
+     * @param string $content - the content of the email.
      * @return Res
      */
     public function sendEmailToUser(int $toUserId, string $subject, string $content): Res
@@ -625,11 +641,13 @@ class UserController extends MainController
 
 
     /**
-     * @param string $fromUserEmail
-     * @param string $firstname
-     * @param string $lastname
-     * @param string $subject
-     * @param string $content
+     * Email the owner of the blog.
+     *
+     * @param string $fromUserEmail - the email of the user sending the mail.
+     * @param string $firstname - the firstname of the user sending the mail.
+     * @param string $lastname - the lastname of the user sending the mail.
+     * @param string $subject - the subject of the mail.
+     * @param string $content - the content of the mail.
      * @return Res
      */
     public function sendEmailToOwner(
@@ -681,8 +699,9 @@ class UserController extends MainController
 
 
     /**
-     * Hydrates a proper User object with data from the database
-     * @param object $userObj
+     * Hydrates a proper User object with data from the database.
+     *
+     * @param object $userObj - the object to hydrate.
      * @return User
      */
     public function hydrateUser(object $userObj): User

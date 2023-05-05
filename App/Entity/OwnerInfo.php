@@ -2,26 +2,59 @@
 
 namespace App\Entity;
 
+/**
+ * OwnerInfo entity
+ */
 class OwnerInfo
 {
+    /**
+     * @var int
+     */
     protected int $owner_id;
 
+    /**
+     * @var string
+     */
     protected string $first_name = '';
 
+    /**
+     * @var string
+     */
     protected string $last_name = '';
 
+    /**
+     * @var string
+     */
     protected string $catch_phrase = '';
 
+    /**
+     * @var int
+     */
     protected int $photo_file_id = 0;
 
+    /**
+     * @var File
+     */
     protected File $photo_file;
 
+    /**
+     * @var int
+     */
     protected int $cv_file_id = 0;
 
+    /**
+     * @var File
+     */
     protected File $cv_file;
 
+    /**
+     * @var string
+     */
     protected string $sn_github = '';
 
+    /**
+     * @var string
+     */
     protected string $sn_linkedin = '';
 
 

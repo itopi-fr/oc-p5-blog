@@ -23,7 +23,8 @@ class ErrorPageController extends MainController
 
     /**
      * Display the error page.
-     * @param Res $res
+     *
+     * @param Res $res - The Res object containing the error message.
      * @return void
      * @throws LoaderError
      * @throws RuntimeError
@@ -34,4 +35,6 @@ class ErrorPageController extends MainController
         $this->twigData['result'] = $res;
         $this->twig->display("pages/page_fo_error.twig", $this->twigData);
     }
+
+
 }

@@ -98,6 +98,7 @@ class FormController extends MainController
 
     /**
      * Check if file size is ok based on its type
+     *
      * @param array $posted_file
      * @param int $file_size_max
      * @return bool
@@ -107,8 +108,10 @@ class FormController extends MainController
         return $posted_file['size'] <= $file_size_max;
     }
 
+
     /**
      * Check if file is an image based on its extension and mime type
+     *
      * @param array $posted_file
      * @return bool
      */
@@ -118,8 +121,10 @@ class FormController extends MainController
         return in_array($ext, $this->imageExtensions) && in_array($posted_file['type'], $this->imageMimeTypes);
     }
 
+
     /**
      * Check if file is a document based on its extension and mime type
+     *
      * @param array $posted_file
      * @return bool
      */
@@ -129,8 +134,10 @@ class FormController extends MainController
         return in_array($ext, $this->docExtensions) && in_array($posted_file['type'], $this->docMimeTypes);
     }
 
+
     /**
      * Build destination path of the file based on its type
+     *
      * @param array $posted_file
      * @param string $file_type
      * @return array
@@ -171,8 +178,10 @@ class FormController extends MainController
         return $posted_file;
     }
 
+
     /**
      * Check if a value is unique in database
+     *
      * @param string $formName
      * @param string $field
      * @param int $userId
@@ -188,8 +197,10 @@ class FormController extends MainController
         return $this->res;
     }
 
+
     /**
      * Check if a POST field is sent, is alphanumeric (allowing _ and -) and is between 2 lengths
+     *
      * @param string $formName
      * @param string $field
      * @param int $min
@@ -212,6 +223,7 @@ class FormController extends MainController
 
     /**
      * Check if a POST radio is sent, is alphanumeric and "-" and is valid
+     *
      * @param string $formName
      * @param string $field
      * @param array $allowed_values
@@ -231,6 +243,7 @@ class FormController extends MainController
 
     /**
      * Check if a POST field is sent, is a valid email and is between 2 lengths
+     *
      * @param string $formName
      * @param string $field
      * @param int $min
@@ -253,6 +266,7 @@ class FormController extends MainController
 
     /**
      * Check if a POST field is sent, is a valid slug (alphanum and "-") and is between 4 and 128 chars
+     *
      * @param string $formName
      * @param string $field
      * @param int $postId
@@ -280,6 +294,7 @@ class FormController extends MainController
      * - if a POST file is sent or already set
      * - if the file is a valide image
      * - if the file size is not too big
+     *
      * @param string $formName
      * @param string $type
      * @param array $postedFile
@@ -307,11 +322,13 @@ class FormController extends MainController
         return $this->res;
     }
 
+
     /**
      * This method performs the following checks:
      * - if a POST file is sent or already set
      * - if the file is a valide pdf
      * - if the file size is not too big
+     *
      * @param string $formName
      * @param string $type
      * @param array $postedFile
@@ -339,8 +356,10 @@ class FormController extends MainController
         return $this->res;
     }
 
+
     /**
      * Check if a POST field is sent, is a valid url and is between 5 and 2048 chars
+     *
      * @param string $formName
      * @param string $field
      * @return Res
@@ -361,6 +380,7 @@ class FormController extends MainController
 
     /**
      * Treats a file and returns a Res containing a File object
+     *
      * @param $posted_file
      * @param $file_type
      * @return Res
@@ -381,6 +401,8 @@ class FormController extends MainController
 
 
     /**
+     * Hash a password
+     *
      * @param string $password
      * @return string
      */
@@ -389,8 +411,10 @@ class FormController extends MainController
         return hash('sha256', $password);
     }
 
+
     /**
      * Check the password format matches the requirements : 8 characters, 1 uppercase, 1 lowercase, 1 number
+     *
      * @param string $password
      * @return bool
      */
@@ -402,7 +426,6 @@ class FormController extends MainController
     /**
      * ---------------------------------------------------- Getters ----------------------------------------------------
      */
-
     /**
      * @return int
      */
@@ -410,6 +433,7 @@ class FormController extends MainController
     {
         return $this->photoMaxSize;
     }
+
 
     /**
      * @return int
@@ -419,6 +443,7 @@ class FormController extends MainController
         return $this->postImgMaxSize;
     }
 
+
     /**
      * @return int
      */
@@ -426,6 +451,7 @@ class FormController extends MainController
     {
         return $this->cvMaxSize;
     }
+
 
     /**
      * @return int
@@ -435,6 +461,7 @@ class FormController extends MainController
         return $this->avatarMaxSize;
     }
 
+
     /**
      * @return string
      */
@@ -442,6 +469,7 @@ class FormController extends MainController
     {
         return $this->photoPath;
     }
+
 
     /**
      * @return string
@@ -451,6 +479,7 @@ class FormController extends MainController
         return $this->postImgPath;
     }
 
+
     /**
      * @return string
      */
@@ -458,6 +487,7 @@ class FormController extends MainController
     {
         return $this->cvPath;
     }
+
 
     /**
      * @return string

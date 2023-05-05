@@ -2,18 +2,39 @@
 
 namespace App\Sys;
 
+/**
+ * Class SuperGlobals - Manages the superglobals. Used to avoid direct use of superglobals.
+ */
 class SuperGlobals
 {
+    /**
+     * @var array
+     */
     private array $sgEnv;
 
+    /**
+     * @var array
+     */
     private array $sgSes;
 
+    /**
+     * @var array
+     */
     private array $sgGet;
 
+    /**
+     * @var array
+     */
     private array $sgPost;
 
+    /**
+     * @var array
+     */
     private array $sgFiles;
 
+    /**
+     * @var array
+     */
     private array $sgServer;
 
 
@@ -27,7 +48,8 @@ class SuperGlobals
 
 
     /**
-     * Get all $_ENV variables
+     * Get all $_ENV variables.
+     *
      * @return array|null
      */
     public function getEnvAll(): array|null
@@ -37,8 +59,9 @@ class SuperGlobals
 
 
     /**
-     * Get a specific $_ENV variable
-     * @param string $varName
+     * Get a specific $_ENV variable.
+     *
+     * @param string $varName - The name of the variable to get
      * @return string|null
      */
     public function getEnv(string $varName): string|null
@@ -48,7 +71,8 @@ class SuperGlobals
 
 
     /**
-     * Get all $_SESSION variables
+     * Get all $_SESSION variables.
+     *
      * @return array|null
      */
     public function getSesAll(): array|null
@@ -58,8 +82,9 @@ class SuperGlobals
 
 
     /**
-     * Get a specific $_SESSION variable
-     * @param string $varName
+     * Get a specific $_SESSION variable.
+     *
+     * @param string $varName - The name of the variable to get
      * @return mixed
      */
     public function getSes(string $varName): mixed
@@ -69,9 +94,10 @@ class SuperGlobals
 
 
     /**
-     * Set a specific $_SESSION variable
-     * @param string $varName
-     * @param mixed $varValue
+     * Set a specific $_SESSION variable.
+     *
+     * @param string $varName - The name of the variable to set
+     * @param mixed $varValue - The value of the variable to set
      * @return void
      */
     public function setSes(string $varName, mixed $varValue): void
@@ -82,7 +108,8 @@ class SuperGlobals
 
 
     /**
-     * Get all $_GET variables
+     * Get all $_GET variables.
+     *
      * @return array|null
      */
     public function getGetAll(): array|null
@@ -92,8 +119,9 @@ class SuperGlobals
 
 
     /**
-     * Get a specific $_GET variable
-     * @param string $varName
+     * Get a specific $_GET variable.
+     *
+     * @param string $varName - The name of the variable to get
      * @return string|null
      */
     public function getGet(string $varName): string|null
@@ -103,7 +131,8 @@ class SuperGlobals
 
 
     /**
-     * Get all $_POST variables
+     * Get all $_POST variables.
+     *
      * @return array|null
      */
     public function getPostAll(): array|null
@@ -113,8 +142,9 @@ class SuperGlobals
 
 
     /**
-     * Get a specific $_POST variable
-     * @param string $varName
+     * Get a specific $_POST variable.
+     *
+     * @param string $varName - The name of the variable to get
      * @return string|null
      */
     public function getPost(string $varName): string|null
@@ -124,7 +154,8 @@ class SuperGlobals
 
 
     /**
-     * Get all $_FILES variables
+     * Get all $_FILES variables.
+     *
      * @return array|null
      */
     public function getFilesAll(): array|null
@@ -134,8 +165,9 @@ class SuperGlobals
 
 
     /**
-     * Get a specific $_FILES variable
-     * @param string $varName
+     * Get a specific $_FILES variable.
+     *
+     * @param string $varName - The name of the variable to get
      * @return array|null
      */
     public function getFiles(string $varName): array|null
@@ -145,7 +177,8 @@ class SuperGlobals
 
 
     /**
-     * Get all $_SERVER variables
+     * Get all $_SERVER variables.
+     *
      * @return array|null
      */
     public function getServerAll(): array|null
@@ -155,8 +188,9 @@ class SuperGlobals
 
 
     /**
-     * Get a specific $_SERVER variable
-     * @param string $varName
+     * Get a specific $_SERVER variable.
+     *
+     * @param string $varName - The name of the variable to get
      * @return string|null
      */
     public function getServer(string $varName): string|null
@@ -164,9 +198,11 @@ class SuperGlobals
         return $this->sgServer[$varName] ?? null;
     }
 
+
     /**
      * Function to define superglobals for use locally.
-     * @param string|null $which
+     *
+     * @param string|null $which - Which superglobal to define (optional)
      * @return void
      */
     private function defineSg(string|null $which = null): void

@@ -7,10 +7,19 @@ use App\Entity\Res;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 
+/**
+ *
+ */
 class MailModel
 {
+    /**
+     * @var Res
+     */
     protected Res $res;
 
+    /**
+     * @var SuperGlobals
+     */
     private SuperGlobals $superGlobals;
 
 
@@ -23,13 +32,15 @@ class MailModel
         $this->superGlobals = new SuperGlobals();
     }
 
+
     /**
      * Send an email with the PHPMailer library.
-     * @param string $mailTo
-     * @param string $mailToName
-     * @param string $subject
-     * @param string $msgHtml
-     * @param string $msgRaw
+     *
+     * @param string $mailTo - The email address of the recipient
+     * @param string $mailToName - The name of the recipient
+     * @param string $subject - The subject of the email
+     * @param string $msgHtml - The HTML message
+     * @param string $msgRaw - The raw message
      * @return Res
      * @throws Exception
      */
@@ -66,4 +77,6 @@ class MailModel
             return $this->res->ko('send-email', 'send-email-failed');
         }
     }
+
+
 }

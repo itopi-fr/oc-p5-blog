@@ -39,14 +39,14 @@ This project requires Composer 2.0 or higher.
 This project uses the following services and extensions :
 
 ### Composer extensions
-*   [twig/twig](https://packagist.org/packages/twig/twig)
-*   ext-pdo
-*   [vlucas/phpdotenv](https://packagist.org/packages/vlucas/phpdotenv)
-*   [phpmailer/phpmailer](https://packagist.org/packages/phpmailer/phpmailer)
+*  [twig/twig](https://packagist.org/packages/twig/twig)
+*  ext-pdo
+*  [vlucas/phpdotenv](https://packagist.org/packages/vlucas/phpdotenv)
+*  [phpmailer/phpmailer](https://packagist.org/packages/phpmailer/phpmailer)
 
 ### Libraries
-*   [Bootstrap  v5.3.0-alpha1](https://getbootstrap.com/)
-*   [fontawesome](https://fontawesome.com/)
+*  [Bootstrap  v5.3.0-alpha1](https://getbootstrap.com/)
+*  [fontawesome](https://fontawesome.com/)
 
 
 ## Installation

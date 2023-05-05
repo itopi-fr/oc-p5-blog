@@ -6,8 +6,14 @@ use App\Entity\File;
 use App\Entity\UserOwner;
 use Exception;
 
+/**
+ * Class UserOwnerModel - Manages the user owners in the database
+ */
 class UserOwnerModel extends UserModel
 {
+    /**
+     * @var UserOwner
+     */
     private UserOwner $owner;
 
 
@@ -22,7 +28,8 @@ class UserOwnerModel extends UserModel
 
     /**
      * Returns a user owner object based on its id.
-     * @param $userOwnerId
+     *
+     * @param $userOwnerId - The id of the user owner to get
      * @return UserOwner
      */
     public function getUserOwnerById($userOwnerId): UserOwner
@@ -55,9 +62,11 @@ class UserOwnerModel extends UserModel
         return $this->owner;
     }
 
+
     /**
-     * Updates user_owner_infos in database
-     * @param UserOwner $userOwner
+     * Updates user_owner_infos in database.
+     *
+     * @param UserOwner $userOwner - The user owner to update
      * @return int
      * @throws Exception
      */
@@ -91,9 +100,11 @@ class UserOwnerModel extends UserModel
         ]);
     }
 
+
     /**
      * Checks if a user owner exists in database.
-     * @param int $userOwnerId
+     *
+     * @param int $userOwnerId - The id of the user owner to check if it exists
      * @return bool
      */
     public function userOwnerExistsById(int $userOwnerId): bool
@@ -101,4 +112,6 @@ class UserOwnerModel extends UserModel
         $sql = "SELECT EXISTS(SELECT * FROM user_owner_infos WHERE owner_id = ?)";
         return $this->exists($sql, [$userOwnerId]);
     }
+
+
 }

@@ -59,7 +59,8 @@ class CommentController extends MainController
 
     /**
      * Treat different actions for comments.
-     * @param string $pageAction
+     *
+     * @param string $pageAction - The page action.
      * @return void
      * @throws LoaderError
      * @throws RuntimeError
@@ -82,8 +83,9 @@ class CommentController extends MainController
     /**
      * Get the x last comments for a given post.
      * Only validated comments (status = 'valid') are returned.
-     * @param int $postId
-     * @param int $max
+     *
+     * @param int $postId - The post ID.
+     * @param int $max - The max number of comments to return.
      * @return array
      * @throws Exception
      */
@@ -113,7 +115,8 @@ class CommentController extends MainController
 
     /**
      * Get the x last comments (any post, any status).
-     * @param int $max
+     *
+     * @param int $max - The max number of comments to return.
      * @return Res $res
      */
     public function getAllPostComments(int $max): Res
@@ -139,7 +142,8 @@ class CommentController extends MainController
 
     /**
      * Create a comment. If the author is the owner, the comment is valid by default.
-     * @param Comment $comment
+     *
+     * @param Comment $comment - The comment object.
      * @return Res
      */
     public function createComment(Comment $comment): Res
@@ -159,7 +163,8 @@ class CommentController extends MainController
 
     /**
      * Validate a comment by setting its status to 'valid'.
-     * @param int $comId
+     *
+     * @param int $comId - The ID of the comment to validate.
      * @return Res
      */
     public function validateComment(int $comId): Res
@@ -182,7 +187,8 @@ class CommentController extends MainController
 
     /**
      * Delete a comment by setting its status to 'valid'.
-     * @param int $comId
+     *
+     * @param int $comId - The ID of the comment to delete.
      * @return Res
      */
     public function deleteComment(int $comId): Res
@@ -205,7 +211,8 @@ class CommentController extends MainController
 
     /**
      * Hydrate a proper comment object with the given object.
-     * @param object $comObj
+     *
+     * @param object $comObj - The object to hydrate the proper comment object with.
      * @return Comment
      * @throws Exception
      */

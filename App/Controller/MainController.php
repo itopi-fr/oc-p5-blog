@@ -63,7 +63,8 @@ class MainController
     /** -------------------------------------------------- Methods -------------------------------------------------  */
     /**
      * Check if a value is set
-     * @param mixed $value
+     *
+     * @param mixed $value - The value to check.
      * @return bool
      */
     protected function isSet(mixed $value): bool
@@ -74,7 +75,8 @@ class MainController
 
     /**
      * Check if a string is alphanumeric and -
-     * @param string $value
+     *
+     * @param string $value - The value to check.
      * @return bool
      */
     protected function isAlphaNumDash(string $value): bool
@@ -85,7 +87,8 @@ class MainController
 
     /**
      * Check if a string is alphanumeric, - and _
-     * @param string $value
+     *
+     * @param string $value - The value to check.
      * @return bool
      */
     protected function isAlphaNumDashUnderscore(string $value): bool
@@ -96,7 +99,8 @@ class MainController
 
     /**
      * Check if a string is alphanumeric, "-", "_" and spaces
-     * @param string $value
+     *
+     * @param string $value - The value to check.
      * @return bool
      */
     protected function isAlphaNumSpacesPunct(string $value): bool
@@ -110,9 +114,10 @@ class MainController
 
     /**
      * Check if a string is between 2 lengths
-     * @param string $value
-     * @param int $min
-     * @param int $max
+     *
+     * @param string $value - The value to check.
+     * @param int $min - The minimum length.
+     * @param int $max - The maximum length.
      * @return bool
      */
     protected function isBetween(string $value, int $min, int $max): bool
@@ -123,7 +128,8 @@ class MainController
 
     /**
      * Check if a string is a valid email
-     * @param string $value
+     *
+     * @param string $value - The value to check.
      * @return bool
      */
     protected function isEmail(string $value): bool
@@ -135,7 +141,8 @@ class MainController
     /**
      * Check if a string is a valid URL
      * Add http:// if not present
-     * @param string $value
+     *
+     * @param string $value - The value to check.
      * @return string|null
      */
     protected function validateUrl(string $value): string|null
@@ -165,7 +172,8 @@ class MainController
      * It will be displayed using showDump() method called in the __destruct() method of MainController class.
      * Must be called using parent::dump($var) in the child class
      * in order to have all the dumped variables displayed in the same block.
-     * @param $dumpThis
+     *
+     * @param $dumpThis - The variable to dump.
      * @return void
      */
     public function dump($dumpThis): void
@@ -187,6 +195,7 @@ class MainController
      * This method is called in the __destruct() method.
      * Should be called using parent::showDump() in the child class
      * in order to have all the dumped variables displayed in the same block.
+     *
      * @return void
      */
     protected function showDump(): void
@@ -212,8 +221,9 @@ class MainController
 
     /**
      * Redirects to the given route
-     * @param string $route
-     * @param int $delay
+     *
+     * @param string $route - The route to redirect to.
+     * @param int $delay - The delay before redirecting.
      * @return void
      */
     protected function redirectTo(string $route, int $delay = 3): void
@@ -221,9 +231,11 @@ class MainController
         header("Refresh:$delay; url=$route");
     }
 
+
     /**
      * Refresh current page after a given number of seconds
-     * @param int $seconds
+     *
+     * @param int $seconds - The number of seconds before refreshing.
      * @return void
      */
     protected function refresh(int $seconds = 5): void
@@ -231,8 +243,10 @@ class MainController
         header("Refresh:$seconds");
     }
 
+
     /**
      * Refresh instantly current page
+     *
      * @return void
      */
     protected function refreshNow(): void
@@ -240,9 +254,11 @@ class MainController
         header("Refresh:0");
     }
 
+
     /**
      * Generates a random key
-     * @param int $length
+     *
+     * @param int $length - The length of the key to generate.
      * @return string
      * @throws Exception
      */
@@ -251,8 +267,10 @@ class MainController
         return (bin2hex(random_bytes($length)));
     }
 
+
     /**
      * Initializes Twig
+     *
      * @return void
      */
     protected function initTwig(): void
@@ -285,4 +303,6 @@ class MainController
             $this->twig->addGlobal('usrid', null);
         }
     }
+
+
 }

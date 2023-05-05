@@ -49,7 +49,8 @@ class FormUserResetPass extends FormController
 
     /**
      * Treat the form to ask for a password reset
-     * @param string $email
+     *
+     * @param string $email - The user email.
      * @return Res
      */
     public function treatFormPassAsk(string $email): Res
@@ -97,7 +98,8 @@ class FormUserResetPass extends FormController
     /**
      * Treat the form to change the password after clicking on the link of the reset password email.
      * Check if the token is valid, if a user related exists, then change the password and delete the token.
-     * @param string $tokenContent
+     *
+     * @param string $tokenContent - The token key.
      * @return Res
      */
     public function treatFormPassChange(string $tokenContent): Res

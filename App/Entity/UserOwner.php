@@ -247,4 +247,6 @@ class UserOwner extends User
     {
         $this->sn_linkedin = $sn_linkedin;
     }
+
+
 }

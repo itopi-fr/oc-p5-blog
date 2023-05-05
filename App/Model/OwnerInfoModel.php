@@ -16,7 +16,8 @@ class OwnerInfoModel extends Connection
 
 
     /**
-     * Returns owner id
+     * Get the ID of the owner.
+     *
      * @return int
      */
     public function getOwnerId(): int
@@ -27,7 +28,8 @@ class OwnerInfoModel extends Connection
     }
 
     /**
-     * Returns owner info
+     * Returns owner info.
+     *
      * @return null|object
      */
     public function getOwnerInfo(): null|object
@@ -36,4 +38,6 @@ class OwnerInfoModel extends Connection
         $sql = "SELECT * FROM user_owner_infos WHERE owner_id =?";
         return $this->getSingleAsObject($sql, [$ownerId]);
     }
+
+
 }

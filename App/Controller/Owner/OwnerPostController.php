@@ -76,6 +76,7 @@ class OwnerPostController extends OwnerController
 
     /**
      * Used to display the list of posts in the BO (/owner/posts)
+     *
      * @return void
      */
     public function managePosts(): void
@@ -99,6 +100,7 @@ class OwnerPostController extends OwnerController
 
     /**
      * Create a post in the database
+     *
      * @return void
      */
     public function createPost(): void
@@ -122,7 +124,8 @@ class OwnerPostController extends OwnerController
 
     /**
      * Used to display the edit form of a post in the BO (/owner/posts/edit/{postId})
-     * @param int $postId
+     *
+     * @param int $postId - The ID of the post to edit
      * @return void
      */
     public function editPost(int $postId): void
@@ -151,7 +154,8 @@ class OwnerPostController extends OwnerController
 
     /**
      * Delete a post from the database providing its ID
-     * @param int $postId
+     *
+     * @param int $postId - The ID of the post to delete
      * @return void
      */
     public function deletePost(int $postId): void
@@ -171,12 +175,13 @@ class OwnerPostController extends OwnerController
 
         // Display.
         $this->twig->display("pages/owner/page_bo_post_delete.twig", $this->twigData);
-        $this->redirectTo('/owner/posts', 5);
     }
 
 
     /**
-     * @param int $postId
+     * Archive a post from the database providing its ID
+     *
+     * @param int $postId - The ID of the post to archive
      * @return void
      */
     public function archivePost(int $postId): void
@@ -204,7 +209,8 @@ class OwnerPostController extends OwnerController
 
     /**
      * Get a Post by its slug
-     * @param $postSlug
+     *
+     * @param $postSlug - The slug of the post to get
      * @return Res
      */
     public function getPostBySlug($postSlug): Res
@@ -231,7 +237,8 @@ class OwnerPostController extends OwnerController
 
     /**
      * Get a Post class object by its slug
-     * @param $postId
+     *
+     * @param $postId - The ID of the post to get
      * @return Res
      */
     public function getPostById($postId): Res
@@ -255,4 +262,6 @@ class OwnerPostController extends OwnerController
 
         return $this->res;
     }
+
+
 }

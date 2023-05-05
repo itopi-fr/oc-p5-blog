@@ -28,7 +28,9 @@ class ContactController extends MainController
 
 
     /**
-     * @param string $action
+     * This method is used to display the contact form.
+     *
+     * @param string $action - The action to do.
      * @return void
      */
     public function index(string $action): void

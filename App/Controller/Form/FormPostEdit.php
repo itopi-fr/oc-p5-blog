@@ -36,6 +36,7 @@ class FormPostEdit extends FormController
 
     /**
      * Treats the user part of the form
+     *
      * @param Post $post
      * @return Res
      */
@@ -103,4 +104,6 @@ class FormPostEdit extends FormController
         }
         return $this->res;
     }
+
+
 }

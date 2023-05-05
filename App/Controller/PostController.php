@@ -37,7 +37,15 @@ class PostController extends MainController
      * @var Post
      */
     protected Post $postSingle;
+
+    /**
+     * @var CommentModel
+     */
     protected CommentModel $commentModel;
+
+    /**
+     * @var FileController
+     */
     private FileController $fileController;
 
 
@@ -56,6 +64,8 @@ class PostController extends MainController
 
 
     /**
+     * Display the post list page with comments.
+     *
      * @return void
      * @throws LoaderError
      * @throws RuntimeError
@@ -87,7 +97,8 @@ class PostController extends MainController
 
     /**
      * Create a post in the database providing a Post object
-     * @param Post $post
+     *
+     * @param Post $post - The Post object to create.
      * @return Res
      */
     public function createPost(Post $post): Res
@@ -112,7 +123,8 @@ class PostController extends MainController
     /**
      * Update a post in the database providing a Post object
      * Calls the PostModel::updatePost() method
-     * @param Post $post
+     *
+     * @param Post $post - The Post object to update.
      * @return Res
      */
     public function updatePost(Post $post): Res
@@ -134,7 +146,8 @@ class PostController extends MainController
 
     /**
      * Simply change the status of a post to "arch" (archived)
-     * @param int $postId
+     *
+     * @param int $postId - The ID of the post to archive.
      * @return Res
      */
     public function archivePost(int $postId): Res
@@ -151,7 +164,8 @@ class PostController extends MainController
      * Delete a post from the database providing its ID
      * Also delete the comments and the featured image associated to this post
      * Calls the PostModel::deletePost() method
-     * @param int $postId
+     *
+     * @param int $postId - The ID of the post to delete.
      * @return Res
      */
     public function deletePost(int $postId): Res
@@ -185,8 +199,9 @@ class PostController extends MainController
 
 
     /**
-     * Get a post from the database providing its slug
-     * @param string $postSlug
+     * Get a post from the database providing its slug. Also get the comments associated to this post.
+     *
+     * @param string $postSlug - The slug of the post to get.
      * @return void
      */
     public function single(string $postSlug): void
@@ -214,7 +229,8 @@ class PostController extends MainController
 
     /**
      * Get a post from the database providing its ID
-     * @param int $postId
+     *
+     * @param int $postId - The ID of the post to get.
      * @return Post
      */
     public function getPostById(int $postId): Post
@@ -226,7 +242,8 @@ class PostController extends MainController
 
     /**
      * Get x last published posts from the database
-     * @param int $nbPosts
+     *
+     * @param int $nbPosts - The number of posts to get.
      * @return array
      * @throws Exception
      */
@@ -253,14 +270,14 @@ class PostController extends MainController
                 $this->posts[$key]->getLastUpdate()->setTimezone(new DateTimeZone('Europe/Paris'))
             );
         }
-
         return $this->posts;
     }
 
 
     /**
      * Generate a slug from a string
-     * @param string $postTitle
+     *
+     * @param string $postTitle - The string to convert to slug.
      * @return string
      */
     public function generateSlug(string $postTitle): string
@@ -275,7 +292,7 @@ class PostController extends MainController
     /**
      * Hydrate the Post class object with the data from a post standard object
      *
-     * @param object $postObject
+     * @param object $postObject - The post standard object to hydrate the Post class object with.
      * @return Post
      * @throws Exception
      */
@@ -297,4 +314,6 @@ class PostController extends MainController
         $post->setStatus($postObject->status);
         return $post;
     }
+
+
 }

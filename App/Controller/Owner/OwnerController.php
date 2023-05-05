@@ -33,8 +33,10 @@ class OwnerController extends MainController
         $this->res = new Res();
     }
 
+
     /**
      * Index. Used to call or redirect to the right method or page
+     *
      * @return void
      */
     public function index(string $pageAction, string $pageActionParam): void
@@ -94,8 +96,10 @@ class OwnerController extends MainController
         }
     }
 
+
     /**
      * Check if the user is an owner
+     *
      * @return bool
      */
     public function isOwner(): bool
@@ -121,4 +125,6 @@ class OwnerController extends MainController
             }
         }
     }
+
+
 }

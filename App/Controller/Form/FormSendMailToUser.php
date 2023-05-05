@@ -57,6 +57,7 @@ class FormSendMailToUser extends FormController
 
     /**
      * Treat the form to send a mail to a user
+     *
      * @return Res
      */
     public function treatForm(): Res

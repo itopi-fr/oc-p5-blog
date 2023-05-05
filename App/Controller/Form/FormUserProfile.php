@@ -37,7 +37,8 @@ class FormUserProfile extends FormController
 
     /**
      * Treats the user part of the form
-     * @param User $user
+     *
+     * @param User $user - The user to treat.
      * @return Res
      * @throws Exception
      */
@@ -91,7 +92,8 @@ class FormUserProfile extends FormController
 
     /**
      * Treats the user owner part of the form
-     * @param UserOwner $userOwner
+     *
+     * @param UserOwner $userOwner - The user owner to treat.
      * @return Res
      * @throws Exception
      */

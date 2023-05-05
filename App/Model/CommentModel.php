@@ -18,16 +18,11 @@ class CommentModel extends Connection
 
     /**
      * Get the x last comments for a given post id.
-     * @param int $postId
-     * @param int $max
+     *
+     * @param int $postId - The post id to get the comments from.
+     * @param int $max - The maximum number of comments to get.
      * @return array|null
      */
-//    public function getThisPostComments(int $postId, int $max): array|null
-//    {
-//        $req = "SELECT * FROM comment WHERE post_id = ? ORDER BY created_date LIMIT ?";
-//        $result = $this->getMultipleAsObjectsArray($req, [$postId, $max]);
-//        return $result ? $result : [];
-//    }
     public function getThisPostComments(int $postId, int $max): array|null
     {
         $req = "SELECT comment.*, post.title AS post_title, post.slug AS post_slug
@@ -40,8 +35,9 @@ class CommentModel extends Connection
 
 
     /**
-     * Get the x last comments
-     * @param int $max
+     * Get the x last comments.
+     *
+     * @param int $max - The maximum number of comments to get.
      * @return array|null
      */
     public function getAllPostComments(int $max): array|null
@@ -57,8 +53,9 @@ class CommentModel extends Connection
 
 
     /**
-     * Create a comment
-     * @param Comment $comment
+     * Create a comment.
+     *
+     * @param Comment $comment - The comment to create.
      * @return int|null
      */
     public function createComment(Comment $comment): int|null
@@ -79,8 +76,9 @@ class CommentModel extends Connection
 
 
     /**
-     * Update the status of a comment to 'valid'
-     * @param int $comId
+     * Update the status of a comment to 'valid'.
+     *
+     * @param int $comId - The comment id to update.
      * @return int
      */
     public function validateComment(int $comId): int
@@ -91,8 +89,9 @@ class CommentModel extends Connection
 
 
     /**
-     * Delete a comment
-     * @param int $comId
+     * Delete a comment.
+     *
+     * @param int $comId - The ID of the comment to delete.
      * @return bool|null
      */
     public function deleteComment(int $comId): bool|null
@@ -103,8 +102,9 @@ class CommentModel extends Connection
 
 
     /**
-     * Delete all comments for a given post id
-     * @param int $postId
+     * Delete all comments for a given post id.
+     *
+     * @param int $postId - The ID of the post to delete the comments from.
      * @return bool|null
      */
     public function deletePostComments(int $postId): bool|null
@@ -115,8 +115,9 @@ class CommentModel extends Connection
 
 
     /**
-     * Checks if a comment exists based on its id
-     * @param int $comId
+     * Checks if a comment exists based on its id.
+     *
+     * @param int $comId - The comment id to check.
      * @return bool
      */
     public function commentExistsById(int $comId): bool

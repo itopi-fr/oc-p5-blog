@@ -17,8 +17,9 @@ class PostModel extends Connection
 
 
     /**
-     * Get the x last posts
-     * @param int $max
+     * Get the x last posts.
+     *
+     * @param int $max - The maximum number of posts to get.
      * @return array|null
      */
     public function getLastPosts(int $max = 10): array|null
@@ -30,8 +31,9 @@ class PostModel extends Connection
 
 
     /**
-     * Get the x last published posts
-     * @param int $max
+     * Get the x last published posts.
+     *
+     * @param int $max - The maximum number of posts to get.
      * @return array|null
      */
     public function getLastPubPosts(int $max = 3): array|null
@@ -42,12 +44,10 @@ class PostModel extends Connection
     }
 
 
-
-
-
     /**
-     * Get a post providing its id
-     * @param string $postId
+     * Get a post providing its id.
+     *
+     * @param string $postId - The ID of the post to get.
      * @return object|null
      */
     public function getPostById(string $postId): object|null
@@ -59,8 +59,9 @@ class PostModel extends Connection
 
 
     /**
-     * Check that a post exists providing its id
-     * @param int $postId
+     * Check that a post exists providing its id.
+     *
+     * @param int $postId - The ID of the post to check the existence.
      * @return bool
      */
     public function postExistsById(int $postId): bool
@@ -71,8 +72,9 @@ class PostModel extends Connection
 
 
     /**
-     * Check that a post exists providing its slug
-     * @param string $postSlug
+     * Check that a post exists providing its slug.
+     *
+     * @param string $postSlug - The slug of the post to check the existence.
      * @return bool
      */
     public function postExistsBySlug(string $postSlug): bool
@@ -83,9 +85,10 @@ class PostModel extends Connection
 
 
     /**
-     * Check that a post exists providing its slug
-     * @param string $postSlug
-     * @param int $postId
+     * Check if a post with an other ID has the same slug.
+     *
+     * @param string $postSlug - The slug of the post to check the existence.
+     * @param int $postId - The ID of the post to exclude from the check.
      * @return bool
      */
     public function postSlugAlreadyExists(string $postSlug, int $postId): bool
@@ -96,8 +99,9 @@ class PostModel extends Connection
 
 
     /**
-     * Get a post providing its slug
-     * @param string $postSlug
+     * Get a post providing its slug.
+     *
+     * @param string $postSlug - The slug of the post to get.
      * @return object|null
      */
     public function getPostBySlug(string $postSlug): object|null
@@ -107,9 +111,11 @@ class PostModel extends Connection
         return $result ? $result : null;
     }
 
+
     /**
-     * Create a post in the database providing a Post object
-     * @param Post $post
+     * Create a post in the database providing a Post object.
+     *
+     * @param Post $post - The Post object to create.
      * @return int|null
      */
     public function createPost(Post $post): int|null
@@ -136,8 +142,9 @@ class PostModel extends Connection
 
 
     /**
-     * Update a post in the database providing a Post object
-     * @param Post $post
+     * Update a post in the database providing a Post object.
+     *
+     * @param Post $post - The Post object to update.
      * @return int|null
      */
     public function updatePost(Post $post): int|null
@@ -146,7 +153,9 @@ class PostModel extends Connection
             return null;
         }
 
-        $sql = 'UPDATE post SET feat_img_id = ?, title = ?, slug = ?, content = ?, last_update = ?, status = ? WHERE post_id = ?';
+        $sql = 'UPDATE post
+                SET feat_img_id = ?, title = ?, slug = ?, content = ?, last_update = ?, status = ?
+                WHERE post_id = ?';
         return $this->update(
             $sql,
             [
@@ -163,8 +172,9 @@ class PostModel extends Connection
 
 
     /**
-     * Delete a post from the database providing its id
-     * @param int $postId
+     * Delete a post from the database providing its id.
+     *
+     * @param int $postId - The ID of the post to delete.
      * @return bool|null
      */
     public function deletePost(int $postId): bool|null
@@ -179,8 +189,9 @@ class PostModel extends Connection
 
 
     /**
-     * Simply change the status of a post to "arch" (archived)
-     * @param int $postId
+     * Simply change the status of a post to "arch" (archived).
+     *
+     * @param int $postId - The ID of the post to archive.
      * @return int|null
      */
     public function archivePost(int $postId): int|null
@@ -192,4 +203,6 @@ class PostModel extends Connection
         $sql = 'UPDATE post SET status = "arch" WHERE post_id = ?';
         return $this->update($sql, [$postId]);
     }
+
+
 }

@@ -5,10 +5,14 @@ namespace App\Sys;
 use App\Routing\Router;
 use Dotenv\Dotenv;
 
+/**
+ * Class InitApp - Initializes the app
+ */
 class InitApp
 {
     /**
-     * Init the app
+     * Init the app.
+     *
      * @return void
      */
     public function init(): void

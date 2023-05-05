@@ -5,8 +5,14 @@ namespace App\Model;
 use App\Database\Connection;
 use App\Entity\Token;
 
+/**
+ * Class TokenModel - Manages the tokens in the database
+ */
 class TokenModel extends Connection
 {
+    /**
+     * @var Token
+     */
     public Token $token;
 
 
@@ -21,8 +27,9 @@ class TokenModel extends Connection
 
     /**
      * Returns all tokens for a given user as an array of objects.
-     * @param int $userId
-     * @param string $tokenType
+     *
+     * @param int $userId - The id of the user to get the tokens from
+     * @param string $tokenType - The type of the token to get
      * @return array|null
      */
     public function getUserTokens(int $userId, string $tokenType): array|null
@@ -32,9 +39,11 @@ class TokenModel extends Connection
         return $result ? $result : null;
     }
 
+
     /**
      * Returns a token object based on its id.
-     * @param int $tokenId
+     *
+     * @param int $tokenId - The id of the token to get
      * @return object|null
      */
     public function getTokenById(int $tokenId): object|null
@@ -44,9 +53,11 @@ class TokenModel extends Connection
         return $result ? $result : null;
     }
 
+
     /**
      * Returns a token object based on its content.
-     * @param string $tokenContent
+     *
+     * @param string $tokenContent - The content of the token to get
      * @return object|null
      */
     public function getTokenByContent(string $tokenContent): object|null
@@ -56,9 +67,11 @@ class TokenModel extends Connection
         return $result ? $result : null;
     }
 
+
     /**
      * Inserts a token in the database.
-     * @param Token $token
+     *
+     * @param Token $token - The token to insert
      * @return bool|null
      */
     public function insertUserToken(Token $token): bool|null
@@ -77,9 +90,11 @@ class TokenModel extends Connection
         return ($result !== null) ? $result : null;
     }
 
+
     /**
      * Deletes a token from the database based on its id.
-     * @param int $tokenId
+     *
+     * @param int $tokenId - The id of the token to delete
      * @return bool|null
      */
     public function deleteTokenById(int $tokenId): bool|null
@@ -87,4 +102,6 @@ class TokenModel extends Connection
         $req = "DELETE FROM token WHERE token_id =?";
         return $this->delete($req, [$tokenId]);
     }
+
+
 }
