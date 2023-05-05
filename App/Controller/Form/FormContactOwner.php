@@ -12,11 +12,13 @@ use App\Model\UserModel;
  */
 class FormContactOwner extends FormController
 {
-    /**
-     * @var Res
-     */
+    //@var Res
     protected Res $res;
+
+    //@var UserModel
     protected UserModel $userModel;
+
+    // @var UserController
     protected UserController $userController;
 
 
