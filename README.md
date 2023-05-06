@@ -3,16 +3,16 @@
 
 
 ## Code Quality
-Insérer le badge codacy ici
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/21a9e92a62854da1b580597440dff8a6)](https://app.codacy.com/gh/itopi-fr/oc-p5-blog/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 
 
 ## Description
 
-This project is a blog written in PHP.
+This project is a blog written in PHP for a study project with OpenClassrooms.
+
 The available main functions are :
 
 ### Back Office
-
 *   create, edit, publish posts
 *   validate or refuse comments
 
@@ -21,8 +21,6 @@ The available main functions are :
 *   display a list of posts
 *   display a single post
 *   comment a post
-
-
 
 ## Requirements
 ### PHP
@@ -50,7 +48,6 @@ This project uses the following services and extensions :
 
 
 ## Installation
-
 ### Clone the repository
 
 ```bash
