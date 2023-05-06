@@ -145,9 +145,8 @@ class UserController extends MainController
         if ($userAction === 'reset-pass-change') {
             // Form Reset Change sent : treat form.
             if (isset($userActionData) === true && empty($this->sGlob->getPost('submit-reset-pass-change')) === false) {
-                $this->twigData['result'] = (new FormUserResetPass())->treatFormPassChange(
-                    $userActionData
-                );
+                $this->dump($userActionData);
+                $this->twigData['result'] = (new FormUserResetPass())->treatFormPassChange($userActionData);
             } else {
                 // Display Form Change Password.
                 $this->twigData['display_form_reset_change'] = 'display';
@@ -471,7 +470,6 @@ class UserController extends MainController
         try {
             // Remove old avatar file if a new one is sent.
             $dbAvatarId = $this->getUserById($user->getUserId())->getAvatarId();
-            $this->dump($dbAvatarId);
             if ($dbAvatarId !== $user->getAvatarId() && $dbAvatarId !== null) {
                 $this->fileController->deleteFileById($dbAvatarId);
             }

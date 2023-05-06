@@ -57,7 +57,6 @@ class TokenController extends MainController
      */
     private function buildToken(object $tokenObj): Token
     {
-        $this->dump($tokenObj);
         $this->token = new Token();
         $this->token->setTokenId($tokenObj->token_id);
         $this->token->setUserId($tokenObj->user_id);
@@ -131,12 +130,8 @@ class TokenController extends MainController
         $user = $this->userModel->getUserById($userId);
 
         foreach ($tokens as $key => $token) {
-            if (
-                $this->verifyToken(
-                    $token->content,
-                    $user->getEmail()
-                )->getResult()['token-verify'] !== "verify-token-ok"
-            ) {
+            $resVerifyToken = $this->verifyToken($token->content, $user->getEmail());
+            if ($resVerifyToken->getMsg()['verify-token'] !== "verify-token-ok") {
                 unset($tokens[$key]);
             }
         }
@@ -194,12 +189,9 @@ class TokenController extends MainController
 
         if ($tokens !== null) {
             foreach ($tokens as $token) {
-                if (
-                    $this->verifyToken(
-                        $token->content,
-                        $user->getEmail()
-                    )->getResult()['verify-token'] !== "verify-token-ok"
-                ) {
+                $resVerifyToken = $this->verifyToken($token->content, $user->getEmail());
+
+                if ($resVerifyToken->getMsg()['verify-token'] !== "verify-token-ok") {
                     $this->tokenModel->deleteTokenById($token->id);
                 }
             }

@@ -71,6 +71,7 @@ class FormUserResetPass extends FormController
 
         // Create a new token.
         $token = $this->tokenController->createUserToken($user->getUserId(), 'reset-pass')->getResult()['token'];
+        $this->dump($token);
 
         // Build mail content.
         $mailTo = $user->getEmail();
@@ -80,8 +81,8 @@ class FormUserResetPass extends FormController
         $mailContent .= "Une demande de réinitialisation de mot de passe a été demandée pour votre compte.<br />";
         $mailContent .= "Si vous n'en êtes pas à l'origine, vous pouvez ignorer cet email.<br />";
         $mailContent .= "Sinon, veuillez cliquer sur le lien ci-dessous pour mettre à jour votre mot de passe :<br />";
-        $mailContent .= "<a href='http://ocp5blog/user/reset-pass-change/'" .
-                            $token . ">Changer mon mot de passe</a><br />";
+        $mailContent .= "<a href='http://ocp5blog/user/reset-pass-change/$token'"
+                             . ">Changer mon mot de passe</a><br />";
         $mailContent .= "<br />Cordialement,<br />";
         $mailContent .= "L'équipe de p5blog";
 
@@ -104,6 +105,7 @@ class FormUserResetPass extends FormController
      */
     public function treatFormPassChange(string $tokenContent): Res
     {
+        $this->dump($tokenContent);
         // Get token.
         $resToken = $this->tokenController->getToken($tokenContent);
         if ($resToken->isErr() === true) {

@@ -70,6 +70,12 @@ class CommentController extends MainController
     {
         // Create Comment.
         if ($pageAction === 'create' && empty($this->sGlob->getPost("submit-comment-create")) === false) {
+            // Update session user object
+            $updatedUser = $this->userModel->getUserById($this->sGlob->getSes('usrid'));
+            $this->sGlob->setSes('userobj', $updatedUser);
+            $this->twig->addGlobal('userobj', $updatedUser);
+
+            // Create comment.
             $formPostCreate = new FormCommentCreate();
             $resTreatFormComment = $formPostCreate->treatForm();
             $this->twigData['result'] = $resTreatFormComment;
