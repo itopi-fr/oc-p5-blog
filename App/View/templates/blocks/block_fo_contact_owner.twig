@@ -1,0 +1,11 @@
+{% block contact_owner %}
+    {% use "forms/form_contact_owner.twig" %}
+
+    <!-- Contact -->
+    <section id="contact-owner" class="row gx-4 gx-lg-5 justify-content-center section-general section-blue contact-owner">
+        <h1>Contact</h1>
+        <div class="col-md-10">
+            {{ block('form_contact_owner') }}
+        </div>
+    </section>
+{% endblock %}

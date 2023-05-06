@@ -26,14 +26,29 @@ use Exception;
  */
 class Res
 {
+    /**
+     * @var bool
+     */
     private bool $err;
 
+    /**
+     * @var array
+     */
     private array $msg;
 
+    /**
+     * @var array
+     */
     private array $result;
 
+    /**
+     * @var array|mixed
+     */
     private array $types;
 
+    /**
+     * @var array|mixed
+     */
     private array $messages;
 
 
@@ -50,10 +65,12 @@ class Res
         $this->types = json_decode($jsonMessages, true)["show-type"];
     }
 
+
     /**
      * Builds an error response object with the given parameters.
-     * @param string $type
-     * @param string $msg
+     *
+     * @param string $type - Error type (login, post-creation, etc.). Used to translate the error message.
+     * @param string $msg - Error message.
      * @return $this
      */
     public function ko(string $type, string $msg, Exception $exception = null): self
@@ -64,11 +81,13 @@ class Res
         return $this;
     }
 
+
     /**
      * Builds a success response object with the given parameters.
-     * @param string $type
-     * @param string $msg
-     * @param mixed $result
+     *
+     * @param string $type - Success type (login, post-creation, etc.). Used to translate the success message.
+     * @param string $msg - Success message.
+     * @param mixed $result - Result of the operation (post, user, etc.). Can be null.
      * @return self
      */
     public function ok(string $type, string $msg, mixed $result = null): self
@@ -78,10 +97,12 @@ class Res
         return $this;
     }
 
+
     /**
      * Translates the error type into a readable message. If no translation is found, the raw error type is returned.
      * Loads the translations from the [language].json file (/locale/[language].json).
-     * @param string $type
+     *
+     * @param string $type - Error type (login, post-creation, etc.).
      * @return string
      */
     public function showType(string $type): string
@@ -89,10 +110,12 @@ class Res
         return $this->types[$type] ?? $type;
     }
 
+
     /**
      * Translates the error code into a readable message. If no translation is found, the raw error code is returned.
      * Loads the translations from the [language].json file (/locale/[language].json).
-     * @param string $msg
+     *
+     * @param string $msg - Error code (login-successful, post-creation-successful, etc.).
      * @return string
      */
     public function showMsg(string $msg): string
@@ -100,9 +123,8 @@ class Res
         return $this->messages[$msg] ?? $msg;
     }
 
+
     /** --------------------------------------------- Getters & Setters --------------------------------------------- */
-
-
     /**
      * @return bool
      */
@@ -135,7 +157,7 @@ class Res
      * @param array $msg
      * @return void
      */
-    public function setMsg(string $msg): void
+    public function setMsg(array $msg): void
     {
         $this->msg = $msg;
     }

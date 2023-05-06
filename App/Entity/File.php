@@ -2,26 +2,45 @@
 
 namespace App\Entity;
 
+/**
+ * File entity
+ */
 class File
 {
+    /**
+     * @var int
+     */
     private int $file_id = 0;
 
+    /**
+     * @var string
+     */
     private string $title = '';
 
+    /**
+     * @var string
+     */
     private string $url = '';
 
+    /**
+     * @var string
+     */
     private string $ext = '';
 
+    /**
+     * @var string
+     */
     private string $mime = '';
 
+    /**
+     * @var float
+     */
     private float $size = 0.0;
 
 
     /**
      * ----------------------------------------------------------------------------------------------- Getters & Setters
      */
-
-
     /**
      * @return int
      */

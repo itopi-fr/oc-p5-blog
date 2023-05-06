@@ -3,6 +3,7 @@
 namespace App\Routing;
 
 use App\Controller\CommentController;
+use App\Controller\ContactController;
 use App\Controller\HomeController;
 use App\Controller\ErrorPageController;
 use App\Controller\MainController;
@@ -14,21 +15,50 @@ use App\Entity\Res;
 use Exception;
 use App\Sys\SuperGlobals;
 
+/**
+ * Class Router - Manages the routing
+ */
 class Router
 {
+    /**
+     * @var MainController
+     */
     private MainController $mainCtr;
-
 
     /**
      * Contains the URL parts
      * @var array
      */
     private array $urlParts;
+
+    /**
+     * @var string
+     */
     private string $pageBase;
+
+    /**
+     * @var string
+     */
     private string $pageAction = '';
+
+    /**
+     * @var string
+     */
     private string $pageActionParam = '';
+
+    /**
+     * @var OwnerInfoController
+     */
     private OwnerInfoController $ownerInfoController;
+
+    /**
+     * @var Res
+     */
     private Res $res;
+
+    /**
+     * @var SuperGlobals
+     */
     private SuperGlobals $superGlobals;
 
 
@@ -43,6 +73,14 @@ class Router
     }
 
 
+    /**
+     * Run the router.
+     *
+     * @return void
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     */
     public function run(): void
     {
 
@@ -96,6 +134,11 @@ class Router
                     $controller->index($this->pageAction);
                     break;
 
+                case ('contact'):
+                    $controller = new ContactController();
+                    $controller->index($this->pageAction);
+                    break;
+
                 default:
                     $this->res->ko('general', "general-ko-page-not-found");
                     $controller = new ErrorPageController();
@@ -112,4 +155,6 @@ class Router
             }
         }
     }
+
+
 }

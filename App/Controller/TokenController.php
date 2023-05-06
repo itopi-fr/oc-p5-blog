@@ -41,21 +41,22 @@ class TokenController extends MainController
     public function __construct()
     {
         parent::__construct();
-        $this->res =        new Res();
-        $this->token =      new Token();
+        $this->res = new Res();
+        $this->token = new Token();
         $this->tokenModel = new TokenModel();
-        $this->userModel =  new UserModel();
+        $this->userModel = new UserModel();
     }
+
 
     /**
      * Builds a token object from a database object.
-     * @param object $tokenObj
+     *
+     * @param object $tokenObj - Token object from the database.
      * @return Token
      * @throws Exception
      */
     private function buildToken(object $tokenObj): Token
     {
-        $this->dump($tokenObj);
         $this->token = new Token();
         $this->token->setTokenId($tokenObj->token_id);
         $this->token->setUserId($tokenObj->user_id);
@@ -65,9 +66,11 @@ class TokenController extends MainController
         return $this->token;
     }
 
+
     /**
      * Returns a token object based on its id or its content.
-     * @param int|string $data
+     *
+     * @param int|string $data - Token id or token content to search for.
      * @return Res
      * @throws Exception
      */
@@ -93,10 +96,12 @@ class TokenController extends MainController
         return $this->res;
     }
 
+
     /**
      * Returns all tokens from a given type from a user.
-     * @param int $userId
-     * @param string $tokenType
+     *
+     * @param int $userId - the user id to search for.
+     * @param string $tokenType - Token type (pass/activation/etc.).
      * @return array|null
      */
     public function getUserTokens(int $userId, string $tokenType): array|null
@@ -108,8 +113,9 @@ class TokenController extends MainController
 
     /**
      * Returns the last valid token from a user.
-     * @param int $userId
-     * @param string $tokenType
+     *
+     * @param int $userId - the user id to search for.
+     * @param string $tokenType - Token type (pass/activation/etc.).
      * @return null|Token
      * @throws Exception
      */
@@ -124,12 +130,8 @@ class TokenController extends MainController
         $user = $this->userModel->getUserById($userId);
 
         foreach ($tokens as $key => $token) {
-            if (
-                $this->verifyToken(
-                    $token->content,
-                    $user->getEmail()
-                )->getResult()['token-verify'] !== "verify-token-ok"
-            ) {
+            $resVerifyToken = $this->verifyToken($token->content, $user->getEmail());
+            if ($resVerifyToken->getMsg()['verify-token'] !== "verify-token-ok") {
                 unset($tokens[$key]);
             }
         }
@@ -141,8 +143,9 @@ class TokenController extends MainController
      * Creates and inserts a token in the database. This token is valid for 15 minutes.
      * If a valid token already exists, it is kept and nothing is done.
      * If expired tokens exist, they are deleted from the database.
-     * @param int $userId
-     * @param string $tokenType
+     *
+     * @param int $userId - User id.
+     * @param string $tokenType - Token type (pass/activation/etc.).
      * @return Res
      */
     public function createUserToken(int $userId, string $tokenType): Res
@@ -174,8 +177,9 @@ class TokenController extends MainController
 
     /**
      * Deletes expired tokens from the database based on the user_id
-     * @param int $userId
-     * @param string $tokenType
+     *
+     * @param int $userId - User id.
+     * @param string $tokenType - Token type (pass/activation/etc.).
      * @return void
      */
     public function deleteExpiredTokens(int $userId, string $tokenType): void
@@ -185,21 +189,20 @@ class TokenController extends MainController
 
         if ($tokens !== null) {
             foreach ($tokens as $token) {
-                if (
-                    $this->verifyToken(
-                        $token->content,
-                        $user->getEmail()
-                    )->getResult()['verify-token'] !== "verify-token-ok"
-                ) {
+                $resVerifyToken = $this->verifyToken($token->content, $user->getEmail());
+
+                if ($resVerifyToken->getMsg()['verify-token'] !== "verify-token-ok") {
                     $this->tokenModel->deleteTokenById($token->id);
                 }
             }
         }
     }
 
+
     /**
      * Deletes a token from the database based on its id.
-     * @param int $tokenId
+     *
+     * @param int $tokenId - the token id to delete.
      * @return void
      */
     public function deleteTokenById(int $tokenId): void
@@ -211,8 +214,9 @@ class TokenController extends MainController
     /**
      * Verifies if a token is valid or not based on its expiration date and verification that it matches the hash.
      * If the token is expired, it is deleted from the database.
-     * @param string $tokenContent
-     * @param string $email
+     *
+     * @param string $tokenContent Token key.
+     * @param string $email User email.
      * @return Res
      */
     public function verifyToken(string $tokenContent, string $email): Res
@@ -252,4 +256,6 @@ class TokenController extends MainController
         $this->res->ok('verify-token', 'verify-token-ok', $this->token);
         return $this->res;
     }
+
+
 }

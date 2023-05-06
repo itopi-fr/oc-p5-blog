@@ -59,7 +59,8 @@ class CommentController extends MainController
 
     /**
      * Treat different actions for comments.
-     * @param string $pageAction
+     *
+     * @param string $pageAction - The page action.
      * @return void
      * @throws LoaderError
      * @throws RuntimeError
@@ -69,10 +70,17 @@ class CommentController extends MainController
     {
         // Create Comment.
         if ($pageAction === 'create' && empty($this->sGlob->getPost("submit-comment-create")) === false) {
+            // Update session user object
+            $updatedUser = $this->userModel->getUserById($this->sGlob->getSes('usrid'));
+            $this->sGlob->setSes('userobj', $updatedUser);
+            $this->twig->addGlobal('userobj', $updatedUser);
+
+            // Create comment.
             $formPostCreate = new FormCommentCreate();
             $resTreatFormComment = $formPostCreate->treatForm();
             $this->twigData['result'] = $resTreatFormComment;
-            $this->redirectTo("/article/" . $this->sGlob->getPost('comment-create-post-slug'));
+            $this->twigData['formsent'] = true;
+            $this->redirectTo("/article/" . $this->sGlob->getPost('comment-create-post-slug'), 10);
             $this->twig->display("pages/page_fo_post_single.twig", $this->twigData);
         }
     }
@@ -81,8 +89,9 @@ class CommentController extends MainController
     /**
      * Get the x last comments for a given post.
      * Only validated comments (status = 'valid') are returned.
-     * @param int $postId
-     * @param int $max
+     *
+     * @param int $postId - The post ID.
+     * @param int $max - The max number of comments to return.
      * @return array
      * @throws Exception
      */
@@ -112,10 +121,11 @@ class CommentController extends MainController
 
     /**
      * Get the x last comments (any post, any status).
-     * @param int $max
+     *
+     * @param int $max - The max number of comments to return.
      * @return Res $res
      */
-    public function getAllComments(int $max): Res
+    public function getAllPostComments(int $max): Res
     {
         try {
             $resAllComments = $this->commentModel->getAllPostComments($max);
@@ -138,13 +148,13 @@ class CommentController extends MainController
 
     /**
      * Create a comment. If the author is the owner, the comment is valid by default.
-     * @param Comment $comment
+     *
+     * @param Comment $comment - The comment object.
      * @return Res
      */
     public function createComment(Comment $comment): Res
     {
         $userRole = $this->sGlob->getSes('userobj')->getRole();
-        $this->dump($userRole);
         if ($userRole !== 'user' && $userRole !== 'owner') {
             return $this->res->ko('form-comment-create', 'form-comment-create-ko-not-allowed');
         }
@@ -159,7 +169,8 @@ class CommentController extends MainController
 
     /**
      * Validate a comment by setting its status to 'valid'.
-     * @param int $comId
+     *
+     * @param int $comId - The ID of the comment to validate.
      * @return Res
      */
     public function validateComment(int $comId): Res
@@ -182,7 +193,8 @@ class CommentController extends MainController
 
     /**
      * Delete a comment by setting its status to 'valid'.
-     * @param int $comId
+     *
+     * @param int $comId - The ID of the comment to delete.
      * @return Res
      */
     public function deleteComment(int $comId): Res
@@ -205,7 +217,8 @@ class CommentController extends MainController
 
     /**
      * Hydrate a proper comment object with the given object.
-     * @param object $comObj
+     *
+     * @param object $comObj - The object to hydrate the proper comment object with.
      * @return Comment
      * @throws Exception
      */
@@ -219,6 +232,8 @@ class CommentController extends MainController
         $comment->setCreatedDate(new DateTime($comObj->created_date));
         $comment->setLastUpdate(new DateTime($comObj->last_update));
         $comment->setStatus($comObj->status);
+        $comment->setPostTitle($comObj->post_title);
+        $comment->setPostSlug($comObj->post_slug);
 
         // User object.
         if (empty($comObj->author_user) === true) {

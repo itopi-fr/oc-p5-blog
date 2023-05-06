@@ -1,27 +1,36 @@
-{% block lastposts %}
+{% block posts_latest %}
     <!-- Last Posts -->
-    <section class="row gx-4 gx-lg-5 justify-content-center last-posts">
-        <h2>Derniers articles</h2>
-        <div class="col-md-10 col-lg-8 col-xl-7">
+    <section class="row gx-4 gx-lg-5 justify-content-center section-general section-lined last-posts">
+        <h1>Derniers articles</h1>
 
-            {%  for post in lastposts %}
-                <article class="post-preview">
-                    <a href="/article/{{ post.slug }}">
-                        <h2 class="post-title">{{ post.title }}</h2>
-                    </a>
-                    <p class="post-meta">
-                        Le {{ post.last_update|date('d/m/Y') }}
-                    </p>
-                <div class="post-content">
-                    {{ post.excerpt }}
+        {%  for post in lastposts %}
+            <a href="/article/{{ post.getSlug() }}" class="article-block-link">
+                <article class="row post-preview trans-quick trans-bgclr trans-trnsf">
+
+                    <div class="col-lg-10">
+                        <h3 class="post-title trans-long trans-clr">{{ post.getTitle() }}</h3>
+                        <p class="post-meta trans-long trans-clr">
+                            Créé le {{ post.getCreationDate()|date('d/m/Y') }} à {{ post.getCreationDate()|date('H:i') }}
+                            {%  if post.getCreationDate() != post.getLastUpdate() %}
+                                - Modifié le {{ post.getLastUpdate()|date('d/m/Y') }} à {{ post.getLastUpdate()|date('H:i') }}
+                            {%  endif %}
+                        </p>
+
+                        <div class="post-excerpt trans-long trans-clr">
+                            {{ post.getExcerpt() }}
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2">
+                        <img class="post-single-feat-img" src="{{ post.getFeatImgFile().getUrl() }}" alt="">
+                    </div>
                 </article>
+            </a>
 
-                {% if not loop.last %}
-                    <hr class="my-4"/>
-                {% endif %}
+            {% if not loop.last %}
+                <hr class="my-4"/>
+            {% endif %}
 
-            {% endfor %}
-
-        </div>
+        {% endfor %}
     </section>
 {% endblock %}

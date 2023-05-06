@@ -1,12 +1,17 @@
 {% extends "layout.twig" %}
 {% use "blocks/block_fo_posts_latest.twig" %}
-{% use "blocks/block_fo_contact.twig" %}
+{% use "blocks/block_fo_contact_owner.twig" %}
 
-{% block title %}P5 - Home{% endblock %}
+{% block title %}
+    P5 - Home
+{% endblock %}
 
 {% block content %}
 
-{{ block('lastposts') }}
-{{ block('contact') }}
+    {% if formsent != true %}
+        {{ block('posts_latest') }}
+    {% endif %}
+
+    {{ block('contact_owner') }}
 
 {% endblock %}

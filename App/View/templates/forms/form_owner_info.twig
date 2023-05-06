@@ -17,16 +17,24 @@
                 <input type="text" name="firstname" class="form-control" id="firstname" placeholder="Prénom" value="{{ owner.getFirstName() }}">
             </div>
 
-
             <div class="form-group">
                 <label for="lastname"><h5>Nom</h5></label>
                 <input type="text" name="lastname" class="form-control" id="lastname" placeholder="Nom" value="{{ owner.getLastName() }}">
             </div>
 
-
             <div class="form-group">
                 <label for="catchphrase"><h5>Phrase d'accroche</h5></label>
                 <textarea name="catchphrase" class="form-control" id="catchphrase" placeholder="Phrase d'accroche">{{ owner.getCatchPhrase() }}</textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="sn-github"><h5>Github</h5></label>
+                <input type="text" name="sn-github" class="form-control" id="sn-github" placeholder="Github" value="{{ owner.getSnGithub() }}">
+            </div>
+
+            <div class="form-group">
+                <label for="sn-linkedin"><h5>LinkedIn</h5></label>
+                <input type="text" name="sn-linkedin" class="form-control" id="sn-linkedin" placeholder="LinkedIn" value="{{ owner.getSnLinkedin() }}">
             </div>
 
             <div class="form-group">

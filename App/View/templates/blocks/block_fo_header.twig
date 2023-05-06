@@ -1,26 +1,20 @@
 {% block header %}
     <!-- Header -->
-    <header class="masthead" style="background-image: url('/public/assets/img/home-bg.jpg')">
+    <header class="masthead">
         <div class="container position-relative px-4 px-lg-5">
-            <div class="row gx-4 gx-lg-5 justify-content-center">
-                <div class="col-md-10 col-lg-8 col-xl-7">
-                    <div class="site-heading">
-                        {% if usrid is not null %}
-                            <div>User Id : {{ usrid }}</div>
-                        {% endif %}
-
-                        {% if ownerinfo is not null %}
-                            {{ ownerinfo.firstname }} {{ ownerinfo.lastname }}<br>
-                            Catch phrase : {{ ownerinfo.catchphrase }}<br>
-                            Photo : <img src="{{ ownerinfo.getPhotoFile().getUrl() }}" alt="photo" width="25px" height="25px"><br>
-                            <a href="{{ ownerinfo.getCvFile().getUrl() }}" target="_blank">Curriculum Vitae</a><br>
-                        {% endif %}
-
-                        {{ userobj.getUserId() }}
-
-
+            <div class="site-heading row">
+                {% if ownerinfo is not null %}
+                    <div class="col-md-8 owner-info">
+                        <h2>{{ ownerinfo.firstname }} {{ ownerinfo.lastname }}</h2>
+                        <h4 class="font-italic">{{ ownerinfo.catchphrase }}</h4>
                     </div>
-                </div>
+                    <div class="col-md-4 owner-photo">
+                        <img src="{{ ownerinfo.getPhotoFile().getUrl() }}" alt="photo">
+                    </div>
+                    <div class="col-12 owner-cv">
+                        <a href="{{ ownerinfo.getCvFile().getUrl() }}" target="_blank">Cliquez ici pour télécharger mon CV</a>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </header>

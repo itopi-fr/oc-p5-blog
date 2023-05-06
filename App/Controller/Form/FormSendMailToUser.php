@@ -6,6 +6,9 @@ use App\Entity\Res;
 use App\Model\UserModel;
 use App\Controller\UserController;
 
+/**
+ * Treats the form to mail a user.
+ */
 class FormSendMailToUser extends FormController
 {
     /**
@@ -13,14 +16,29 @@ class FormSendMailToUser extends FormController
      */
     protected Res $res;
 
+    /**
+     * @var UserModel
+     */
     protected UserModel $userModel;
 
+    /**
+     * @var UserController
+     */
     protected UserController $userController;
 
+    /**
+     * @var int
+     */
     protected int $userId;
 
+    /**
+     * @var string
+     */
     protected string $subject;
 
+    /**
+     * @var string
+     */
     protected string $message;
 
 
@@ -39,6 +57,7 @@ class FormSendMailToUser extends FormController
 
     /**
      * Treat the form to send a mail to a user
+     *
      * @return Res
      */
     public function treatForm(): Res

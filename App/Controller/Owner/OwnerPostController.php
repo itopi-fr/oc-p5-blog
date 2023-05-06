@@ -76,6 +76,7 @@ class OwnerPostController extends OwnerController
 
     /**
      * Used to display the list of posts in the BO (/owner/posts)
+     *
      * @return void
      */
     public function managePosts(): void
@@ -83,9 +84,13 @@ class OwnerPostController extends OwnerController
         // TODO: Pagination.
         $this->twigData['title'] = 'Administration des articles';
         $posts = $this->postModel->getLastPosts(100);
-        foreach ($posts as $key => $post) {
-            $posts[$key] = $this->postController->hydratePostObject($post);
+
+        if ($posts !== null) {
+            foreach ($posts as $key => $post) {
+                $posts[$key] = $this->postController->hydratePostObject($post);
+            }
         }
+
         $this->twigData['posts'] = $posts;
 
         // Display.
@@ -95,6 +100,7 @@ class OwnerPostController extends OwnerController
 
     /**
      * Create a post in the database
+     *
      * @return void
      */
     public function createPost(): void
@@ -103,7 +109,12 @@ class OwnerPostController extends OwnerController
 
         // Form Post Create sent => Treat it.
         if (empty($this->sGlob->getPost("submit-post-create")) === false) {
-            $this->twigData['result'] = $this->formPostCreate->treatForm();
+            $resPostCreate = $this->formPostCreate->treatForm();
+            if ($resPostCreate->isErr() === false) {
+                $this->twigData['formsent'] = true;
+                $this->redirectTo('/owner/posts', 5);
+            }
+            $this->twigData['result'] = $resPostCreate;
         }
 
         // Display.
@@ -113,7 +124,8 @@ class OwnerPostController extends OwnerController
 
     /**
      * Used to display the edit form of a post in the BO (/owner/posts/edit/{postId})
-     * @param int $postId
+     *
+     * @param int $postId - The ID of the post to edit
      * @return void
      */
     public function editPost(int $postId): void
@@ -130,6 +142,8 @@ class OwnerPostController extends OwnerController
         // Form Post Edit sent => Treat it.
         if (empty($this->sGlob->getPost("submit-post-edit")) === false) {
             $this->twigData['result'] = $this->formPostEdit->treatFormPost($resPost->getResult()['post-get']);
+            $this->twigData['formsent'] = true;
+            $this->redirectTo('/owner/post-edit/' . $postId, 5);
         }
 
         // Display.
@@ -140,7 +154,8 @@ class OwnerPostController extends OwnerController
 
     /**
      * Delete a post from the database providing its ID
-     * @param int $postId
+     *
+     * @param int $postId - The ID of the post to delete
      * @return void
      */
     public function deletePost(int $postId): void
@@ -150,6 +165,7 @@ class OwnerPostController extends OwnerController
         if ($resPost->isErr() === true) {
             $this->res->ko('post-delete', $resPost->getMsg()['post-get']);
             $this->twigData['result'] = $this->res;
+            return;
         }
 
         // Delete Post.
@@ -158,12 +174,14 @@ class OwnerPostController extends OwnerController
         );
 
         // Display.
-        $this->managePosts();
+        $this->twig->display("pages/owner/page_bo_post_delete.twig", $this->twigData);
     }
 
 
     /**
-     * @param int $postId
+     * Archive a post from the database providing its ID
+     *
+     * @param int $postId - The ID of the post to archive
      * @return void
      */
     public function archivePost(int $postId): void
@@ -191,7 +209,8 @@ class OwnerPostController extends OwnerController
 
     /**
      * Get a Post by its slug
-     * @param $postSlug
+     *
+     * @param $postSlug - The slug of the post to get
      * @return Res
      */
     public function getPostBySlug($postSlug): Res
@@ -218,7 +237,8 @@ class OwnerPostController extends OwnerController
 
     /**
      * Get a Post class object by its slug
-     * @param $postId
+     *
+     * @param $postId - The ID of the post to get
      * @return Res
      */
     public function getPostById($postId): Res
@@ -242,4 +262,6 @@ class OwnerPostController extends OwnerController
 
         return $this->res;
     }
+
+
 }

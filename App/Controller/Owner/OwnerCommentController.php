@@ -3,6 +3,7 @@
 namespace App\Controller\Owner;
 
 use App\Controller\CommentController;
+use App\Controller\PostController;
 use App\Model\CommentModel;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -23,6 +24,11 @@ class OwnerCommentController extends OwnerController
      */
     protected CommentModel $commentModel;
 
+    /**
+     * @var PostController
+     */
+    protected PostController $postController;
+
 
     /**
      * Constructor
@@ -32,11 +38,13 @@ class OwnerCommentController extends OwnerController
         parent::__construct();
         $this->commentController = new CommentController();
         $this->commentModel = new CommentModel();
+        $this->postController = new PostController();
     }
 
 
     /**
      * Manage comments.
+     *
      * @return void
      * @throws LoaderError
      * @throws RuntimeError
@@ -49,7 +57,7 @@ class OwnerCommentController extends OwnerController
 
         // Get all comments.
         $allComments = [];
-        $resGetComments = $this->commentController->getAllComments(100);
+        $resGetComments = $this->commentController->getAllPostComments(100);
 
         if ($resGetComments->isErr() === true) {
             $this->twigData['comments'] = null;
@@ -67,7 +75,8 @@ class OwnerCommentController extends OwnerController
 
     /**
      * Validate a comment (set the status to 'valid')
-     * @param string $comIdFromUrl
+     *
+     * @param string $comIdFromUrl - The comment ID from the URL
      * @return void
      */
     public function validateComment(string $comIdFromUrl): void
@@ -80,7 +89,8 @@ class OwnerCommentController extends OwnerController
 
     /**
      * Delete a comment
-     * @param string $comIdFromUrl
+     *
+     * @param string $comIdFromUrl - The comment ID from the URL
      * @return void
      */
     public function deleteComment(string $comIdFromUrl): void

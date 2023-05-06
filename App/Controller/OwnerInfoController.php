@@ -8,7 +8,7 @@ use App\Entity\File;
 
 /**
  * Class OwnerInfoController - Owner info functions.
- * Read only owner info displayed in the header
+ * Read only owner info displayed in the header/footer
  */
 class OwnerInfoController
 {
@@ -37,8 +37,10 @@ class OwnerInfoController
         $this->ownerInfo = new OwnerInfo();
     }
 
+
     /**
      * Supposing that there is only one owner, get his info
+     *
      * @return OwnerInfo
      */
     public function getOwnerInfo(): OwnerInfo
@@ -48,9 +50,11 @@ class OwnerInfoController
         return $this->ownerInfo;
     }
 
+
     /**
      * Hydrate a proper OwnerInfo object with data from database
-     * @param $ownerInfoObject
+     *
+     * @param $ownerInfoObject - The owner info object from database.
      * @return OwnerInfo
      */
     public function hydrateOwnerInfoObject($ownerInfoObject): OwnerInfo
@@ -101,6 +105,22 @@ class OwnerInfoController
             $ownerInfo->setCatchPhrase($ownerInfoObject->catch_phrase);
         }
 
+        // Github.
+        if ($ownerInfoObject->sn_github == null) {
+            $ownerInfo->setSnGithub('');
+        } else {
+            $ownerInfo->setSnGithub($ownerInfoObject->sn_github);
+        }
+
+        // LinkedIn.
+        if ($ownerInfoObject->sn_linkedin == null) {
+            $ownerInfo->setSnLinkedin('');
+        } else {
+            $ownerInfo->setSnLinkedin($ownerInfoObject->sn_linkedin);
+        }
+
         return $ownerInfo;
     }
+
+
 }

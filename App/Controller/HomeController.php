@@ -14,6 +14,11 @@ class HomeController extends MainController
      */
     protected PostModel $postModel;
 
+    /**
+     * @var PostController
+     */
+    protected PostController $postController;
+
 
     /**
      * Constructor
@@ -22,9 +27,13 @@ class HomeController extends MainController
     {
         parent::__construct();
         $this->postModel = new PostModel();
+        $this->postController = new PostController();
     }
 
+
     /**
+     * Display the home page.
+     *
      * @return void
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
@@ -32,7 +41,9 @@ class HomeController extends MainController
      */
     public function index()
     {
-        $this->twigData['lastposts'] = $this->postModel->getLastPubPosts(2);
+        $this->twigData['lastposts'] = $this->postController->getLastPubPosts(5);
         $this->twig->display("pages/page_fo_home.twig", $this->twigData);
     }
+
+
 }

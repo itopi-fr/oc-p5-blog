@@ -57,6 +57,7 @@ class FormCommentCreate extends FormController
     /**
      * Treat the form. If ok, create the comment.
      * If the user is the owner of the post, the comment is automatically validated.
+     *
      * @return Res
      */
     public function treatForm(): Res

@@ -88,18 +88,19 @@ class MailController extends MainController
 
 
     /**
-     * Sends an email using SMTP protocol with authentification (SSL)
+     * Send an email using SMTP protocol with authentification (SSL)
      * Verify if all required fields are set and if they are valid
-     * @param string $to
-     * @param string $toName
-     * @param string $subject
-     * @param string $messageHtml
+     *
+     * @param string $toMail - The email address of the recipient.
+     * @param string $toName - The name of the recipient.
+     * @param string $subject - The subject of the email.
+     * @param string $messageHtml - The message of the email in HTML format.
      * @return Res|void
      */
-    public function sendEmail(string $to, string $toName, string $subject, string $messageHtml)
+    public function sendEmail(string $toMail, string $toName, string $subject, string $messageHtml)
     {
         try {
-            $this->mailTo = $to;
+            $this->mailTo = $toMail;
             $this->mailToName = $toName;
             $this->mailSubject = $subject;
             $this->mailMessageHtml = $messageHtml;
@@ -115,7 +116,7 @@ class MailController extends MainController
             // Check mailToName.
             if ($this->isSet($this->mailToName) === false) {
                 return $this->res->ko("send-email", 'send-email-ko-missing-mail-to-name');
-            } elseif (!$this->isAlphaNumDashUnderscore($this->mailToName)) {
+            } elseif (!$this->isAlphaNumSpacesPunct($this->mailToName)) {
                 return $this->res->ko("send-email", 'send-email-ko-invalid-format-mail-to-name');
             }
 
@@ -126,7 +127,7 @@ class MailController extends MainController
 
             $this->mailModel = new MailModel();
             $this->mailModel->sendEmailSmtp(
-                $to,
+                $toMail,
                 $toName,
                 $subject,
                 $messageHtml,
@@ -140,8 +141,9 @@ class MailController extends MainController
 
 
     /**
-     * Generates a raw message from a HTML message
-     * @param string $messageHtml
+     * Generate a raw message from a HTML message
+     *
+     * @param string $messageHtml - The message of the email in HTML format.
      * @return string
      */
     protected function generateRawMessage(string $messageHtml): string
@@ -162,6 +164,7 @@ class MailController extends MainController
         return $this->smtpHost;
     }
 
+
     /**
      * @param string $smtpHost
      */
@@ -169,6 +172,7 @@ class MailController extends MainController
     {
         $this->smtpHost = $smtpHost;
     }
+
 
     /**
      * @return int
@@ -178,6 +182,7 @@ class MailController extends MainController
         return $this->smtpPort;
     }
 
+
     /**
      * @param int $smtpPort
      */
@@ -185,6 +190,7 @@ class MailController extends MainController
     {
         $this->smtpPort = $smtpPort;
     }
+
 
     /**
      * @return string
@@ -194,6 +200,7 @@ class MailController extends MainController
         return $this->smtpUser;
     }
 
+
     /**
      * @param string $smtpUser
      */
@@ -201,6 +208,7 @@ class MailController extends MainController
     {
         $this->smtpUser = $smtpUser;
     }
+
 
     /**
      * @return string
@@ -210,6 +218,7 @@ class MailController extends MainController
         return $this->smtpPass;
     }
 
+
     /**
      * @param string $smtpPass
      */
@@ -217,6 +226,7 @@ class MailController extends MainController
     {
         $this->smtpPass = $smtpPass;
     }
+
 
     /**
      * @return string
@@ -226,6 +236,7 @@ class MailController extends MainController
         return $this->mailFrom;
     }
 
+
     /**
      * @param string $mailFrom
      */
@@ -233,6 +244,7 @@ class MailController extends MainController
     {
         $this->mailFrom = $mailFrom;
     }
+
 
     /**
      * @return string
@@ -242,6 +254,7 @@ class MailController extends MainController
         return $this->mailFromName;
     }
 
+
     /**
      * @param string $mailFromName
      */
@@ -249,6 +262,7 @@ class MailController extends MainController
     {
         $this->mailFromName = $mailFromName;
     }
+
 
     /**
      * @return string
@@ -258,6 +272,7 @@ class MailController extends MainController
         return $this->mailTo;
     }
 
+
     /**
      * @param string $mailTo
      */
@@ -265,6 +280,7 @@ class MailController extends MainController
     {
         $this->mailTo = $mailTo;
     }
+
 
     /**
      * @return string
@@ -274,6 +290,7 @@ class MailController extends MainController
         return $this->mailToName;
     }
 
+
     /**
      * @param string $mailToName
      */
@@ -281,6 +298,7 @@ class MailController extends MainController
     {
         $this->mailToName = $mailToName;
     }
+
 
     /**
      * @return string
@@ -290,6 +308,7 @@ class MailController extends MainController
         return $this->mailSubject;
     }
 
+
     /**
      * @param string $mailSubject
      */
@@ -297,6 +316,7 @@ class MailController extends MainController
     {
         $this->mailSubject = $mailSubject;
     }
+
 
     /**
      * @return string
@@ -306,6 +326,7 @@ class MailController extends MainController
         return $this->mailMessageRaw;
     }
 
+
     /**
      * @param string $mailMessageRaw
      */
@@ -313,6 +334,7 @@ class MailController extends MainController
     {
         $this->mailMessageRaw = $mailMessageRaw;
     }
+
 
     /**
      * @return string
@@ -322,6 +344,7 @@ class MailController extends MainController
         return $this->mailMessageHtml;
     }
 
+
     /**
      * @param string $mailMessageHtml
      */
@@ -329,4 +352,6 @@ class MailController extends MainController
     {
         $this->mailMessageHtml = $mailMessageHtml;
     }
+
+
 }

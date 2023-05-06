@@ -6,7 +6,6 @@ use App\Controller\Form\FormUserLog;
 use App\Controller\Form\FormUserChangePass;
 use App\Controller\Form\FormUserProfile;
 use App\Controller\Form\FormUserResetPass;
-use App\Entity\File;
 use App\Entity\Res;
 use App\Entity\Token;
 use App\Entity\UserOwner;
@@ -74,8 +73,9 @@ class UserController extends MainController
 
     /**
      * Used as a sub-router for user actions
-     * @param $userAction
-     * @param $userActionData
+     *
+     * @param $userAction - User action to perform.
+     * @param $userActionData - Data to use for the action.
      * @return void
      * @throws LoaderError
      * @throws RuntimeError
@@ -145,9 +145,8 @@ class UserController extends MainController
         if ($userAction === 'reset-pass-change') {
             // Form Reset Change sent : treat form.
             if (isset($userActionData) === true && empty($this->sGlob->getPost('submit-reset-pass-change')) === false) {
-                $this->twigData['result'] = (new FormUserResetPass())->treatFormPassChange(
-                    $userActionData
-                );
+                $this->dump($userActionData);
+                $this->twigData['result'] = (new FormUserResetPass())->treatFormPassChange($userActionData);
             } else {
                 // Display Form Change Password.
                 $this->twigData['display_form_reset_change'] = 'display';
@@ -158,9 +157,25 @@ class UserController extends MainController
         }
 
         // --------------------------------------------------------------------------------------------- user/connexion.
-        if ($userAction === 'connexion' && empty($this->sGlob->getPost('submit-connect')) === false) {
-            $this->userLogin();
-            $this->redirectTo('/user/profile', 2);
+        if ($userAction === 'connexion') {
+            if (empty($this->sGlob->getPost('submit-connect')) === false) {
+                $resUserLogin = $this->userLogin();
+                $this->twigData['result'] = $resUserLogin;
+
+                if ($resUserLogin->isErr() === true) {
+                    $this->redirectTo('/user/connexion', 5);
+                    // Display page.
+                    $this->twig->display("pages/page_bo_user.twig", $this->twigData);
+                    return;
+                }
+
+                // Login success - redirect to the right page.
+                if ($resUserLogin->getResult()['user-login']->getRole() == 'owner') {
+                    $this->redirectTo('/owner', 0);
+                } else {
+                    $this->redirectTo('/user/profile', 0);
+                }
+            }
         }
 
         // ------------------------------------------------------------------------------------------------ user/profil.
@@ -177,7 +192,7 @@ class UserController extends MainController
 
                     // Refresh page if no error.
                     if ($this->twigData['result']->isErr() === false) {
-                        $this->refresh();
+                        $this->refresh(3);
                     }
                 }
                 $this->twigData['owner'] = $this->userOwner;
@@ -202,7 +217,7 @@ class UserController extends MainController
             // Form Logout.
             if ($userAction === 'deconnexion') {
                 $this->twigData['result'] = (new FormUserLog())->logout();
-                $this->refresh(0);
+                $this->redirectTo('/', 0);
             }
 
             // User.
@@ -216,35 +231,31 @@ class UserController extends MainController
 
     /**
      * Login a user
-     * @return void
+     *
+     * @return Res
      */
-    public function userLogin(): void
+    public function userLogin(): Res
     {
+        // Check that a user exists with this email and get that user if exists.
         $resUserByEmail = $this->getUserByEmail($this->sGlob->getPost('email'));
         if ($resUserByEmail->isErr()) {
-            $this->res->ko('user-login', 'user-login-ko-no-user-pass-match');
-            $this->twigData['result'] = $this->res;
-            return;
+            return $this->res->ko('user-login', 'user-login-ko-no-user-pass-match');
         }
-
         $user = $resUserByEmail->getResult()['user-by-email'];
 
+        // Check if user is banned.
         if ($user->getRole() == 'user-banned') {
-            $this->res->ko('user-login', 'user-login-ko-account-banned');
-            $this->twigData['result'] = $this->res;
-            return;
+            return $this->res->ko('user-login', 'user-login-ko-account-banned');
+        }
+        // Check if user is waiting for validation.
+        if ($user->getRole() == 'user-validation') {
+            return $this->res->ko('user-login', 'user-login-ko-account-token-not-validated');
         }
 
-        if ($user->getRole() == 'user-validation') {
-            $this->res->ko('user-login', 'user-login-ko-account-token-not-validated');
-            $this->twigData['result'] = $this->res;
-            return;
-        }
-        $this->twigData['result'] = (new FormUserLog())->login(
-            $this->sGlob->getPost('email'),
-            $this->sGlob->getPost('pass')
-        );
-        $this->sGlob->setSes('userobj', $user);
+        // TODO: Add Captcha and track IP login attempts.
+
+        // Start the login process.
+        return (new FormUserLog())->login($this->sGlob->getPost('email'), $this->sGlob->getPost('pass'));
     }
 
 
@@ -252,7 +263,8 @@ class UserController extends MainController
      * Activate a user account. This method is called when a user click on the activation link in the email.
      * This email contains a link with a token : /user/activation/123456789
      * If the token is valid, not expired and the user exists, the user is activated and the token is deleted.
-     * @param string $tokenContent
+     *
+     * @param string $tokenContent - Token key to activate the user.
      * @return Res
      */
     public function userActivate(string $tokenContent): Res
@@ -299,7 +311,8 @@ class UserController extends MainController
 
 
     /**
-     * Get all users
+     * Get all users.
+     *
      * @return Res
      */
     public function getAllUsers(): Res
@@ -321,9 +334,11 @@ class UserController extends MainController
         return $this->res;
     }
 
+
     /**
-     * Get a user by its id
-     * @param int $userId
+     * Get a user by its id.
+     *
+     * @param int $userId - the ID of the user to get.
      * @return User
      */
     public function getUserById(int $userId): User
@@ -333,8 +348,9 @@ class UserController extends MainController
 
 
     /**
-     * Get a user by its email
-     * @param string $email
+     * Get a user by its email.
+     *
+     * @param string $email - the email of the user to get.
      * @return Res
      */
     public function getUserByEmail(string $email): Res
@@ -349,8 +365,9 @@ class UserController extends MainController
 
 
     /**
-     * Get a user by a token
-     * @param int|string $tokenData
+     * Get a user by a token.
+     *
+     * @param int|string $tokenData - the token (id or key) to get the user from.
      * @return Res
      */
     public function getUserByToken(int|string $tokenData): Res
@@ -377,10 +394,11 @@ class UserController extends MainController
 
 
     /**
-     * Create a user providing a pseudo, an email and a password
-     * @param string $pseudo
-     * @param string $email
-     * @param string $password
+     * Create a user providing a pseudo, an email and a password.
+     *
+     * @param string $pseudo - the pseudo of the user to create.
+     * @param string $email - the email of the user to create.
+     * @param string $password - the password of the user to create.
      * @return Res
      */
     public function regCreateUser(string $pseudo, string $email, string $password): Res
@@ -442,13 +460,21 @@ class UserController extends MainController
 
 
     /**
-     * Updates a user providing a user object
-     * @param User $user
+     * Updates a user providing a user object.
+     *
+     * @param User $user - the user to update.
      * @return Res
      */
     public function updateUser(User $user): Res
     {
         try {
+            // Remove old avatar file if a new one is sent.
+            $dbAvatarId = $this->getUserById($user->getUserId())->getAvatarId();
+            if ($dbAvatarId !== $user->getAvatarId() && $dbAvatarId !== null) {
+                $this->fileController->deleteFileById($dbAvatarId);
+            }
+
+            // Update the user.
             $result = $this->userModel->updateUser($user);
             if ($result === 0) {
                 $this->res->ok('user-profile', 'user-profile-ok-no-change');
@@ -466,13 +492,27 @@ class UserController extends MainController
 
 
     /**
-     * Updates owner info providing a userOwner object
-     * @param UserOwner $userOwner
+     * Updates owner info providing a userOwner object.
+     *
+     * @param UserOwner $userOwner - the userOwner to update.
      * @return Res
      */
     public function updateUserOwner(UserOwner $userOwner): Res
     {
         $this->userOwnerModel = new UserOwnerModel();
+        $dbUserOwner = $this->userOwnerModel->getUserOwnerById($userOwner->getUserId());
+
+        // Remove old photo file if a new one is sent.
+        if ($dbUserOwner->getPhotoFileId() !== $userOwner->getPhotoFileId() && $dbUserOwner->getPhotoFileId() !== null) {
+            $this->fileController->deleteFileById($dbUserOwner->getPhotoFileId());
+        }
+
+        // Remove old cv file if a new one is sent.
+        if ($dbUserOwner->getCvFileId() !== $userOwner->getCvFileId() && $dbUserOwner->getCvFileId() !== null) {
+            $this->fileController->deleteFileById($dbUserOwner->getCvFileId());
+        }
+
+        // Update the user.
         $result = $this->userOwnerModel->updateUserOwner($userOwner);
 
         if ($result === 0) {
@@ -487,8 +527,9 @@ class UserController extends MainController
 
 
     /**
-     * Mute a user by setting his role to 'user-muted'
-     * @param int $userId
+     * Mute a user by setting his role to 'user-muted'.
+     *
+     * @param int $userId - the ID of the user to mute.
      * @return Res
      */
     public function muteUser(int $userId): Res
@@ -512,8 +553,9 @@ class UserController extends MainController
 
 
     /**
-     * Activate a user by setting his role to 'user'
-     * @param int $userId
+     * Activate a user by setting his role to 'user'.
+     *
+     * @param int $userId - the ID of the user to activate.
      * @return Res
      */
     public function activateUser(int $userId): Res
@@ -537,8 +579,9 @@ class UserController extends MainController
 
 
     /**
-     * Bans a user by setting his role to 'user-banned'
-     * @param int $userId
+     * Bans a user by setting his role to 'user-banned'.
+     *
+     * @param int $userId - the ID of the user to ban.
      * @return Res
      */
     public function banUser(int $userId): Res
@@ -562,20 +605,22 @@ class UserController extends MainController
 
 
     /**
-     * @param int $userId
-     * @param string $subject
-     * @param string $content
+     * Email a user.
+     *
+     * @param int $toUserId - the ID of the user to send the email to.
+     * @param string $subject - the subject of the email.
+     * @param string $content - the content of the email.
      * @return Res
      */
-    public function sendEmailToUser(int $userId, string $subject, string $content): Res
+    public function sendEmailToUser(int $toUserId, string $subject, string $content): Res
     {
-        $user = $this->userModel->getUserById($userId);
-        if ($user === null) {
+        $userTo = $this->userModel->getUserById($toUserId);
+        if ($userTo === null) {
             $this->res->ko('send-email-to-user', 'send-email-to-user-ko-user-not-found');
             return $this->res;
         }
-        $mailTo = $user->getEmail();
-        $mailToName = $user->getPseudo();
+        $mailTo = $userTo->getEmail();
+        $mailToName = $userTo->getPseudo();
         $mailSubject = $subject;
         $mailContent = $content;
 
@@ -588,14 +633,73 @@ class UserController extends MainController
             return $this->res;
         }
 
-        $this->res->ok('send-email-to-user', 'send-email-to-user-ok', $user);
+        $this->res->ok('send-email-to-user', 'send-email-to-user-ok', $userTo);
         return $this->res;
     }
 
 
     /**
-     * Hydrates a proper User object with data from the database
-     * @param object $userObj
+     * Email the owner of the blog.
+     *
+     * @param string $fromUserEmail - the email of the user sending the mail.
+     * @param string $firstname - the firstname of the user sending the mail.
+     * @param string $lastname - the lastname of the user sending the mail.
+     * @param string $subject - the subject of the mail.
+     * @param string $content - the content of the mail.
+     * @return Res
+     */
+    public function sendEmailToOwner(
+        string $fromUserEmail,
+        string $firstname,
+        string $lastname,
+        string $subject,
+        string $content
+    ): Res {
+        // User sending the mail.
+        $userFrom = $this->userModel->getUserByEmail($fromUserEmail);
+        if ($userFrom === null) {
+            $this->res->ko('form-contact-owner', 'form-contact-owner-ko-user-not-found');
+            return $this->res;
+        }
+
+        // MailTo : Owner of the blog.
+        $mailToOwnerMail = $this->sGlob->getEnv('BLOG_CONTACT_EMAIL');
+
+        // Build mail.
+        $mailTo = $mailToOwnerMail;
+        $mailToName = "Admin " . $this->sGlob->getEnv('BLOG_NAME');
+        $mailSubject = "[" . $this->sGlob->getEnv('BLOG_NAME') . " - Contact] " . $subject;
+
+        // Build mail link.
+        $replyHref = '<a href="';
+        $replyHref .= $this->sGlob->getEnv('BLOG_URL') . '/owner/user-sendmail/' . $userFrom->getUserId();
+        $replyHref .= '">Répondre à ' . $userFrom->getPseudo() . '</a><br /><br />';
+
+        // Build mail content.
+        $mailContent = 'Message de ' . $userFrom->getPseudo() . ' (' . $userFrom->getEmail() . ').<br />';
+        $mailContent .= 'Nom : ' . $firstname . ' ' .  $lastname . '<br /><br />';
+        $mailContent .= 'Vous pouvez répondre à cet utilisateur en cliquant sur ce lien :<br />' . $replyHref;
+        $mailContent .= "Message :<br />";
+        $mailContent .= $content;
+
+        // Send mail.
+        $mailController = new MailController();
+        $resSendMail = $mailController->sendEmail($mailTo, $mailToName, $mailSubject, $mailContent);
+
+        if ($resSendMail->isErr() === true) {
+            $this->res->ko('form-contact-owner', $resSendMail->getMsg()['send-email']);
+            return $this->res;
+        }
+
+        $this->res->ok('form-contact-owner', 'form-contact-owner-ok', $userFrom);
+        return $this->res;
+    }
+
+
+    /**
+     * Hydrates a proper User object with data from the database.
+     *
+     * @param object $userObj - the object to hydrate.
      * @return User
      */
     public function hydrateUser(object $userObj): User

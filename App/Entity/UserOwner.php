@@ -2,29 +2,65 @@
 
 namespace App\Entity;
 
+/**
+ * Class UserOwner - Represents a user with the role "owner"
+ */
 class UserOwner extends User
 {
+    /**
+     * @var int
+     */
     private int $owner_id;
 
+    /**
+     * @var int|null
+     */
     private int|null $photo_file_id;
 
+    /**
+     * @var File
+     */
     private File $photo_file;
 
+    /**
+     * @var int|null
+     */
     private int|null $cv_file_id;
 
+    /**
+     * @var File
+     */
     private File $cv_file;
 
+    /**
+     * @var string|null
+     */
     private string|null $first_name;
 
+    /**
+     * @var string|null
+     */
     private string|null $last_name;
 
+    /**
+     * @var string|null
+     */
     private string|null $catch_phrase;
+
+    /**
+     * @var string|null
+     */
+    private string|null $sn_github;
+
+    /**
+     * @var string|null
+     */
+    private string|null $sn_linkedin;
 
 
     /**
      * ----------------------------------------------------------------------------------------------- Getters & Setters
      */
-
     /**
      * @return int
      */
@@ -32,6 +68,7 @@ class UserOwner extends User
     {
         return $this->owner_id;
     }
+
 
     /**
      * @param int $owner_id
@@ -42,6 +79,7 @@ class UserOwner extends User
         $this->owner_id = $owner_id;
     }
 
+
     /**
      * @return int|null
      */
@@ -49,6 +87,7 @@ class UserOwner extends User
     {
         return $this->photo_file_id;
     }
+
 
     /**
      * @param int $photo_file_id
@@ -59,6 +98,7 @@ class UserOwner extends User
         $this->photo_file_id = $photo_file_id;
     }
 
+
     /**
      * @return File
      */
@@ -66,6 +106,7 @@ class UserOwner extends User
     {
         return $this->photo_file;
     }
+
 
     /**
      * @param File $photo_file
@@ -76,6 +117,7 @@ class UserOwner extends User
         $this->photo_file = $photo_file;
     }
 
+
     /**
      * @return int|null
      */
@@ -83,6 +125,7 @@ class UserOwner extends User
     {
         return $this->cv_file_id;
     }
+
 
     /**
      * @param int $cv_file_id
@@ -93,6 +136,7 @@ class UserOwner extends User
         $this->cv_file_id = $cv_file_id;
     }
 
+
     /**
      * @return File
      */
@@ -100,6 +144,7 @@ class UserOwner extends User
     {
         return $this->cv_file;
     }
+
 
     /**
      * @param File $cv_file
@@ -110,6 +155,7 @@ class UserOwner extends User
         $this->cv_file = $cv_file;
     }
 
+
     /**
      * @return string|null
      */
@@ -117,6 +163,7 @@ class UserOwner extends User
     {
         return $this->first_name;
     }
+
 
     /**
      * @param string $first_name
@@ -127,6 +174,7 @@ class UserOwner extends User
         $this->first_name = $first_name;
     }
 
+
     /**
      * @return string|null
      */
@@ -134,6 +182,7 @@ class UserOwner extends User
     {
         return $this->last_name;
     }
+
 
     /**
      * @param string $last_name
@@ -144,6 +193,7 @@ class UserOwner extends User
         $this->last_name = $last_name;
     }
 
+
     /**
      * @return string|null
      */
@@ -151,6 +201,7 @@ class UserOwner extends User
     {
         return $this->catch_phrase;
     }
+
 
     /**
      * @param string $catch_phrase
@@ -160,4 +211,42 @@ class UserOwner extends User
     {
         $this->catch_phrase = $catch_phrase;
     }
+
+
+    /**
+     * @return string|null
+     */
+    public function getSnGithub(): ?string
+    {
+        return $this->sn_github;
+    }
+
+
+    /**
+     * @param string|null $sn_github
+     */
+    public function setSnGithub(?string $sn_github): void
+    {
+        $this->sn_github = $sn_github;
+    }
+
+
+    /**
+     * @return string|null
+     */
+    public function getSnLinkedin(): ?string
+    {
+        return $this->sn_linkedin;
+    }
+
+
+    /**
+     * @param string|null $sn_linkedin
+     */
+    public function setSnLinkedin(?string $sn_linkedin): void
+    {
+        $this->sn_linkedin = $sn_linkedin;
+    }
+
+
 }

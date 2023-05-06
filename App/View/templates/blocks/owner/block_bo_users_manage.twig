@@ -1,41 +1,53 @@
 {% block bo_users_manage %}
-    <section class="row gx-4 gx-lg-5 justify-content-center manage-comments">
-        <div class="row">
-            <div class="col-2"><strong>Actions</strong></div>
-            <div class="col-2"><strong>Pseudo</strong></div>
-            <div class="col-2"><strong>Email</strong></div>
-            <div class="col-6"><strong>Statut</strong></div>
+    {% use "blocks/items/button_user_mute.twig" %}
+    {% use "blocks/items/button_user_ban.twig" %}
+    {% use "blocks/items/button_user_activate.twig" %}
+
+    <section class="row gx-4 gx-lg-5 justify-content-center manage-items manage-comments">
+        <div class="row d-none d-lg-flex">
+            <div class="col-lg-2"><strong>Actions</strong></div>
+            <div class="col-lg-2"><strong>Pseudo</strong></div>
+            <div class="col-lg-2"><strong>Email</strong></div>
+            <div class="col-lg-6"><strong>Statut</strong></div>
         </div>
 
         {% for user in users |slice(0, 100) %}
-            <div class="row status-{{ user.getRole() }}">
+            <div class="row manage-item status-{{ user.getRole() }}">
 
-                <div class="col-2">
-                    {# User active or waiting #}
+                <div class="col-lg-2">
+                    {# User is active or waiting #}
                     {% if (user.getRole() == 'user' or user.getRole() == 'user-validation') %}
-                        <a href="/owner/user-mute/{{ user.getUserId() }}"><i class="fa-solid fa-comment-slash"></i></a>&nbsp; | &nbsp;
-                        <a href="/owner/user-ban/{{ user.getUserId() }}"><i class="fa-solid fa-user-slash"></i></a>&nbsp; | &nbsp;
+                        {{ block('button_user_mute') }}&nbsp;
+                        {{ block('button_user_ban') }}&nbsp;
 
-                    {# User Muted #}
+                    {# User is Muted #}
                     {% elseif user.getRole() == 'user-muted' %}
-                        <a href="/owner/user-activate/{{ user.getUserId() }}"><i class="fa-solid fa-user-check"></i></a>&nbsp; | &nbsp;
-                        <a href="/owner/user-ban/{{ user.getUserId() }}"><i class="fa-solid fa-user-slash"></i></a>&nbsp; | &nbsp;
+                        {{ block('button_user_activate') }}&nbsp;
+                        {{ block('button_user_ban') }}&nbsp;
 
-                    {# User Banned #}
+                    {# User is Banned #}
                     {% elseif user.getRole() == 'user-banned' %}
-                        <a href="/owner/user-activate/{{ user.getUserId() }}"><i class="fa-solid fa-user-check"></i></a>&nbsp; | &nbsp;
-                        <a href="/owner/user-mute/{{ user.getUserId() }}"><i class="fa-solid fa-comment-slash"></i></a>&nbsp; | &nbsp;
+                        {{ block('button_user_mute') }}&nbsp;
+                        {{ block('button_user_activate') }}&nbsp;
                     {% endif %}
 
-                    <a href="/owner/user-sendmail/{{ user.getUserId() }}"><i class="fa-solid fa-paper-plane"></i></a>&nbsp; | &nbsp;
+                    <a href="/owner/user-sendmail/{{ user.getUserId() }}"><i class="fa-solid fa-paper-plane"></i></a>&nbsp;
 
                 </div>
 
-                <div class="col-2">{{ user.getPseudo() }}</div>
-                <div class="col-2">{{ user.getEmail() }}</div>
+                <div class="col-lg-2">
+                    <span class="d-lg-none">Pseudo : </span>
+                    {{ user.getPseudo() }}
+                </div>
 
-                {# TODO: Temporaire - à faire côté code #}
-                <div class="col-6">
+                <div class="col-lg-2">
+                    <span class="d-lg-none">Email : </span>
+                    {{ user.getEmail() }}
+                </div>
+
+                {# TODO: Temp - do it on php side #}
+                <div class="col-lg-6">
+                    <span class="d-lg-none">Statut : </span>
                     {% if user.getRole() == 'user' %}
                         Utilisateur actif
                     {% elseif user.getRole() == 'user-validation' %}
@@ -49,4 +61,77 @@
             </div>
         {% endfor %}
     </section>
+
+    {# Modal #}
+    <div class="modal fade" id="user-modal" tabindex="-1" aria-labelledby="user-modal-label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="user-modal-label">
+                        <span id="user-ban-title" style="display: none">Bannir un utilisateur</span>
+                        <span id="user-mute-title" style="display: none">Rendre muet un utilisateur</span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    Utilisateur : <span id="user-pseudo" class="alert-danger"></span><br /><br />
+
+                    <span id="user-ban-message" style="display: none">
+                        Êtes-vous sûr.e de vouloir bannir cet utilisateur ?<br />
+                        Ce dernier ne pourra plus se connecter mais son compte restera.<br />
+                        Vous pourrez revenir sur votre décision plus tard.
+                    </span>
+
+                    <span id="user-mute-message" style="display: none">
+                        Êtes-vous sûr.e de vouloir rendre muet cet utilisateur ?<br />
+                        Ce dernier pourra se connecter mais ne pourra plus commenter les articles.<br />
+                        Vous pourrez revenir sur votre décision plus tard.
+                    </span>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="alert" data-bs-dismiss="modal">Annuler</button>
+                    <a id="user-href" class="alert alert-danger"><i class="fa-solid fa-trash"></i>&nbsp;
+                        <span id="user-ban-btn-text" style="display: none">Bannir l'utilisateur</span>
+                        <span id="user-mute-btn-text" style="display: none">Rendre muet l'utilisateur</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Script #}
+    {# TODO: Do this cleaner #}
+    <script type="text/javascript">
+        function fillModal(btnId) {
+            let action = btnId.split('-')[0];
+            let userId = document.getElementById(btnId).getAttribute('data-user-id');
+            let userPseudo = document.getElementById(btnId).getAttribute('data-user-pseudo');
+
+            // Display the appropriate spans
+            document.getElementById("user-" + action + "-title").style.display = "inline";
+            document.getElementById("user-" + action + "-message").style.display = "inline";
+            document.getElementById("user-" + action + "-btn-text").style.display = "inline";
+            
+            if (action ==='ban') {
+                document.getElementById('user-href').href = '/owner/user-ban/' + userId;
+                document.getElementById("user-ban-title").style.display = "inline";
+                document.getElementById("user-ban-message").style.display = "inline";
+                document.getElementById("user-ban-btn-text").style.display = "inline";
+                document.getElementById("user-mute-title").style.display = "none";
+                document.getElementById("user-mute-message").style.display = "none";
+                document.getElementById("user-mute-btn-text").style.display = "none";
+
+            } else if (action === 'mute') {
+                document.getElementById('user-href').href = '/owner/user-mute/' + userId;
+                document.getElementById("user-mute-title").style.display = "inline";
+                document.getElementById("user-mute-message").style.display = "inline";
+                document.getElementById("user-mute-btn-text").style.display = "inline";
+                document.getElementById("user-ban-title").style.display = "none";
+                document.getElementById("user-ban-message").style.display = "none";
+                document.getElementById("user-ban-btn-text").style.display = "none";
+            }
+            document.getElementById('user-pseudo').innerHTML = userPseudo;
+        }
+    </script>
 {% endblock %}

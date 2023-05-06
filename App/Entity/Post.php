@@ -4,32 +4,74 @@ namespace App\Entity;
 
 use DateTime;
 
+/**
+ * Class Post - Post entity.
+ */
 class Post
 {
+    /**
+     * @var int
+     */
     protected int $post_id;
 
+    /**
+     * @var int
+     */
     protected int $author_id;
 
+    /**
+     * @var User
+     */
     protected User $author_user;
 
+    /**
+     * @var int
+     */
     protected int $feat_img_id;
 
+    /**
+     * @var File
+     */
     protected File $feat_img_file;
 
+    /**
+     * @var string
+     */
     protected string $title;
 
+    /**
+     * @var string
+     */
     protected string $slug;
 
+    /**
+     * @var string
+     */
     protected string $excerpt;
 
+    /**
+     * @var string
+     */
     protected string $content;
 
+    /**
+     * @var DateTime
+     */
     protected DateTime $creation_date;
 
+    /**
+     * @var DateTime
+     */
     protected DateTime $last_update;
 
+    /**
+     * @var string
+     */
     protected string $status;
 
+    /**
+     * @var array
+     */
     protected array $comments;
 
 
@@ -37,7 +79,6 @@ class Post
     /**
      * ----------------------------------------------------------------------------------------------- Getters & Setters
      */
-
     /**
      * @return int
      */
@@ -45,6 +86,7 @@ class Post
     {
         return $this->post_id;
     }
+
 
     /**
      * @param int $post_id
@@ -55,6 +97,7 @@ class Post
         $this->post_id = $post_id;
     }
 
+
     /**
      * @return int
      */
@@ -62,6 +105,7 @@ class Post
     {
         return $this->author_id;
     }
+
 
     /**
      * @param int $author_id
@@ -72,6 +116,7 @@ class Post
         $this->author_id = $author_id;
     }
 
+
     /**
      * @return User
      */
@@ -79,6 +124,7 @@ class Post
     {
         return $this->author_user;
     }
+
 
     /**
      * @param User $author_user
@@ -89,6 +135,7 @@ class Post
         $this->author_user = $author_user;
     }
 
+
     /**
      * @return int
      */
@@ -96,6 +143,7 @@ class Post
     {
         return $this->feat_img_id;
     }
+
 
     /**
      * @param int $feat_img_id
@@ -106,6 +154,7 @@ class Post
         $this->feat_img_id = $feat_img_id;
     }
 
+
     /**
      * @return File
      */
@@ -113,6 +162,7 @@ class Post
     {
         return $this->feat_img_file;
     }
+
 
     /**
      * @param File $feat_img_file
@@ -123,6 +173,7 @@ class Post
         $this->feat_img_file = $feat_img_file;
     }
 
+
     /**
      * @return string
      */
@@ -130,6 +181,7 @@ class Post
     {
         return $this->title;
     }
+
 
     /**
      * @param string $title
@@ -140,6 +192,7 @@ class Post
         $this->title = $title;
     }
 
+
     /**
      * @return string
      */
@@ -147,6 +200,7 @@ class Post
     {
         return $this->slug;
     }
+
 
     /**
      * @param string $slug
@@ -157,6 +211,7 @@ class Post
         $this->slug = $slug;
     }
 
+
     /**
      * @return string
      */
@@ -164,6 +219,7 @@ class Post
     {
         return $this->excerpt;
     }
+
 
     /**
      * @param string $excerpt
@@ -174,6 +230,7 @@ class Post
         $this->excerpt = $excerpt;
     }
 
+
     /**
      * @return string
      */
@@ -181,6 +238,7 @@ class Post
     {
         return $this->content;
     }
+
 
     /**
      * @param string $content
@@ -191,6 +249,7 @@ class Post
         $this->content = $content;
     }
 
+
     /**
      * @return DateTime
      */
@@ -198,6 +257,7 @@ class Post
     {
         return $this->creation_date;
     }
+
 
     /**
      * @param DateTime $creation_date
@@ -208,6 +268,7 @@ class Post
         $this->creation_date = $creation_date;
     }
 
+
     /**
      * @return DateTime
      */
@@ -215,6 +276,7 @@ class Post
     {
         return $this->last_update;
     }
+
 
     /**
      * @param DateTime $last_update
@@ -225,6 +287,7 @@ class Post
         $this->last_update = $last_update;
     }
 
+
     /**
      * @return string
      */
@@ -232,6 +295,7 @@ class Post
     {
         return $this->status;
     }
+
 
     /**
      * @param string $status

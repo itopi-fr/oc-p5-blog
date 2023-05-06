@@ -15,10 +15,8 @@
 
     <!-- Main Content-->
     <div class="container px-4 px-lg-5">
-        <div class="row">
-            {% block content %}
-            {% endblock %}
-        </div>
+        {% block content %}
+        {% endblock %}
     </div>
     {{ block('debug') }}
     {{ block('footer') }}

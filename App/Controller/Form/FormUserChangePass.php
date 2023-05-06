@@ -31,11 +31,12 @@ class FormUserChangePass extends FormController
      * Treats the form to change the user password.
      * Checks if the old password is correct, if the new password and the new password confirmation match,
      * and if the new password format is correct.
-     * @param User $user
-     * @param string $old
-     * @param string $new
-     * @param string $new_confirm
-     * @param bool $reset
+     *
+     * @param User $user - The user to update.
+     * @param string $old - The old password.
+     * @param string $new - The new password.
+     * @param string $new_confirm - The new password confirmation.
+     * @param bool $reset - If true, the old password is not checked.
      * @return Res
      */
     public function treatFormChangePass(
@@ -77,8 +78,9 @@ class FormUserChangePass extends FormController
 
     /**
      * Check if old password is correct
-     * @param User $user
-     * @param string $old
+     *
+     * @param User $user - The user to update.
+     * @param string $old - The old password.
      * @return bool
      */
     protected function checkOldPass(User $user, string $old): bool
@@ -89,8 +91,9 @@ class FormUserChangePass extends FormController
 
     /**
      * Check if new password and new password confirmation match
-     * @param string $new
-     * @param string $new_confirm
+     *
+     * @param string $new - The new password.
+     * @param string $new_confirm - The new password confirmation.
      * @return bool
      */
     protected function checkNewPassMatch(string $new, string $new_confirm): bool

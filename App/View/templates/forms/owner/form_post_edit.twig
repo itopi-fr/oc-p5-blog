@@ -10,63 +10,65 @@
     {% if post %}
 
         {# Form #}
-        <form action="/owner/post-edit/{{ post.getPostId() }}" method="POST" enctype="multipart/form-data" class="row form-general">
+        {% if formsent != true %}
+            <form action="/owner/post-edit/{{ post.getPostId() }}" method="POST" enctype="multipart/form-data" class="row form-general">
 
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="post-title"><h5>Titre de l'article</h5></label>
-                    <input type="text" name="post-title" class="form-control post-title" id="post-title" placeholder="Titre" value="{{ post.getTitle() }}">
-                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="post-title"><h5>Titre de l'article</h5></label>
+                        <input type="text" name="post-title" class="form-control post-title" id="post-title" placeholder="Titre" value="{{ post.getTitle() }}">
+                    </div>
 
-                <div class="form-group">
-                    <label for="post-slug"><h5>Slug</h5></label>
-                    <input type="text" name="post-slug" class="form-control post-slug" id="post-slug" placeholder="Slug" value="{{ post.getSlug() }}">
-                </div>
-            </div>
-
-            <div class="col-md-6">
-                <div class="form-group">
-                    <h5>Illustration de l'article</h5>
-                    <div class="row">
-                        <div class="col-md-4 post-image-img">
-                            {% if post.getFeatImgId() is not null %}
-                                <img src="{{ post.getFeatImgFile().getUrl() }}" alt="Illustration" class="img-post-edit">
-                            {% endif %}
-                        </div>
-
-                        <div class="col-md-8 post-image-input">
-                            Ajouter / modifier l'image :<br />
-                            <label for="post-image"></label>
-                            <input type="file" name="post-image" class="form-control" id="post-image" placeholder="Illustration">
-                        </div>
+                    <div class="form-group">
+                        <label for="post-slug"><h5>Slug</h5></label>
+                        <input type="text" name="post-slug" class="form-control post-slug" id="post-slug" placeholder="Slug" value="{{ post.getSlug() }}">
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <h5>Statut de l'article</h5>
-                    <input type="radio" id="post-status-pub" name="post-status" value="pub" {% if post.getStatus() == 'pub' %}checked{% endif %}>
-                    <label for="post-status-pub">Publié</label><br />
-                    <input type="radio" id="post-status-draft" name="post-status" value="draft" {% if post.getStatus() == 'draft' %}checked{% endif %}>
-                    <label for="post-status-draft">Brouillon</label><br />
-                    <input type="radio" id="post-status-arch" name="post-status" value="arch" {% if post.getStatus() == 'arch' %}checked{% endif %}>
-                    <label for="post-status-draft">Archivé</label>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <h5>Illustration de l'article</h5>
+                        <div class="row">
+                            <div class="col-md-4 post-image-img">
+                                {% if post.getFeatImgId() is not null %}
+                                    <img src="{{ post.getFeatImgFile().getUrl() }}" alt="Illustration" class="img-post-edit">
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-8 post-image-input">
+                                Ajouter / modifier l'image :<br />
+                                <label for="post-image"></label>
+                                <input type="file" name="post-image" class="form-control" id="post-image" placeholder="Illustration">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <h5>Statut de l'article</h5>
+                        <input type="radio" id="post-status-pub" name="post-status" value="pub" {% if post.getStatus() == 'pub' %}checked{% endif %}>
+                        <label for="post-status-pub">Publié</label><br />
+                        <input type="radio" id="post-status-draft" name="post-status" value="draft" {% if post.getStatus() == 'draft' %}checked{% endif %}>
+                        <label for="post-status-draft">Brouillon</label><br />
+                        <input type="radio" id="post-status-arch" name="post-status" value="arch" {% if post.getStatus() == 'arch' %}checked{% endif %}>
+                        <label for="post-status-draft">Archivé</label>
+                    </div>
+
+
                 </div>
 
 
-            </div>
-
-
-            <div class="form-group">
-                <label for="post-content"><h5>Contenu de l'article</h5></label>
-                <textarea name="post-content" class="form-control" id="post-content" placeholder="Contenu de l'article" style="width:100%" rows="14">{{ post.getContent() }}</textarea>
-            </div>
+                <div class="form-group">
+                    <label for="post-content"><h5>Contenu de l'article</h5></label>
+                    <textarea name="post-content" class="form-control" id="post-content" placeholder="Contenu de l'article" style="width:100%" rows="14">{{ post.getContent() }}</textarea>
+                </div>
 
 
 
-            <div class="form-group text-center">
-                <input type="submit" name="submit-post-edit"/>
-            </div>
+                <div class="form-group text-center">
+                    <input type="submit" name="submit-post-edit"/>
+                </div>
 
-        </form>
+            </form>
+        {% endif %}
     {% endif %}
 {% endblock %}

@@ -8,17 +8,19 @@
     {{ block('res_message') }}
 
     {# Form #}
-    <form action="/comment/create" method="POST" enctype="multipart/form-data" class="form-general form-comment-create row pe-0">
-        <div class="form-group col-12 col-md-10">
-            <label for="comment-create-content">Votre commentaire</label>
-            <textarea class="form-control" id="comment-create-content" name="comment-create-content" style="width:100%"></textarea>
-        </div>
+    {% if formsent != true %}
+        <form action="/comment/create" method="POST" enctype="multipart/form-data" class="form-general form-comment-create row pe-0">
+            <div class="form-group col-12 col-md-10">
+                <label for="comment-create-content">Votre commentaire</label>
+                <textarea class="form-control" id="comment-create-content" name="comment-create-content" style="width:100%"></textarea>
+            </div>
 
-        <input type="hidden" name="comment-create-post-id" value="{{ post.getPostId() }}">
-        <input type="hidden" name="comment-create-post-slug" value="{{ post.getSlug() }}">
+            <input type="hidden" name="comment-create-post-id" value="{{ post.getPostId() }}">
+            <input type="hidden" name="comment-create-post-slug" value="{{ post.getSlug() }}">
 
-        <div class="form-group col-12 col-md-2 text-end align-self-end pb-3 pe-0">
-            <input type="submit" name="submit-comment-create"/>
-        </div>
-    </form>
+            <div class="form-group col-12 col-md-2 text-end align-self-end pb-3 pe-0">
+                <input type="submit" name="submit-comment-create"/>
+            </div>
+        </form>
+    {% endif %}
 {% endblock %}

@@ -37,7 +37,8 @@ class FormUserProfile extends FormController
 
     /**
      * Treats the user part of the form
-     * @param User $user
+     *
+     * @param User $user - The user to treat.
      * @return Res
      * @throws Exception
      */
@@ -91,7 +92,8 @@ class FormUserProfile extends FormController
 
     /**
      * Treats the user owner part of the form
-     * @param UserOwner $userOwner
+     *
+     * @param UserOwner $userOwner - The user owner to treat.
      * @return Res
      * @throws Exception
      */
@@ -102,6 +104,14 @@ class FormUserProfile extends FormController
         $this->res = $this->checkPostedText('owner-profile', 'firstname', 4, 30);
         $this->res = $this->checkPostedText('owner-profile', 'lastname', 4, 30);
         $this->res = $this->checkPostedText('owner-profile', 'catchphrase', 4, 254);
+
+        if (empty($this->sGlob->getPost('sn-github')) === false) {
+            $this->res = $this->checkPostedUrl('owner-profile', 'sn-github');
+        }
+
+        if (empty($this->sGlob->getPost('sn-linkedin')) === false) {
+            $this->res = $this->checkPostedUrl('owner-profile', 'sn-linkedin');
+        }
 
         // File-cv : checks.
         $this->res = $this->checkPostedFileDoc(
@@ -127,6 +137,18 @@ class FormUserProfile extends FormController
             $userOwner->setFirstName($this->sGlob->getPost('firstname'));
             $userOwner->setLastName($this->sGlob->getPost('lastname'));
             $userOwner->setCatchPhrase($this->sGlob->getPost('catchphrase'));
+
+            if (empty($this->sGlob->getPost('sn-github')) === false) {
+                $userOwner->setSnGithub($this->sGlob->getPost('sn-github'));
+            } else {
+                $userOwner->setSnGithub(null);
+            }
+
+            if (empty($this->sGlob->getPost('sn-linkedin')) === false) {
+                $userOwner->setSnLinkedin($this->sGlob->getPost('sn-linkedin'));
+            } else {
+                $userOwner->setSnLinkedin(null);
+            }
 
             // Owner CV file : treatment.
             $cvFile = $this->sGlob->getFiles('file-cv');

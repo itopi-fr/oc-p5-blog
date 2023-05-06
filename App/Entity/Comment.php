@@ -4,29 +4,67 @@ namespace App\Entity;
 
 use DateTime;
 
+/**
+ * Comment entity
+ */
 class Comment
 {
+    /**
+     * @var int
+     */
     private int $comId;
 
+    /**
+     * @var int
+     */
     private int $postId;
 
+    /**
+     * @var int
+     */
     private int $authorId;
 
+    /**
+     * @var User
+     */
     private User $authorUser;
 
+    /**
+     * @var string
+     */
     private string $content;
 
+    /**
+     * @var DateTime
+     */
     private DateTime $createdDate;
 
+    /**
+     * @var DateTime
+     */
     private DateTime $lastUpdate;
 
+    /**
+     * @var string
+     */
     private string $status;
+
+    /**
+     * Used to display the post title in the comment list.
+     * @var string
+     */
+    protected string $postTitle;
+
+    /**
+     * Used to open the post in the comment list.
+     * @var string
+     */
+    protected string $postSlug;
 
 
     /**
      * ----------------------------------------------------------------------------------------------- Getters & Setters
      */
-
     /**
      * @return int
      */
@@ -34,6 +72,7 @@ class Comment
     {
         return $this->comId;
     }
+
 
     /**
      * @param int $comId
@@ -44,6 +83,7 @@ class Comment
         $this->comId = $comId;
     }
 
+
     /**
      * @return int
      */
@@ -51,6 +91,7 @@ class Comment
     {
         return $this->postId;
     }
+
 
     /**
      * @param int $postId
@@ -61,6 +102,7 @@ class Comment
         $this->postId = $postId;
     }
 
+
     /**
      * @return int
      */
@@ -68,6 +110,7 @@ class Comment
     {
         return $this->authorId;
     }
+
 
     /**
      * @param int $authorId
@@ -78,6 +121,7 @@ class Comment
         $this->authorId = $authorId;
     }
 
+
     /**
      * @return string
      */
@@ -85,6 +129,7 @@ class Comment
     {
         return $this->content;
     }
+
 
     /**
      * @param string $content
@@ -95,6 +140,7 @@ class Comment
         $this->content = $content;
     }
 
+
     /**
      * @return DateTime
      */
@@ -102,6 +148,7 @@ class Comment
     {
         return $this->createdDate;
     }
+
 
     /**
      * @param DateTime $createdDate
@@ -112,6 +159,7 @@ class Comment
         $this->createdDate = $createdDate;
     }
 
+
     /**
      * @return DateTime
      */
@@ -119,6 +167,7 @@ class Comment
     {
         return $this->lastUpdate;
     }
+
 
     /**
      * @param DateTime $lastUpdate
@@ -129,6 +178,7 @@ class Comment
         $this->lastUpdate = $lastUpdate;
     }
 
+
     /**
      * @return User
      */
@@ -136,6 +186,7 @@ class Comment
     {
         return $this->authorUser;
     }
+
 
     /**
      * @param User $authorUser
@@ -146,6 +197,7 @@ class Comment
         $this->authorUser = $authorUser;
     }
 
+
     /**
      * @return string
      */
@@ -153,6 +205,7 @@ class Comment
     {
         return $this->status;
     }
+
 
     /**
      * @param string $status
@@ -162,4 +215,42 @@ class Comment
     {
         $this->status = $status;
     }
+
+
+    /**
+     * @return string
+     */
+    public function getPostTitle(): string
+    {
+        return $this->postTitle;
+    }
+
+
+    /**
+     * @param string $postTitle
+     */
+    public function setPostTitle(string $postTitle): void
+    {
+        $this->postTitle = $postTitle;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getPostSlug(): string
+    {
+        return $this->postSlug;
+    }
+
+
+    /**
+     * @param string $postSlug
+     */
+    public function setPostSlug(string $postSlug): void
+    {
+        $this->postSlug = $postSlug;
+    }
+
+
 }

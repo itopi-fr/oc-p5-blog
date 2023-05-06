@@ -20,6 +20,10 @@ class OwnerUserController extends OwnerController
      * @var UserController
      */
     protected UserController $userController;
+
+    /**
+     * @var FormSendMailToUser
+     */
     private FormSendMailToUser $formSendMailToUser;
 
 
@@ -37,6 +41,7 @@ class OwnerUserController extends OwnerController
 
     /**
      * Manage the users
+     *
      * @return void
      */
     public function manageUsers(): void
@@ -52,7 +57,8 @@ class OwnerUserController extends OwnerController
 
     /**
      * Mute a user by its id by setting its role to 'user-muted'
-     * @param string $userId
+     *
+     * @param string $userId - The user id to mute
      * @return void
      */
     public function muteUser(string $userId): void
@@ -63,8 +69,9 @@ class OwnerUserController extends OwnerController
 
 
     /**
-     * Unmute a user by its id by setting its role to 'user'
-     * @param string $userId
+     * Unmute or unban a user by its id by setting its role back to 'user'
+     *
+     * @param string $userId - The user id to unmute or unban
      * @return void
      */
     public function activateUser(string $userId): void
@@ -76,7 +83,8 @@ class OwnerUserController extends OwnerController
 
     /**
      * Ban a user by its id by setting its role to 'user-banned'
-     * @param string $userId
+     *
+     * @param string $userId - The user id to ban
      * @return void
      */
     public function banUser(string $userId): void
@@ -85,9 +93,11 @@ class OwnerUserController extends OwnerController
         $this->manageUsers();
     }
 
+
     /**
      * Displays the form to email a user or treats it if sent
-     * @param string $userId
+     * @param string $userId - The user id to send the email to
+     *
      * @return void
      */
     public function sendmailToUser(string $strUserId): void
@@ -102,12 +112,6 @@ class OwnerUserController extends OwnerController
             }
             $this->twigData['result'] = $this->formSendMailToUser->treatForm();
         }
-
-
-//        if ($this->sGlob->getPost('submit')) {
-//            $this->userController->sendmailToUser($userId);
-//            $this->twigData['message'] = 'Votre email a bien été envoyé.';
-//        }
         $this->twig->display("pages/owner/page_bo_user_sendmail.twig", $this->twigData);
     }
 

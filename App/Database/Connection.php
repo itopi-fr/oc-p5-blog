@@ -64,6 +64,7 @@ class Connection
 
     /**
      * Creates a PDO connection to the database.
+     *
      * @return PDO
      */
     private function connect(): PDO
@@ -88,10 +89,11 @@ class Connection
 
     /**
      * Returns a single result as specific class object.
-     * TODO: faire une méthode par type de classe : getSingleAsComment, getSingleAsFile, etc.
-     * @param string $statement
-     * @param array $data
-     * @param string $class_name
+     * TODO: make a method by class. (getSingleAsFile, getSingleAsUser, etc.)
+     *
+     * @param string $statement - SQL statement.
+     * @param array $data - Data to bind.
+     * @param string $class_name - Class name of which the object will be returned.
      * @return null|Comment|File|Post|Token|User|UserOwner
      * @throws PDOException
      */
@@ -111,10 +113,12 @@ class Connection
         }
     }
 
+
     /**
      * Returns a single result as File class object.
-     * @param string $statement
-     * @param array $data
+     *
+     * @param string $statement - SQL statement.
+     * @param array $data - Data to bind.
      * @return File|null
      * @throws PDOException
      */
@@ -134,8 +138,9 @@ class Connection
 
     /**
      * Returns a single element as an object.
-     * @param string $statement
-     * @param array $data
+     *
+     * @param string $statement - SQL statement.
+     * @param array $data - Data to bind.
      * @return object|null
      * @throws PDOException
      */
@@ -155,8 +160,9 @@ class Connection
 
     /**
      * Returns a multiple element as an array of objects.
-     * @param string $statement
-     * @param array $data
+     *
+     * @param string $statement - SQL statement.
+     * @param array $data - Data to bind.
      * @return array|null
      * @throws PDOException
      */
@@ -176,8 +182,9 @@ class Connection
 
     /**
      * Inserts a single element into the database. Returns the id of the last inserted element or a null value.
-     * @param string $statement
-     * @param array $data
+     *
+     * @param string $statement - SQL statement.
+     * @param array $data - Data to bind.
      * @return int|null
      * @throws PDOException
      */
@@ -197,8 +204,9 @@ class Connection
 
     /**
      * Deletes a single element in the database.
-     * @param string $statement
-     * @param array $data
+     *
+     * @param string $statement - SQL statement.
+     * @param array $data - Data to bind.
      * @return bool|null
      * @throws PDOException
      */
@@ -216,8 +224,9 @@ class Connection
 
     /**
      * Checks if a single element exists in the database.
-     * @param string $statement
-     * @param array $data
+     *
+     * @param string $statement - SQL statement.
+     * @param array $data - Data to bind.
      * @return bool
      * @throws PDOException
      */
@@ -236,8 +245,9 @@ class Connection
 
     /**
      * Updates a single element in the database.
-     * @param string $statement
-     * @param array $data
+     *
+     * @param string $statement - SQL statement.
+     * @param array $data - Data to bind.
      * @return int
      * @throws PDOException
      */
@@ -254,6 +264,7 @@ class Connection
 
 
     /**
+     * Returns the maximum id of a table.
      * @param string $statement
      * @param array $data
      * @return int
